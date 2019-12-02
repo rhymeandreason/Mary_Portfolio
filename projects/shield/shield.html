@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Mary Huang : Portfolio</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700" rel="stylesheet" type="text/css">
+
+  <!-- Video Player
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="../../css/normalize.css">
+  <link rel="stylesheet" href="../../css/skeleton.css">
+  <link rel="stylesheet" href="../../css/main.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="../../images/favicon.png">
+</head>
+
+
+<body>
+  <script>
+  /*
+  window.addEventListener('load', function () {
+    const players = Plyr.setup('.js-player', {
+      controls: ['play', 'progress']
+    });
+  });
+  */
+  </script>
+
+  <div class="container project-page">
+
+    <div class="row top-nav">
+      <div class="one-half column" >
+        <a href="/index.html">
+          <h5 class="title">Mary Huang</h5>
+        </a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="seven columns" >
+        <img src="shield_drone.png" />
+      </div>
+      <div class="five columns">
+        <h5 class="large-title">Shield.ai</h5>
+        <p>
+          2018 <br>
+          UX/UI Design
+        </p>
+        <p>
+          Shield.ai is an autonomous drone startup based in San Diego. Their hardware is used by trained specialists in the field to collect indoor and outdoor mapping data.
+
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="eight columns offset-by-two" >
+        <p>
+        I designed their V1 mobile and desktop apps for their first user-facing beta launch. Most of this work was done in 6 weeks. I used Material Design elements as the foundation, expanding on the library for custom controls.
+        <br><br>
+        The mobile app controls the drone in the field. Although the drone flies and gathers data autonomously, some user guidance is still needed to set up the flight plan and take over via manual control if needed.
+        <br><br>
+        They had a working Android app for piloting the drones, but the UI had been hacked together with no design. I worked closely with the lead Android engineer to define user workflows and modes.
+        <br><br>
+        I also set up the team with Figma and Zeplin for collaboration and design hand-off.
+      </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="seven columns" >
+        <img src="Mobile-summary-1.jpg" />
+      </div>
+      <div class="five columns">
+        <h5 class="title">Mobile App</h5>
+        <p>
+          I helped the team organize their features into a user flow that revealed only the relevant controls needed at that moment, instead of everything on the screen at once.
+          <br><br>
+          The app is only used on the Samsung S8+ in horizontal layout.
+        The team wanted to take advantage of the large size of the screen to see both the video feed and the map at the same time, so I designed a split-screen slider that allows you to enlarge the video or map as desired, and flip between the satellite map and SLAM map easily.
+
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="twelve columns">
+        <img src="mobile-ui-overview.jpeg" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="six columns" >
+        <h5 class="title">Pre-Flight Setup</h5>
+        <img src="mobile1.png" />
+      </div>
+      <div class="six columns">
+        <h5 class="title">Flight In Progress</h5>
+        <img src="mobile3.png" />
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="seven columns" >
+        <video class="js-player" playsinline controls><source src="Split_Screen.m4v"> </video>
+      </div>
+      <div class="five columns">
+        <h5 class="title">Split Screen</h5>
+        <p>
+        I made a javascript prototype of the split screen feature, which could be tried on a phone.
+        <br><br>
+        Initially the team wanted to switch between three modes (video feed, google map, slam map) on each side of the screen, but I realized that could be simplified. The pilot always uses the video feed, but would only use either the google map (for outdoor flights) <b>or</b> the slam map (for indoor flights).
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="seven columns" >
+        <video class="js-player" playsinline controls><source src="Create_Flight.m4v"> </video>
+      </div>
+      <div class="five columns">
+        <h5 class="title">Create Flight</h5>
+        <p>
+        There was quite a lot of back and forth over how the Create Flight feature should work.
+        <br><br>
+        Originally, the spec had two different flight creation modes, and you had to place the perimeter points one at a time.
+        <br><br>
+        I proposed simplifying it with a drawing action and different markers for indoor or outdoor. I made this prototype with javascript so the team could try it out.
+        </p>
+      </div>
+    </div>
+
+<hr></hr>
+    <div class="row">
+      <div class="seven columns" >
+        <img src="desktop_Mission-Profile.png" />
+      </div>
+      <div class="five columns">
+        <h5 class="title">Desktop App</h5>
+        <p>
+          I designed the first version of their desktop app for customers to download and view flight data, trim video, and organize flights into "missions".
+          <br><br>
+          Designed to be used full screen on a Surface Pro, the UI features card-style layouts and larger font size to be touchscreen friendly.
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="six columns" >
+        <img src="desktop_Download-All.png" />
+      </div>
+      <div class="six columns">
+        <img src="desktop_Robot-Profile.png" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="six columns" >
+        <img src="desktop_Flight-Profile.png" />
+      </div>
+      <div class="six columns">
+        <img src="desktop_Flight-Video-Editor.png" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="six columns" >
+        <img src="desktop_Table-View-Hover-States.png" />
+      </div>
+      <div class="six columns">
+        <img src="desktop_Video-Editor-States.png" />
+      </div>
+    </div>
+
+
+
+    <div class="row spacer"></div>
+
+  </div>
+
+
+
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>

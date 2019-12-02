@@ -4,13 +4,21 @@ img {
 
 video {
   width: 100% !important;
+  border: 6px solid #f1efef;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0);
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+video:hover {
+  box-shadow: 0 7px 20px rgba(0,0,0,0.25);
 }
 
 a {
   color: initial;
   text-decoration: none;
 }
-a:hover {
+a:hover .title {
   color: initial;
   //border-bottom: 2px solid black;
   text-decoration: underline;
