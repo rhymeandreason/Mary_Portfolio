@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Mary Huang : Portfolio</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700" rel="stylesheet" type="text/css">
+
+  <!-- Video Player
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="../../css/normalize.css">
+  <link rel="stylesheet" href="../../css/skeleton.css">
+  <link rel="stylesheet" href="../../css/main.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="../../images/favicon.png">
+</head>
+
+
+<body>
+  <script>
+
+  window.addEventListener('load', function () {
+    var vid1 = document.getElementById("video1");
+    vid1.playbackRate = 2;
+
+    var vid2 = document.getElementById("video2");
+    vid2.playbackRate = 2;
+
+    var vid3 = document.getElementById("video3");
+    vid3.playbackRate = 2;
+
+    var vid4 = document.getElementById("video4");
+    vid4.playbackRate = 2;
+
+    var vid5 = document.getElementById("video5");
+    vid5.playbackRate = 2;
+/*
+    const players = Plyr.setup('.js-player', {
+      controls: ['play', 'progress']
+    });
+    */
+  });
+
+
+  </script>
+
+  <div class="container project-page">
+
+    <div class="row top-nav">
+      <div class="one-half column" >
+        <a href="/index.html">
+          <h5 class="title">Mary Huang</h5>
+        </a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="seven columns" >
+        <video class="js-player" id="video1" playsinline controls poster="rose_runway_poster.png"><source src="Rose_Runway.m4v"> </video>
+      </div>
+      <div class="five columns">
+        <h5 class="large-title">Google Rose</h5>
+        <p>
+          Convoy / Google Mexico<br>
+          Collaboration with Variable.io <br>
+          2014 <br>
+          Interaction Design & Code
+        </p>
+        <p>
+          A futuristic 3D fashion experience for Mexico fashion week. Designers create base designs through the app, from which the “ROSE” algorithm generates a collection that walks down a virtual runway show.
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="seven columns" >
+        <img src="rose-sketch.png" />
+      </div>
+      <div class="five columns" >
+        <p>
+          <b>How might fashion designers collaborate with an AI?</b>
+          <br><br>
+          In this future scenario, fashion collections are generated via algorithmic selection. Designers feed quantitative preferences into software, which would interpolate those choices into a fashion collection.
+          <br><br>
+          <!--
+          [Given the amount of machine learning algorithms running behind the scenes in online retail, this idea is really not so far fetched.]
+          <br><br>
+        -->
+          In the artistic spirit of the project, the creative direction called for more abstract, geometric designs that had recognizable clothing qualities but did not try to be real clothing.
+        </p>
+        </div>
+      </div>
+
+
+    <hr></hr>
+    <div class="row">
+      <div class="seven columns" >
+        <video class="js-player" id="video2" playsinline controls><source src="Rose_Step1.m4v"> </video>
+        <video class="js-player" id="video3" playsinline controls poster="rose_step2_poster.png"><source src="Rose_Step2.m4v"> </video>
+        <video class="js-player" id="video4" playsinline controls><source src="Rose_Step3.m4v"> </video>
+        <video class="js-player" id="video5" playsinline controls><source src="Rose_Step4.m4v"> </video>
+      </div>
+      <div class="five columns" >
+        <p>
+          <b>Design Challenges</b>
+          <br><br>
+          How would the designers create designs?
+          <br><br>
+          Given the art direction, technical limitations, and short timeline, how could we create an ‘algorithm’ that creates sufficient range of variation?
+          <br><br>
+          <b>Design Approach</b>
+          <br><br>
+          I organized the experience into a tool for fashion designers with 4 steps:
+          <br>
+          <ol>
+          <li>Create the cut of the garments by manipulating sliders that control the shape.</li>
+          <li>Embellish the garments with geometric shapes that can be placed across the surface.</li>
+          <li>Choose materials and upload patterns.</li>
+          <li>Select looks that are generated by the Rose algorithm.</li>
+          </ol>
+          <br>
+          I wrote ROSE as a basic genetic algorithm. It creates 18 looks at each generation from the features that have been selected and the two looks that were chosen in the previous generation.
+          <br><br>
+          The user progresses through 5 generations, and the looks generated become gradually more extreme.
+
+          <hr></hr>
+          While this was an artistic project and ROSE was purely conceptual, one does have to wonder– as product algorithms become more commonplace and robust, what becomes of the role of the designer? Could a computer design things better matching to individual consumer tastes and shopping habits?
+      </p>
+      </div>
+    </div>
+
+
+<hr></hr>
+<h5 class="title">More Generated Collections</h5>
+    <div class="row">
+      <div class="six columns" >
+        <img src="generate-0.jpg" />
+        <img src="generate-2.jpg" />
+      </div>
+      <div class="six columns">
+        <img src="generate-1.jpg" />
+        <img src="generate-3.jpg" />
+      </div>
+    </div>
+
+
+
+
+    <div class="row spacer"></div>
+
+  </div>
+
+
+
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>
