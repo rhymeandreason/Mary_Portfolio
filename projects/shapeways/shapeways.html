@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Mary Huang : Portfolio</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700" rel="stylesheet" type="text/css">
+
+  <!-- Video Player
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="../../css/normalize.css">
+  <link rel="stylesheet" href="../../css/skeleton.css">
+  <link rel="stylesheet" href="../../css/main.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="../../images/favicon.png">
+</head>
+
+
+<body>
+  <script>
+
+  window.addEventListener('load', function () {
+    var vid1 = document.getElementById("video1");
+    vid1.playbackRate = 2;
+/*
+    const players = Plyr.setup('.js-player', {
+      controls: ['play', 'progress']
+    });
+    */
+  });
+
+
+  </script>
+
+  <div class="container project-page">
+
+    <div class="row top-nav">
+      <div class="one-half column" >
+        <a href="/index.html">
+          <h5 class="title">Mary Huang</h5>
+        </a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="seven columns" >
+        <img src="shapeways-box.jpg" />
+        <img src="shapeways-materials.jpg" />
+      </div>
+      <div class="five columns">
+        <h5 class="large-title">Shapeways</h5>
+        <p>
+          2011-2012 <br>
+          Product Design
+        </p>
+        <p>
+          Shapeways.com is a 3D printing service and community marketplace. While the business now focuses on serving professionals, back in 2011, 3D-printing was still seen as a very consumer thing.
+<br><br>
+As the first product designer hired at Shapeways.com, I was tasked with lowering the barrier to creating your own design and explore how the platform could enable people to create products instead of prints.
+<br><br>
+Logically, while many visitors were interested in 3D printing, in order to actually make something of your own through the site, you have to upload a 3D model, which is a really high technical barrier.
+<br><br>
+I led product initiatives on customization and the developer API, as well as completing various design projects to improve the company brand prior to the full rebranding effort completed in 2012.
+        </p>
+      </div>
+    </div>
+
+<hr></hr>
+    <div class="row">
+      <div class="seven columns" >
+        <video class="js-player" id="video1" playsinline controls><source src="sake-creator.m4v"> </video>
+      </div>
+      <div class="five columns" >
+        <p>
+          Shapeways had recently released 3D-printed ceramic. Fully glazed and food-safe, it was arguably the material that produced a result most comparable to a consumer product.
+<br><br>
+I designed and coded this web app to make it easy to create custom ceramic cups. The app generates a valid 3D model for printing with correct wall thickness geometry.
+<br><br>
+It happens to make sake sets and espresso cups rather well since 3D printing ceramic gets pricey for making a full size mug.
+        </p>
+        </div>
+      </div>
+
+
+    <div class="row">
+      <div class="three columns" >
+        <img src="sake1.jpg" class="image-crop"/>
+      </div>
+      <div class="three columns" >
+        <img src="sake2.jpg" class="image-crop"/>
+      </div>
+      <div class="three columns" >
+        <img src="sake3.jpg" class="image-crop"/>
+      </div>
+      <div class="three columns" >
+        <img src="sake4.jpg" class="image-crop"/>
+      </div>
+    </div>
+
+    <hr></hr>
+        <div class="row">
+          <div class="seven columns" >
+            <img src="vibe_group.jpg" />
+            <img src="vibe-screencap-4.png" />
+            <img src="vibe_white.jpg" />
+          </div>
+          <div class="five columns" >
+            <h5 class="title">Shapeways Vibe</h5>
+            <p>
+              The ceramic creator was well received among design blogs and it served as a good API example, but it didn’t result in many sales.
+<br><br>
+We resolved that we should create a specific customizable product that would be marketed toward a specific audience. The team devised a partnership product between Shapeways and Soundcloud.
+<br><br>
+We launched The Vibe at a stage event at SXSW, where users could create a custom iPhone case with the waveform from any sound on Soundcloud. It received significant press attention from sites like Mashable, PSFK, Wired, Forbes, and MTV.
+<br><br>
+I led product direction and user experience on this project, prototyping many different products and representations of the sound wave. I worked on a team with a visual designer, a front-end developer, and a back-end developer. I prototyped the creation interaction in code (javascript and php) and also made the wireframes.
+<br><br>
+<b>Fun hack:</b> The waveform is created without doing any extra sound processing. Soundcloud.com already generates a giant .png waveform of each file, so I just pulled that and converted the pixel data into an array of values. 5 waves look better in the design than 1 wave, so the extra waveforms are ‘smoothed out’ versions, where the spline curve skips a few values in between.
+<br><br>
+To get the product launched in time, I managed 3 rounds of prototype revisions in 2 weeks. Key production features were embossing each phone case with the order number on the inside for tracking, and making sure the printers were checked for calibration so that the cases printed with accurate tolerances.
+            </p>
+            </div>
+          </div>
+
+
+    <div class="row spacer"></div>
+
+  </div>
+
+
+
+
+<!-- End Document
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+</body>
+</html>

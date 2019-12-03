@@ -107,6 +107,12 @@ p a:hover {
   border-radius: 3px;
   padding:1px;
 }
+/*
+.image-crop {
+  height: 66%;
+  object-fit: fill;
+}
+*/
 
 @media (min-width: 550px) {
   .project-page .row {
