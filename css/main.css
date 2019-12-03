@@ -119,9 +119,14 @@ p a:hover {
   .project-page .row {
     margin-bottom: 40px;
   }
-  .gallery img, .gallery p {
+  .gallery img {
     width: 46%;
     float: left;
     margin: 2%;
+  }
+  .gallery-3 img{
+    width: 31%;
+    float: left;
+    margin: 1%;
   }
 }
