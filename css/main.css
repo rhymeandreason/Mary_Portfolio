@@ -2,6 +2,7 @@ img {
   width: 100%;
 }
 
+
 video {
   width: 100% !important;
   border: 6px solid #f1efef;
@@ -117,5 +118,10 @@ p a:hover {
 @media (min-width: 550px) {
   .project-page .row {
     margin-bottom: 40px;
+  }
+  .gallery img {
+    width: 46%;
+    float: left;
+    margin: 2%;
   }
 }
