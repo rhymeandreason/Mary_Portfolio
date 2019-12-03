@@ -3,7 +3,7 @@ img {
 }
 
 
-video {
+video, .video {
   width: 100% !important;
   border: 6px solid #f1efef;
   border-radius: 6px;
@@ -119,7 +119,7 @@ p a:hover {
   .project-page .row {
     margin-bottom: 40px;
   }
-  .gallery img {
+  .gallery img, .gallery p {
     width: 46%;
     float: left;
     margin: 2%;
