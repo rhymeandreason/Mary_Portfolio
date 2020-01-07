@@ -44,6 +44,7 @@ p a{
 }
 p a:hover {
   text-decoration: none;
+  color: black;
   border-bottom: 2px solid black;
 }
 
@@ -137,6 +138,7 @@ p a:hover {
 
 .large-text {
   font-size: 2rem;
+  line-height: 2;
 }
 
 @media (min-width: 550px) {
