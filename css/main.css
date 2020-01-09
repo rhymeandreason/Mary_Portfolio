@@ -81,8 +81,8 @@ p a:hover {
   font-weight: 400;
   letter-spacing: initial;
   opacity: .7;
-  //changed for using larger tiles in second section;
-  font-size: 2rem;
+
+//  font-size: 2rem;
 }
 
 .large-title {
