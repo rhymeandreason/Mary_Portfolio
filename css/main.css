@@ -15,6 +15,10 @@ img {
   text-align: right;
 }
 
+.browser {
+  border: 6px solid #f1efef;
+  border-radius: 6px;
+}
 
 video, .video {
   width: 100% !important;
