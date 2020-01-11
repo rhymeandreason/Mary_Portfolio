@@ -10,6 +10,10 @@ img {
   width: 100%;
 }
 
+.mary-image {
+  width: 150px;
+}
+
 .nav-right {
   float: right;
   text-align: right;
@@ -124,7 +128,7 @@ p a:hover {
   color: initial;
 }
 
-#more-projects {
+#more-projects, #wip {
   margin-top: 60px;
 }
 #more-projects .row {
