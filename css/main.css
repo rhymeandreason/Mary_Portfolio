@@ -170,9 +170,25 @@ p a:hover {
   line-height: 2;
 }
 
+.tight-grid .columns {
+  margin: .5%;
+
+}
+
+.project-page .row.tight-grid {
+  margin-bottom: 0px;
+}
+
+
 @media (min-width: 550px) {
   .project-page .row {
     margin-bottom: 40px;
+  }
+  .project-page .row.tight-grid{
+    margin-bottom: 0px;
+  }
+  .tight-grid .six {
+    width: 49%;
   }
   .gallery img {
     width: 46%;
