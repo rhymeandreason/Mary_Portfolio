@@ -58,7 +58,7 @@ a {
 a:hover .title {
   color: initial;
   //border-bottom: 2px solid black;
-  text-decoration: underline;
+  //text-decoration: underline;
 }
 
 p a{
