@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="16px" viewBox="0 0 22 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
+    <title>arrow_right</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="arrow_right" transform="translate(11.000000, 8.000000) scale(-1, 1) translate(-11.000000, -8.000000) translate(-1.000000, -4.000000)">
+            <polygon id="Path" points="0 0 24 0 24 24 0 24"></polygon>
+            <path d="M22,11 L4.83,11 L9.71249558,6.11750442 C10.1018612,5.7281388 10.1018612,5.0968524 9.71249558,4.70748678 C9.71166519,4.70665638 9.71083332,4.70582746 9.71,4.705 L9.70709797,4.7021184 C9.31617503,4.31394844 8.6849363,4.3150637 8.29538741,4.70461259 L1.70710678,11.2928932 C1.31658249,11.6834175 1.31658249,12.3165825 1.70710678,12.7071068 L8.295,19.295 C8.68436075,19.6843607 9.31563925,19.6843607 9.705,19.295 L9.705,19.295 C10.0944628,18.9055372 10.0947454,18.2741804 9.70563144,17.8843691 L4.83,13 L22,13 C22.5522847,13 23,12.5522847 23,12 L23,12 C23,11.4477153 22.5522847,11 22,11 Z" id="Path" fill="#000000" fill-rule="nonzero"></path>
+        </g>
+    </g>
+</svg>

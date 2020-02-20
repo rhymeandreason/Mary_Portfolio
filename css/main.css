@@ -71,6 +71,21 @@ p a:hover {
   border-bottom: 2px solid black;
 }
 
+.top-nav {
+  position: relative;
+}
+
+.top-nav .title:hover::before{
+  content: url("../images/arrow_left.svg");
+  position: absolute;
+  top: 0px;
+  left: -30px;
+
+}
+.top-nav .null:hover::before {
+  content: none;
+}
+
 .top-nav a{
   color: black;
   text-decoration: none;
@@ -135,6 +150,27 @@ p a:hover {
   box-shadow: 0 7px 20px rgba(0,0,0,0.25);
 }
 
+
+.project-nav .title, .project-nav .small-title {
+  position: relative;
+}
+.project-nav:hover .title::after{
+  content: url("../images/arrow_right.svg");
+  position: absolute;
+  top: 0px;
+  right: 2px;
+}
+
+/*
+.project-nav:hover .small-title::after{
+  content: url("../images/arrow_right.svg");
+  position: absolute;
+  top: 0px;
+  right: 2px;
+  height: 12px;
+
+}
+*/
 .project-nav .description{
   opacity: .7;
 }
