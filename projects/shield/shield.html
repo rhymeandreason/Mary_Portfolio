@@ -120,7 +120,7 @@
 
     <div class="row">
       <div class="seven columns" >
-        <video class="js-player" playsinline controls><source src="Split_Screen.m4v"> </video>
+        <video class="js-player" playsinline controls autoplay="true" loop><source src="Split_Screen.m4v"> </video>
       </div>
       <div class="five columns">
         <h5 class="title">Split Screen</h5>
@@ -135,19 +135,37 @@
 
     <div class="row">
       <div class="seven columns" >
-        <video class="js-player" playsinline controls><source src="Create_Flight.m4v"> </video>
+        <video class="js-player" playsinline controls autoplay="true" loop><source src="Create_Flight.m4v"> </video>
       </div>
       <div class="five columns">
         <h5 class="title">Create Flight</h5>
         <p>
         There was quite a lot of back and forth over how the Create Flight feature should work.
-        <br><br>
         Originally, the spec had two different flight creation modes, and you had to place the perimeter points one at a time.
         <br><br>
         I proposed simplifying it with a drawing action and different markers for indoor or outdoor. I made this prototype with javascript so the team could try it out.
+        <br><br>
+        There would need to be some more iteration on this, but the prototype helped get the conversation in the right direction.
         </p>
       </div>
     </div>
+
+    <div class="row">
+      <div class="seven columns" >
+        <img src="Manual-Pilot-2.png" />
+      </div>
+      <div class="five columns">
+        <h5 class="title">Manual Mode Controls</h5>
+        <p>
+        The drones largely fly according to the preset flight plan, but sometimes human intervention may be necessary. A user can pilot the drone using onscreen joystick controls.
+        <br></br>
+        The engineer and I had an idea where the user could go into Manual Mode by grabbing the phone with both hands, instead of finding the button in a menu.
+        <br></br>
+        We also found a need for a "Paused" mode, where after using Manual Mode, the drone would hover in midair until the user selects an action.
+        </p>
+      </div>
+    </div>
+
 
 <hr></hr>
     <div class="row">
@@ -188,6 +206,15 @@
       </div>
       <div class="six columns">
         <img src="desktop_Video-Editor-States.png" />
+      </div>
+    </div>
+
+    <div class="row tight-grid">
+      <div class="six columns" >
+        <img src="desktop_Mission-Dashboard.png" />
+      </div>
+      <div class="six columns">
+        <img src="desktop_Mission-Dashboard-Search.png" />
       </div>
     </div>
 
