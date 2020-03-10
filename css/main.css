@@ -208,7 +208,9 @@ p a:hover {
 
 .tight-grid .columns {
   margin: .5%;
-
+}
+.gallery.tight-grid .columns {
+  margin: 0px;
 }
 
 .project-page .row.tight-grid {
@@ -230,6 +232,10 @@ p a:hover {
     width: 46%;
     float: left;
     margin: 2%;
+  }
+  .gallery.tight-grid img{
+    margin: .5%;
+    width: 49%;
   }
   .gallery-3 img{
     width: 31%;
