@@ -17,8 +17,18 @@ p {
 //  font-size: 1.6rem;
 }
 
+.tight-grid p{
+  padding: 10px;
+}
+p.padded {
+  padding: 30px;
+}
+.caption {
+  opacity: .7;
+}
+
 .container {
-  max-width: 1200px;
+  max-width: 1300px;
 }
 
 img {
@@ -227,6 +237,10 @@ p a:hover {
 
 
 @media (min-width: 550px) {
+  .container{
+    width: 90%;
+  }
+
   .project-page .row {
     margin-bottom: 40px;
   }
@@ -253,6 +267,11 @@ p a:hover {
 }
 
 @media (min-width: 1200px) {
+  .container{
+    width: 95%;
+    max-width: 1350px
+  }
+
   html {
     font-size: 67.5%; }
 }
