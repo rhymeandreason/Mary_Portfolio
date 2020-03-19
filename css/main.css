@@ -271,6 +271,9 @@ p a:hover {
     width: 95%;
     max-width: 1350px
   }
+  .container.index{
+    width: 85%;
+  }
 
   html {
     font-size: 67.5%; }
