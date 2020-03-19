@@ -30,6 +30,9 @@ p.padded {
 .container {
   max-width: 1300px;
 }
+.centered {
+  margin: auto auto;
+}
 
 img {
   width: 100%;
