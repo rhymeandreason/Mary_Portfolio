@@ -17,10 +17,10 @@
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700" rel="stylesheet" type="text/css">
 
-  <!-- Video Player
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
+  <!--JS-->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="   crossorigin="anonymous"></script>
+  <script src="../password-protect.js"></script>
+
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="../../css/normalize.css">
@@ -96,6 +96,12 @@
       </div>
     </div>
 
+<div class="password-protect" id="locked-section">
+  <div class="skrim"></div>
+    <div id="pw-box">
+      <img src="../../images/lock-24px.svg"/ id="lock"> <br>
+      <input type="text" placeholder="password" id="pw-input"/>
+    </div>
 
     <div class="row">
       <div class="twelve columns">
@@ -217,8 +223,7 @@
         <img src="desktop_Mission-Dashboard-Search.png" />
       </div>
     </div>
-
-
+</div>
 
     <div class="row spacer"></div>
 
