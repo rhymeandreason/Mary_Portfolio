@@ -271,7 +271,7 @@ p a:hover {
 
 @media (min-width: 1200px) {
   .container{
-    width: 95%;
+    width: 93%;
     max-width: 1350px
   }
   .container.index{
