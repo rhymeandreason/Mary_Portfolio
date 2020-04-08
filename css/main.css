@@ -20,7 +20,7 @@ p {
 .tight-grid p{
   padding: 10px;
 }
-p.padded {
+.padded {
   padding: 30px;
 }
 .caption {
@@ -236,6 +236,19 @@ p a:hover {
 
 .project-page .row.tight-grid {
   margin-bottom: 0px;
+}
+
+.ipad-frame {
+  margin: 5%;
+  padding: 4% 6%;
+  width:78%
+  border: 2px solid #ECECEC;
+  border-radius: 40px;
+  background-color: #F4F4F4;
+  box-shadow: -15px 32px 100px rgba(0, 0, 0, 0.25);
+}
+.ipad-frame video{
+  border-radius: 2px;
 }
 
 
