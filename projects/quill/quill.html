@@ -121,9 +121,9 @@
         <p class="padded">
           Post-launch, I worked on interface concepts for future features and VR interaction.
           <br><br>
-          I found that the most rewarding VR design ideas are very grounded in practical constraints. For instance, since artists actually use Quill for hours at a time, ergonomics are a primary concern because your arms get tired.
+          I found that some very rewarding VR design ideas are very grounded in practical constraints. Since artists actually use Quill for hours at a time, ergonomics are a primary concern because your arms get tired.
           <br><br>
-          Since VR is so different from flat screen interfaces, I spent most of my time making prototypes in Unity to try out interaction ideas in 3D.
+          VR is so different from flat screen interfaces, thus I spent most of my time making prototypes in Unity to try out interaction ideas in 3D.
           <br><br>
           Artists using Quill are deeply passionate and opinionated about the tool, and I worked with the team to collect and organize our large backlog of feature requests. Here are some of the features I worked on...
         </p>
@@ -166,14 +166,15 @@
       <div class="five columns">
         <h5 class="title">Transform Tool</h5>
         <p>
-        We don't do non-uniform scaling in Quill, but artists definitely wanted axis-constrained translate.
+        It's easy to grab and move things in Quill, but artists wanted axis-constrained translate and rotation.
         <br><br>
         I made 4-5 iterations on this one. In this prototype, I packed in a lot of features to try out. Along with moving and rotating on just one axis, it also includes moving the pivot point, navigating up/down in grouping, and duplicating.
         <br><br>
-        We found that the duplicating feature became a quick favorite for the artists.
+        The duplicating feature became a quick favorite for the artists.
         <br><br>
         Button mapping: <br>
         Alt + Grab = Duplicate <br>
+        Right Joystick Right = Repeat Last (can duplicate with same transform) <br>
         Right Joystick Up/Down = parent/child layer groups
         </p>
       </div>
@@ -190,7 +191,9 @@
         <p>
         You can do a 'point' gesture on the Touch controllers by lifting your index finger.
         <br><br>
-        I found that this could be used to trigger a shortcut. A bit like a right mouse click, but more minimal. I hoped to use it for quick, tool specific actions so you wouldn't have to rely on the large menus for everything.
+        I found that this could be used to trigger a shortcut. A bit like a right mouse click, but more minimal.
+        <br><br>
+        I hoped to use it for quick, tool specific actions so you wouldn't have to rely on the large menus for everything.
 
         </p>
       </div>
@@ -246,14 +249,20 @@
         <br><br>
         I modeled a bunch of different 3D buttons to play around with the idea.
         <br><br>
-        Matcaps are a practical solution to doing pre-baked materials + lighting for real-time. Adding a soft curve to the button shape greatly impacts the look of the material.
+        Found that matcaps a practical solution to doing pre-baked materials + lighting for real-time.
         </p>
       </div>
     </div>
 
-    <div class="row gallery tight-grid">
-      <div class="twelve columns">
+    <div class="row tight-grid">
+      <div class="six columns">
         <img src="buttons-materials.png" />
+        <p class="caption">
+          Materials tests using matcaps. Adding a soft curve to the button shape greatly impacts the look of the material.
+        </p>
+      </div>
+
+      <div class="six columns">
         <img src="buttons_keyboard.png" />
       </div>
     </div>
