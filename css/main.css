@@ -18,9 +18,9 @@ p {
 }
 
 .tight-grid p{
-  padding: 10px;
+  //padding: 10px;
 }
-.padded {
+p.padded, .padded {
   padding: 30px;
 }
 .caption {

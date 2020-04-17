@@ -128,32 +128,34 @@
 <hr>
 
     <div class="row tight-grid">
-      <p>
-        Gestures can be combined. Here I'm using Stretch Palm for the 'open' action, and Close Fist for the 'close' action.
-      </p>
+
       <div class="six columns" >
         <!--
         <video class="minimal" playsinline autoplay loop controls><source src="Gesture-Planets_Viz2.mp4"> </video>
         -->
         <img src="Gesture-Planets_small.gif" />
+        <p class="caption">Palm-sized UI elements are great for things that benefit from the slight rotational tilt of the hand.</p>
       </div>
-      <div class="six columns" >
-        <img src="Gesture-Spaceship_small.gif" />
+      <div class="six columns padded" >
+        <h5>Combining Gestures</h5>
+        <p class="">
+          It's more reliable to use separate, distinct gestures as triggers for opening and closing UI.
+          <br>
+            <img src="Gesture Flow.jpg" />
+        </p>
       </div>
     </div>
 
     <div class="row tight-grid">
+      <div class="six columns" >
+        <img src="Gesture-Spaceship_small.gif" />
+      </div>
 
       <div class="six columns" >
       <img src="Gesture-Map_small.gif" />
+      <p class="caption">A gesture can also open a large UI that doesn't fit directly on the hand.</p>
       </div>
-      <div class="six columns" >
-        <p class="padded">
-            Palm-sized UI elements are great for things that benefit from the slight rotational tilt of the hand.
-            <br><br>
-            A gesture can also open a large UI that doesn't fit directly on the hand, like this world map.
-        </p>
-      </div>
+
 
     </div>
 
@@ -180,21 +182,29 @@
 
     <hr>
     <div class="row tight-grid">
-
       <div class="six columns" >
         <img src="Picture_zoom_small.gif" />
-      </div>
-      <div class="six columns" >
-        <p class="padded">
-        When using two hands, the second hand can be mapped to a related secondary feature.
+        <p class="caption">
+        The second hand can be mapped to a related secondary feature.
         <br><br>
         Here I mapped the finger pinch to the zoom (FOV) of the camera.
         <br><br>
         Since there is not much distance between the fingers, smoothing the values using Lerp was essential.
-
       </p>
       </div>
+
+      <div class="six columns" >
+        <video autoplay=true loop controls class="minimal"><source src="Map_Zoom.mp4"></video>
+        <p class="caption">
+          Secondary gesture features can be aided with corresponding visual UI.
+          <br><br>
+          Here, using the distance of the hand movement creates a push/pull motion mapped to zoom.
+        </p>
+      </div>
+
     </div>
+
+
 
     <div class="row spacer"></div>
 
