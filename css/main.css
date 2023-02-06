@@ -221,6 +221,9 @@ p a:hover {
   object-fit: fill;
 }
 */
+.rounded {
+  border-radius: 3px;
+}
 
 .large-text {
   font-size: 1.8rem;
