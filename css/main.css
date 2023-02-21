@@ -329,3 +329,7 @@ input{
   -ms-user-select: text;
   user-select: text;
 }
+
+iframe {
+  width: 100%;
+}

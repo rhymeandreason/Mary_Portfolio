@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <!-- Basic Page Needs
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta charset="utf-8">
+  <title>Mary Huang : Portfolio</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile Specific Metas
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- FONT
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700" rel="stylesheet" type="text/css">
+
+  <!-- Video Player
+    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
+  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
+  <!-- CSS
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="../../css/normalize.css">
+  <link rel="stylesheet" href="../../css/skeleton.css">
+  <link rel="stylesheet" href="../../css/main.css">
+
+  <!-- Favicon
+  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="icon" type="image/png" href="../../images/favicon.png">
+</head>
+
+
+<body>
+  <script>
+
+  window.addEventListener('load', function () {
+/*
+    const players = Plyr.setup('.js-player', {
+      controls: ['play', 'progress']
+    });
+    */
+  });
+
+
+  </script>
+
+  <div class="container project-page">
+
+    <div class="row top-nav">
+      <div class="one-half column" >
+        <a href="/index.html">
+          <h5 class="title">Mary Huang</h5>
+        </a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="seven columns" >
+        <img src="../../images/thumbs/Biome_c.png" />
+      </div>
+      <div class="five columns">
+        <h5 class="large-title">Biome</h5>
+        <p>
+          Earthshot Labs<br>
+          2022-2023 <br>
+          UI/UX Design Lead
+        </p>
+        <p>
+          Data is essential to the conservation of the world's forests. Biome is a modern app for tree inventories. The tedious task of measuring trees is often done by scientists and field technicians to collect essential data for managing forest projects and estimating biomass and carbon sequestration.
+          <br><br>
+          While there has been growing investment in remote sensing in the last decades, there has been little improvement in scientific field tools. Measurements are still collected with measuring tape, pencil, and notebook.
+          <br><br>
+          Biome uses machine learning and AR to greatly innovate the user experience. Our initial field test showed that using the app is 5-10x faster than conventional methods.
+
+          <br><br>
+          Earthshot Labs was awarded an NSF SBIR grant for this work.
+          <br> I worked with a small R&D team of 3 engineers to research user needs, design and build the first working alpha, scope future features, and run a field test in Panama.
+          <br><br>
+        </p>
+
+      </div>
+    </div>
+
+
+    <div class="row">
+
+    <div class="four columns">
+      <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="400" height="700" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FH3APoXSC27pHeuN9tX0dUq%2FBiome-Features%3Fpage-id%3D2187%253A31667%26node-id%3D2273%253A33794%26viewport%3D71%252C689%252C0.34%26scaling%3Dscale-down%26starting-point-node-id%3D2273%253A33794" allowfullscreen></iframe>
+    </div>
+
+    <div class="three columns" >
+      <video  playsinline controls ><source src="ARplot_Azuero720p.mp4"> </video>
+    </div>
+
+    <div class="five columns" >
+      <h5 class="title">AR Sample Plots</h5>
+      <p>
+         In order for tree data to be useful in scientific models, trees must be measured in plots of defined size. Scientists may use a range of methodologies, but a common practice is to define a plot by a center location and radius. In the field, this is done with a stake, measuring tape, and rope. It quickly becomes tedious and inaccurate, especially when you're traversing a hillside covered in brush in the rain.
+
+        <br><br>
+        AR works great for sample plots. Visualizing the center and boundary is so much easier than measuring out the region with tape. While field testing, we were delighted to find that the AR circle is perfectly accurate when standing on a hillside. (Scientists usually do a bunch of trigonometry to straighten the ellipse to compensate for the slant of the hill.) The mini-map generated is an handy bonus that records the relative locations of the trees measured.
+        <br><br>
+        The challenge of the feature is maintaining a tracked AR session for the entire duration of measuring the plot, which can be 30 min. We also needed to allow the user to optionally add DBH, height, and species for each tree within that AR session.
+        <br><br>
+        I worked on this prototype with our engineers, contributing the fade shader on the boundary dots. In Panama, I made sure to test in a variety of natural terrain. The AR tracking worked even in tall grass!
+
+      </p>
+    </div>
+  </div>
+
+
+    <div class="row">
+    <div class="seven columns" >
+      <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="765" height="700" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FH3APoXSC27pHeuN9tX0dUq%2FBiome-Features%3Fpage-id%3D1922%253A14929%26node-id%3D2050%253A22380%26viewport%3D-543%252C-4503%252C1.18%26scaling%3Dscale-down%26starting-point-node-id%3D2050%253A22380" allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="five columns" >
+      <h5 class="title">Data Organization Features</h5>
+      <p>
+         Once you start collecting data, organization features quickly become neccessary.
+
+        <br><br>
+        The information heirarchy of Projects > Studies > Sites > Plots > Trees was proposed by members of our science team, and aligned with data formatting from scientific literature.
+        <br><br>
+        A common technique for tree inventories is to have 'permanent monitoring plots', where the same plots are measured in subsequent years. I included this in the design mockups as a primary expected flow.
+
+      </p>
+    </div>
+  </div>
+
+<!--
+    <hr></hr>
+    <div class="row">
+      <div class="seven columns" >
+        <video class="js-player" id="video2" playsinline controls><source src="TurtleLink1.mp4"> </video>
+      </div>
+      <div class="five columns" >
+        <h5 class="title">Process Shots</h5>
+        <p>
+           I made a lot of motion studies for this project using Processing and AfterEffects because there were a lot of things that couldn’t be captured in just 2D mockups. Here are two examples.
+          <br><br>
+          <b>Globe + swimming turtles</b>
+          <br><br>
+          How do we do this while allowing people to turn the globe? We had the idea to faintly ‘pin’ the turtles to the globe, and that the globe could be turned, but would then ease back to its original location.
+        </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="seven columns" >
+        <video class="js-player" id="video3" playsinline controls ><source src="TurtleLink2.mp4"> </video>
+      </div>
+      <div class="five columns" >
+        <p>
+          <b>3D to 2D motion transition</b>
+          <br><br>
+           When you tap on a turtle, it reveals a video clip showing the turtle. The video doesn’t just appear, but rather the turtle animates into a pose that is similar to the frame in the video.
+        </p>
+      </div>
+    </div>
+
+
+    <div class="row spacer"></div>
+
+  </div>
+
+-->
+
+
+
+</body>
+</html>
