@@ -38,6 +38,8 @@ p.padded, .padded {
 }
 .centered {
   margin: auto auto;
+  float: none;
+  text-align: center;
 }
 
 img {
