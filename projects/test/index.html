@@ -25,6 +25,14 @@
   font-weight: 500;
 }
 
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  #mobile-container, #videocontainer{
+    max-width: 500px;
+  }
+
+}
+
 body{
   background: #D4A7FF;
   text-align: center;
@@ -59,7 +67,7 @@ video{
 
 #mobile-container{
   width: 100%;
-  max-width: 600pt;
+  //max-width: 600pt;
   margin: auto auto;
 }
 #main-nav{
@@ -121,7 +129,7 @@ img.circle-play{
   background: #D4A7FF;
   display: none;
   z-index:10;
-  max-width: 600pt;
+  //max-width: 600pt;
 }
 #video1, #video2, #video3, #video4{
   width:100%;
