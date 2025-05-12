@@ -1,5 +1,11 @@
 var currentStep = 0;
 
+$(document).ready(function() {
+  $("video").click(function(){
+    $(this).attr('controls', 'controls');
+  });
+});
+
 function initTutorial(){
  var CurrentVideo = document.getElementById('currentvideo');
  var playlist = document.getElementById('playlist');
