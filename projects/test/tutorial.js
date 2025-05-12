@@ -66,6 +66,7 @@ function closeVideo(){
 }
 
 function Step1(){
+  $('#video1').prop('currentTime', 0);
   $("#video1").fadeIn("slow");
   $("#video1").trigger('play');
   $("#video1").addClass("currentvideo");
@@ -75,6 +76,7 @@ function Step1(){
 }
 
 function Step2(){
+  $('#video2').prop('currentTime', 0);
   $("#video2").fadeIn("slow");
   $("#video2").trigger('play');
   $("#video2").addClass("currentvideo");
@@ -84,6 +86,7 @@ function Step2(){
 }
 
 function Step3(){
+  $('#video3').prop('currentTime', 0);
   $("#video3").fadeIn("slow");
   $("#video3").trigger('play');
   $("#video3").addClass("currentvideo");
@@ -93,6 +96,7 @@ function Step3(){
 }
 
 function Step4(){
+  $('#video4').prop('currentTime', 0);
   $("#video4").fadeIn("slow");
   $("#video4").trigger('play');
   $("#video4").addClass("currentvideo");
