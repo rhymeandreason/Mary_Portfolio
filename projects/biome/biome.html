@@ -84,6 +84,13 @@
       line-height: 1;
       margin-bottom: 44px;
     }
+    #notes{
+      background: white;
+      margin-bottom: 100px;
+    }
+    .note{
+      width: 50%;
+    }
 
 
   </style>
@@ -140,7 +147,14 @@
 
       </div>
     </div>
-
+    <div class="row tight-grid" id="notes">
+       <div class="six columns note">
+         <img src="notes1.jpg" />
+       </div>
+       <div class="six columns note">
+         <img src="notes2.jpg" />
+       </div>
+     </div>
 
    <div class="row ">
       <div class="four columns">
@@ -158,8 +172,7 @@
       <div class="four columns">
         <h5 class="title">How do you measure a forest?</h5>
         <p>
-          Luckily, you don't have to measure every tree. A random selection of sample plots are taken.
-          In order for tree data to be useful in scientific models, trees are measured in plots of defined size. Scientists may use a range of methodologies, but a common practice is to define a plot by a center location and radius.
+          Luckily, you don't have to measure every tree. A random selection of sample plots are taken. Scientists may use a range of methodologies, but a common practice is to define a plot by a center gps location and radius.
         </p>
       </div>
       <div class="four columns">
@@ -173,66 +186,81 @@
           <br><br>
           And then it starts raining.
           <br><br>
-          The work is tedious and prone to inaccuracy.
+          The work is gruelling and prone to inaccuracy.
         </p>
       </div>
     </div>
 
 </div>
 
-
 <div class="biome-green">
   <div class="container project-page">
 
-  <div class="row ">
-    <div class="three columns">
-      <img class="biome-phone" src="data1.png" />
+<div class="row">
+  <div class="three columns">
+    <h5 class="title biome-title">Measure tree diameter with computer vision</h5>
+    <p>
+      <ul role="list" class="list custom-icon">
+        <li class="list-item leaf-icon biome"><div>Biome uses computer vision to segment tree trunks from the background. </div></li>
+        <li class="list-item leaf-icon biome"><div>Works on odd-shaped trunks, trees with vines, and thorny trees.</div></li>
+        <li class="list-item leaf-icon biome"><div>Measure trunks as small as 5cm diameter.</div></li>
+        <li class="list-item leaf-icon biome"><div>Record multiple measurements from different angles for odd-shaped trees.</div></li>
+        <li class="list-item leaf-icon biome"><div>Record measurements for multi-trunk trees.</div></li>
+      </ul>
+    </p>
+
+  </div>
+  <div class="three columns">
+    <img  src="DBH1.png" />
+  </div>
+  <div class="three columns">
+    <img  src="DBH2.png" />
+  </div>
+  <div class="three columns">
+    <div class="iphone-frame-light">
+      <video  playsinline controls class="iphone-video"><source src="multi-trunk-dbh.mp4#t=4"> </video>
     </div>
-    <div class="three columns">
-      <img class="biome-phone" src="data2.png" />
-    </div>
-    <div class="three columns">
-      <img class="biome-phone" src="data3.png" />
-    </div>
-    <div class="three columns">
-        <video controls muted autoplay loop class="iphone-video figma-video"><source src="Data_Figma.mp4"> </video>
-    </div>
+      <p class="caption">Alpha test build</>
+  </div>
+</div>
+
+<div class="row margin-150">
+  <div class="three columns">
+    <h5 class="title biome-title">Measure tree height with AR</h5>
+    <ul role="list" class="list custom-icon">
+      <li class="list-item leaf-icon biome"><div>As accurate as a clinometer, but faster and easier.</div></li>
+      <li class="list-item leaf-icon biome"><div>Good visibility in forest environments.</div></li>
+    </ul>
+    <p>
+      This feature worked surprisingly well even for large trees. While there is a margin of error, it proved to be within the acceptable range compared to the traditional method using a clinometer.
+      <br><br>
+      We explored several UX flows for this feature, and the simplest version proved to be the most reliable.
+    </p>
   </div>
 
-
-    <div class="row">
-      <div class="six columns align-right" >
-        <h5 class="title biome-title">Organize and view plot data</h5>
-        <p>
-          A common technique for tree inventories is to have 'permanent monitoring plots', where the same plots are measured in subsequent years. I included this in the design as a primary expected flow.
-
-          <br><br>
-          The information heirarchy of Projects > Studies > Sites > Plots > Trees was proposed by members of our science team, and aligned with data formatting from scientific literature.
-          <br><br>
-          I focused on displaying all this information very visually, making each screen layout distinct for easier browsing.
-        </p>
-      </div>
-    </div>
+  <div class="three columns">
+    <img  src="ARHeight.gif" />
   </div>
+
+  <div class="three columns">
+    <div class="iphone-frame-light">
+      <video  playsinline controls class="iphone-video"><source src="AR_height.mp4#t=3"> </video>
+    </div>
+      <p class="caption">Alpha test build - small tree</>
+  </div>
+
+  <div class="three columns">
+    <div class="iphone-frame-light">
+      <video  playsinline controls class="iphone-video"><source src="AR_height_largetree.mp4#t=14"> </video>
+    </div>
+      <p class="caption">Alpha test build - large tree</>
+  </div>
+
+</div>
 
 
 <div class="biome-green">
   <div class="container project-page">
-
-  <div class="row">
-    <div class="three columns">
-      <img class="biome-phone" src="Plots1.png" />
-    </div>
-    <div class="three columns">
-      <img class="biome-phone" src="Plots2.png" />
-    </div>
-    <div class="three columns">
-      <img class="biome-phone" src="Plots3.png" />
-    </div>
-    <div class="three columns">
-      <img class="biome-phone" src="Plots4.png" />
-    </div>
-  </div>
 
   <div class="row ">
     <div class="three columns">
@@ -257,77 +285,70 @@
 
       <p>
          While field testing, we were delighted to find that the AR circle is perfectly accurate when standing on a hillside. (Scientists usually do a bunch of trigonometry to straighten the ellipse to compensate for the slant of the hill.)
-        <br><br>
-        The challenge of the feature is maintaining a tracked AR session for the entire duration of measuring the plot, which can be 30 min. We also needed to allow the user to optionally add DBH, height, and species for each tree within that AR session.
+
         <br><br>
         I worked on this prototype in Unity with our engineers. In Panama, I made sure to test in a variety of natural terrain. The AR tracking worked even in tall grass!
 
       </p>
     </div>
   </div>
-
-  <div class="row margin-200">
+  <div class="row">
     <div class="three columns">
-      <h5 class="title biome-title">Measure tree diameter with computer vision</h5>
-      <p>
-        <ul role="list" class="list custom-icon">
-          <li class="list-item leaf-icon biome"><div>Biome uses computer vision to segment tree trunks from the background. </div></li>
-          <li class="list-item leaf-icon biome"><div>Works on odd-shaped trunks, trees with vines, and thorny trees.</div></li>
-          <li class="list-item leaf-icon biome"><div>Measure trunks as small as 5cm diameter.</div></li>
-          <li class="list-item leaf-icon biome"><div>Record multiple measurements from different angles for odd-shaped trees.</div></li>
-          <li class="list-item leaf-icon biome"><div>Record measurements for multi-trunk trees.</div></li>
-        </ul>
-      </p>
-
+      <img class="biome-phone" src="Plots1.png" />
     </div>
     <div class="three columns">
-      <img  src="DBH1.png" />
+      <img class="biome-phone" src="Plots2.png" />
     </div>
     <div class="three columns">
-      <img  src="DBH2.png" />
+      <img class="biome-phone" src="Plots3.png" />
     </div>
     <div class="three columns">
-      <div class="iphone-frame-light">
-        <video  playsinline controls class="iphone-video"><source src="multi-trunk-dbh.mp4#t=4"> </video>
-      </div>
-        <p class="caption">Alpha test build</>
+      <img class="biome-phone" src="Plots4.png" />
     </div>
   </div>
 
-  <div class="row margin-200">
-    <div class="three columns">
-      <h5 class="title biome-title">Measure tree height with AR</h5>
-      <ul role="list" class="list custom-icon">
-        <li class="list-item leaf-icon biome"><div>As accurate as a clinometer, but faster and easier.</div></li>
-        <li class="list-item leaf-icon biome"><div>Good visibility in forest environments.</div></li>
-      </ul>
-      <p>
-        This feature worked surprisingly well even for large trees. While there is a margin of error, it proved to be within the acceptable range compared to the traditional method using a clinometer.
-        <br><br>
-        We explored several UX flows for this feature, and the simplest version proved to be the most reliable.
-      </p>
-    </div>
 
-    <div class="three columns">
-      <img  src="ARHeight.gif" />
-    </div>
+    <div class="row margin-200">
+        <div class="three columns">
+          <img src="organizing.svg" />
+        </div>
+        <div class="three columns">
+          <video controls muted  loop class="iphone-video figma-video"><source src="Data_Figma.mp4"> </video>
+        </div>
 
-    <div class="three columns">
-      <div class="iphone-frame-light">
-        <video  playsinline controls class="iphone-video"><source src="AR_height.mp4#t=3"> </video>
+      <div class="five columns" >
+        <h5 class="title biome-title">Manage Your forest:<br>organize and view plot data</h5>
+        <p>
+          Seeing all the data collected alongside photos is powerful. I focused on displaying all this information very visually, making each screen layout distinct for easier browsing and giving a feeling of zooming in to see the forest and the trees.
+          <br><br>
+
+          'Permanent monitoring plots', where the same plots are measured in subsequent years, is a common technique for tree inventories. I included this in the design as a primary expected flow.
+
+          <br><br>
+          I talked with members of our science team to create the information heirarchy of Projects > Studies > Sites > Plots > Trees.
+
+        </p>
       </div>
-        <p class="caption">Alpha test build - small tree</>
     </div>
-
-    <div class="three columns">
-      <div class="iphone-frame-light">
-        <video  playsinline controls class="iphone-video"><source src="AR_height_largetree.mp4#t=14"> </video>
-      </div>
-        <p class="caption">Alpha test build - large tree</>
-    </div>
-
   </div>
 
+    <div class="row ">
+      <div class="three columns">
+        <img class="biome-phone" src="data1.png" />
+      </div>
+      <div class="three columns">
+        <img class="biome-phone" src="data2.png" />
+      </div>
+      <div class="three columns">
+        <img class="biome-phone" src="data3.png" />
+      </div>
+      <div class="three columns">
+        <img class="biome-phone" src="data4.png" />
+      </div>
+    </div>
+
+    <div class="row margin-200">
+    </div>
 
   </div>
 </div>

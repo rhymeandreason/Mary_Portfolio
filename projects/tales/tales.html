@@ -85,15 +85,15 @@ h5{
         </p>
         <p>
 
-          As the UI Lead, I was responsible for end-to-end design for all in-game UI features. Menus, typography, icons, AR-in-VR hud elements, custom UI shaders, tutorials, localization, settings, motion graphics. I also maintained technical documentation for all mission content, challenges, inventory, journal, and worked with game designers to untangle the spaghetti of nonlinear story progression. Shipped in Unreal Engine.
+          As the UI Lead, I was responsible for end-to-end design for all in-game UI features. Menus, typography, icons, AR-in-VR hud elements, custom UI shaders, tutorials, localization, settings, motion graphics. I also designed all the mission progression, challenges, journal, and worked with game designers to untangle the spaghetti of nonlinear story progression. Shipped in Unreal Engine.
           <br><br>
           I was the first UI/UX designer ever hired at ILM. I shipped all the UI for the first launch in November 2020 in just 5 months, working mostly with the art director, game director, and engineering leads. For our follow-up release 10 months later, I maintained and improved core features and also expanded on augmenting storytelling with more in-world UI.
           <br><br>
 
           <ul>
-            <b>Key design pillars:</b>
+          <b>Key design pillars:</b>
+          <li>Lo-Fi minimalism: Don’t distract from the story, keep the Star Wars vibe.</li>
           <li>Practicality:  Legibility, Rendering Perf, Comfort </li>
-          <li>Lo-Fi minimalism: Don’t distract from the story, keep to the Star Wars aesthetic.</li>
           <li>VR comfort and accessibility, spatial navigation.</li>
           <li>Balance needs for new players as well as experienced VR players.</li>
           <li>Communicate game features to encourage exploration and replay.</li>
@@ -107,77 +107,48 @@ h5{
       </div>
     </div>
 
-
-    <hr>
-
-        <div class="row">
-
-          <div class="six columns" >
-
-            <video class="minimal" playsinline controls><source src="MCT_tutorials_web.mp4"> </video>
-          <!--
-            <img src="Gesture-Planets_small.gif" />
-              -->
-            <p class="caption">Initial tutorial introducing key mechanics. I worked with the level designer to build this sequence and the 20+ tutorials spread across this level. The player character had a lot of 'gear' and core VR actions that needed to be paced out for comprehension. And we had one month to do it all.</p>
-          </div>
-
-          <div class="six columns padded" >
-            <h5>New VR players vs. Experienced players.</h5>
-
-            <p>
-            <ul>
-            <b>Things we keep in mind for New Players:</b>
-
-            <li>People get motion sick.</li>
-            <li>People want to play sitting down.</li>
-            <li>People need to learn the controllers.</li>
-            <li>Game mechanics need to be paced out so they can get the VR basics like locomotion.</li>
-            </ul>
-            <br>
-
-            <ul>
-            <b>Experienced Players:</b>
-
-            <li>Are much more vocal online.</li>
-            <li>Have played Half-Life Alyx.</li>
-            <li>Expect much more detailed control over things like locomotion settings.</li>
-            <li>Will progress through levels and gameplay much faster.</li>
-            </li>
-            </ul>
-
-            </p>
-          </div>
-        </div>
-
-
       <hr>
-          <div class="row tight-grid">
-            <div class="four columns" >
-              <video class="minimal" playsinline controls><source src="AllKit_web.mp4"> </video>
-                <p class="caption">All-Kit 'augmented' tool controls and in-world helper icons for puzzles. </p>
+          <div class="row">
+            <div class="six columns">
+              <img src="Allkit.jpg" />
+              <img src="Inventory.jpg" />
             </div>
-            <div class="four columns" >
-              <video class="minimal" playsinline controls><source src="mubo_shop_web.mp4"> </video>
-                <p class="caption">In-world shop UI, with player credits display, item descriptions, and multiple queued items function. </p>
-            </div>
-            <div class="four columns padded" >
-              <h5>Spatial UI System for "AR in VR"</h5>
-              <p >
+            <div class="five columns padded" >
+              <h5>Achieving "AR in VR"</h5>
+              <p>
+                It took me a few tries to make a scanline shader that the Art Director liked, and then it started to come together.
+                With so many different mechanics to represent, I championed a philosophy of 'less is more'.
+                <br><br>
                 I built an in-world spatial UI system using a collection of shaders with different parameters. The primary goal was to keep it minimal and avoid too many elements visible at a time.
                 Being selective with these parameters allowed me to create differentiation between game mechanics.
                 <ol>
                   <li>Distance culling. Most elements were set to only be visible if the player was within 3 meters.</li>
                   <li>Overlay. Some elements (like the compass target marker) needed to be visible on top of all geometry.</li>
-                  <li>Stay contant size in viewframe = scale up the element from a distance.</li>
-                  <li>Small animation: fade in on approach or constant rotation.</li>
+                  <li>Stay constant size in viewframe = scale up the element from a distance.</li>
+                  <li>Small animations add a lot: fade in on approach or constant rotation.</li>
                 </ol>
 
               </p>
             </div>
+
           </div>
-      <hr>
+          <div class="row tight-grid">
+          <div class="four columns" >
+            <video class="minimal" playsinline controls><source src="AllKit_web.mp4"> </video>
+              <p class="caption">All-Kit. 'augmented' tool icons appear just when the player presses the joystick. In-world helper icons for puzzles appear at 3 m. </p>
+          </div>
+          <div class="four columns" >
+            <video class="minimal" playsinline controls><source src="MCT_compass_web.mp4"> </video>
+              <p class="caption">The compass. I removed competing features to make an objective marker that is located in world space at a target point, draws on top of everything, and maintains a minimum size.</p>
+          </div>
+          <div class="four columns" >
+            <video class="minimal" playsinline controls><source src="mubo_shop_web.mp4"> </video>
+              <p class="caption">In-world shop UI. The credits display animates as the player approaches the counter. </p>
+          </div>
 
-
+        </div>
+    <hr>
+    <!--
       <div class="row">
         <div class="six columns" >
           <video class="minimal" playsinline controls><source src="MCT_inventory_web.mp4"> </video>
@@ -195,12 +166,97 @@ h5{
           </p>
         </div>
       </div>
+-->
+    <div class="row">
+      <div class="six columns" >
 
+        <video class="minimal" playsinline controls><source src="MCT_tutorials_web.mp4"> </video>
+      <!--
+        <img src="Gesture-Planets_small.gif" />
+          -->
+        <p class="caption"></p>
+      </div>
+
+      <div class="six columns padded" >
+        <h5>Tutorials</h5>
+        <p>
+          Game mechanics need to be paced out for learning and building your character.
+          <br> <br>
+          In VR, a lot of common features are stuck to your body, or mapped to controller buttons that you can't see. I recommended that we allow the player to attach each object and have a moment to learn how to use it.
+          <br> <br>
+          I worked with the level designer and gameplay engineer to build this intro sequence and the 20+ tutorials spread across this level.
+          <br> <br>
+          The inventory pouch was extra tricky, with a lot of back and forth on where it should be. It's on the chest, so we emphasize it in the beginning, reinforcing the action of picking up an item and stashing it in the pouch.
+        </p>
+      </div>
+
+    <!--
+      <div class="six columns padded" >
+        <h5>New VR players vs. Experienced players.</h5>
+
+        <p>
+        <ul>
+        <b>Things we keep in mind for New Players:</b>
+
+        <li>People get motion sick.</li>
+        <li>People want to play sitting down.</li>
+        <li>People need to learn the controllers.</li>
+        <li>Game mechanics need to be paced out so they can get the VR basics like locomotion.</li>
+        </ul>
+        <br>
+
+        <ul>
+        <b>Experienced Players:</b>
+
+        <li>Are much more vocal online.</li>
+        <li>Have played Half-Life Alyx.</li>
+        <li>Expect much more detailed control over things like locomotion settings.</li>
+        <li>Will progress through levels and gameplay much faster.</li>
+        </li>
+        </ul>
+
+        </p>
+      </div>
+    -->
+    </div>
+    <div class="row">
+      <img src="MCT_tutorial.png" />
+    </div>
+    <hr>
+
+    <div class="row">
+
+    <div class="six columns" >
+      <div style="padding:100% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/796168115?h=34f99a0a86&color=00fadef&title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
+
+    </div>
+
+  <div class="six columns padded" >
+    <h5>IG88: Being a Droid</h5>
+    <p>
+      I created a unique HUD UI system to give a distinctively assassin droid play experience. The monochrome green and geometric elements reference vintage arcade graphics and real-life military HUD displays.
+      <br><br>
+      Working with the script, I created the "scan" feature and corresponding Aurebesh translation animation to punctuate jokes and plot themes.
+      <br><br>
+       Small details like the audio bars, rotating targeting reticles, and hmd-oriented scanlines are subtle special touches to give that "being inside a droid" experience.
+       <br><br>
+       To keep those draw calls performant, I animated all motion graphics with meshes and shaders using timeline nodes in Unreal.
+      <br><br>
+      Play it, it's super fun in VR.
+    </p>
+  </div>
+  </div>
+  <div class="row">
+    <img src="ig88_stills.png" />
+  </div>
+
+<!--
+    <hr>
       <div class="row">
         <div class="six columns" >
           <!--
           <video class="minimal" playsinline controls><source src="MCT_compass_web.mp4"> </video>
-          -->
+
           <img src="compass.jpg" />
         </div>
 
@@ -248,6 +304,7 @@ h5{
 
 
       <hr>
+-->
 <!--
       <div class="row">
         <div class="five columns" >
