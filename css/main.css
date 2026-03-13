@@ -101,6 +101,10 @@ p a:hover {
   border-bottom: 2px solid black;
 }
 
+h5{
+  font-weight: 400;
+}
+
 .top-nav {
   position: relative;
 }
