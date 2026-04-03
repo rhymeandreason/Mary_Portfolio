@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Affirmation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080808;
+    --text: #f0ebe0;
+    --accent: #c8a96e;
+    --dim: #444;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    position: relative;
+  }
+
+  /* Subtle grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 820px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .date-label {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .affirmation {
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    font-weight: 300;
+    line-height: 1.25;
+    letter-spacing: 0.01em;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 1.2s ease 0.6s forwards;
+  }
+
+  .affirmation em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .divider {
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+    margin: 2.8rem auto;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+
+  .tagline {
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dim);
+    opacity: 0;
+    animation: fadeIn 1s ease 1.5s forwards;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="date-label" id="dateLabel"></div>
+  <div class="affirmation" id="affirmation"></div>
+  <div class="divider"></div>
+</div>
+
+<script>
+const affirmations = [
+  // Design
+  "My unique perspective is my greatest creative asset.",
+  "Constraints are invitations to think more cleverly.",
+  "I trust the process, even when the vision isn't clear yet.",
+  "My taste and instincts are worth listening to.",
+  "Iteration is not failure — it's refinement.",
+  "My creativity is renewable; it grows the more I use it.",
+  "I am allowed to take up space with bold ideas.",
+  "The best design I've ever made is still ahead of me.",
+  "The world needs my work. Playing small serves no one.",
+  "I break rules deliberately, beautifully, and without apology.",
+  "I charge what I'm worth — and I'm worth a lot.",
+  "Fear of judgment is just proof that my ideas are daring enough.",
+  // General bold
+  "I am not waiting for permission to be extraordinary.",
+  "I take up space unapologetically and fully.",
+  "I am the most dangerous thing there is — someone who believes in themselves.",
+  "My presence changes the energy of every room I enter.",
+  "I do not shrink. I expand.",
+  "I am building something the world has never seen before.",
+  "I choose myself, loudly and without hesitation.",
+  "I am not for everyone — and that is my power.",
+  "Every hard thing I've survived has made me unbreakable.",
+  "I am exactly who I always knew I could become.",
+  // Personal growth
+  "I am not who I was a year ago — and that is something to celebrate.",
+  "Every version of me was necessary to build this one.",
+  "I embrace discomfort because that's where I expand.",
+  "I am patient with my progress and relentless in my pursuit.",
+  "Unlearning is just as powerful as learning.",
+  "I give myself permission to outgrow people, places, and old beliefs.",
+  "My healing is not linear, and I honor every step of it.",
+  "I am always becoming — never finished, always evolving.",
+  "The work I do on myself is the most important work I will ever do.",
+  "I fall, I reflect, I rise — every single time.",
+  // More personal growth
+  "I release who I thought I had to be to become who I truly am.",
+  "My setbacks are not punishments — they are redirections.",
+  "I invest in myself the way I would invest in someone I love.",
+  "Growth is uncomfortable and I welcome it anyway.",
+  "I no longer apologize for the boundaries that protect my peace.",
+  "I am rewriting every story I was told about my limitations.",
+  "The older I get, the more fully I step into myself.",
+  "I trade comfort for courage every chance I get.",
+  "I am not behind. I am exactly where my journey requires me to be.",
+  "Every day I choose growth, I become someone my past self would admire.",
+  // Doing things
+  "I don't wait for the right moment — I make the moment right.",
+  "Done is better than perfect, and I am done waiting.",
+  "I act before I feel ready, because ready is a myth.",
+  "I am someone who starts things and someone who finishes them.",
+  "Momentum is my default state.",
+  "I do the hard thing first and feel unstoppable for the rest of the day.",
+  "I show up even when motivation doesn't.",
+  "Small actions taken consistently change everything — and I am consistent.",
+  "I am proof that thinking less and doing more works.",
+  "Every time I choose action over hesitation, I become harder to stop.",
+  // Morning
+  "Today is a clean slate and I intend to use it well.",
+  "I wake up with purpose and move through this day with intention.",
+  "Something good is going to happen today — I am open to it.",
+  "I have everything I need to make today count.",
+  "My energy is mine to direct, and today I direct it wisely.",
+  "I greet this day with an open mind and a full heart.",
+  "Today I will do one thing that my future self will thank me for.",
+  "I bring focus, warmth, and presence to everything I touch today.",
+  "This day is full of possibilities I haven't discovered yet.",
+  "I rise, I show up, and I make it matter.",
+  // General creativity
+  "My imagination is a muscle and I work it every single day.",
+  "There is no wrong way to create — only unexplored ways.",
+  "I give myself full permission to make something imperfect and alive.",
+  "My ideas are worth chasing, even the strange ones — especially the strange ones.",
+  "Creativity flows through me when I stop forcing it and start trusting it.",
+  "I am a conduit for ideas the world hasn't seen yet.",
+  "Making things is how I make sense of the world.",
+  "I create without comparison and without apology.",
+  "The blank page is not a threat — it is an invitation.",
+  "My creative voice gets louder and clearer every time I use it.",
+  // Creative life
+  "I have built a life that makes room for beauty, curiosity, and expression.",
+  "I choose a life that inspires me over a life that merely pays me.",
+  "I see the extraordinary hiding inside the ordinary, every single day.",
+  "My life itself is my greatest and most ongoing creative work.",
+  "I surround myself with people who make me think, feel, and create more deeply.",
+  "I protect my creative energy the way I protect everything else I value.",
+  "Living creatively is an act of courage and I practice it daily.",
+  "I have chosen the harder, richer, more alive path — and I would choose it again.",
+  // Taking time
+  "Rest is not a reward I earn — it is a right I exercise.",
+  "Slowing down is not falling behind — it is how I go further.",
+  "I give myself the gift of stillness without guilt.",
+  "Taking time for myself is not selfish — it is how I show up fully for everything else.",
+  "I do not have to fill every moment to prove my worth.",
+  "Pausing is part of the process, not a break from it.",
+  "I move at the pace of intention, not the pace of urgency.",
+  "Time spent on my own renewal is never time wasted.",
+  "I release the pressure to be productive every hour of every day.",
+  "The most important things in my life deserve my slowest, most present attention.",
+];
+
+function getDailyAffirmation() {
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now - start;
+  const oneDay = 1000 * 60 * 60 * 24;
+  const dayOfYear = Math.floor(diff / oneDay);
+  return affirmations[dayOfYear % affirmations.length];
+}
+
+function formatDate(date) {
+  return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+}
+
+document.getElementById('affirmation').textContent = getDailyAffirmation();
+document.getElementById('dateLabel').textContent = formatDate(new Date());
+</script>
+</body>
+</html>
