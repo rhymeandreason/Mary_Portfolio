@@ -57,7 +57,7 @@
 }
 
 .tl-left {
-  text-align: right;
+  //text-align: right;
   padding-top: 4px;
   display: flex;
   flex-direction: column;
@@ -70,25 +70,33 @@
   gap: 32px;
   padding-top: 4px;
 }
-.tl-right--grid {
+.tl-right--grid,
+.tl-left--grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
-.tl-right--grid .tl-project {
+.tl-left--grid {
+  max-width: 360px;
+  margin-left: auto;
+}
+.tl-right--grid .tl-project,
+.tl-left--grid .tl-project {
   max-width: none;
 }
-.tl-right--grid .tl-title {
+.tl-right--grid .tl-title,
+.tl-left--grid .tl-title {
   font-size: 1.5rem;
   margin: 10px 0 4px;
 }
-.tl-right--grid .tl-desc {
+.tl-right--grid .tl-desc,
+.tl-left--grid .tl-desc {
   font-size: 1.2rem;
 }
 
 .company-card {
   display: inline-block;
-  text-align: right;
+  //text-align: right;
   max-width: 360px;
 }
 .company-logo {
