@@ -115,6 +115,25 @@
       transform: scale(1.03);
       opacity: 0.92;
     }
+    #tooltip {
+      position: fixed;
+      pointer-events: none;
+      background: rgba(20, 20, 20, 0.94);
+      color: #fff;
+      font-size: 1.2rem;
+      line-height: 1.4;
+      padding: 8px 12px;
+      border-radius: 4px;
+      max-width: 260px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 1000;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    }
+    #tooltip.visible { opacity: 1; transform: translateY(0); }
+    #tooltip .tt-title { font-weight: 700; display: block; margin-bottom: 2px; }
+    #tooltip .tt-desc { color: rgba(255,255,255,0.8); }
     @media (max-width: 1100px) {
       .masonry { column-count: 3; }
     }
@@ -260,6 +279,90 @@
 
     const categories = ['all', 'web/mobile', 'spatial', '3D', 'hardware', 'fashion', 'tools'];
 
+    // Per-image captions (keyed by image/video src basename). Edit freely.
+    const captions = {
+      'stove1.png': 'The Impulse induction stove with magnetic removable knobs and 12" display.',
+      'chocolate.png': 'Tempering chocolate using precise low-temperature control.',
+      'powerboil.png': 'PowerBoil mode — boils water in under a minute via the 3kW battery.',
+      'Biome_main.jpg': 'Mobile AR app for measuring tropical forests.',
+      'ARHeight.gif': 'AR-based tree height measurement, replacing a clinometer.',
+      'field_work.jpg': 'Field testing Biome with foresters in Panama.',
+      'ARplot_Azuero720p.mp4': 'Walking a measurement plot boundary in AR, Azuero, Panama.',
+      'AR_height.mp4': 'Measuring tree height with the phone camera.',
+      'Quill_Beta.jpg': 'Oculus Quill, a VR-native illustration and animation tool.',
+      'angelica.gif': 'Angelica Sotiriou painting in Quill.',
+      'Animation_flip_poster.jpg': 'Frame-by-frame VR animation in Quill.',
+      'Menus_poster.jpg': 'Spatial menu system designed for ergonomic two-handed use.',
+      'Transform_poster.jpg': 'Transform tool for moving and scaling 3D drawings.',
+      'quill_main.jpg': 'Hero shot of the Quill workspace.',
+      'wesley.jpg': 'Wesley Allsbrook drawing in Quill.',
+      'Gauntlet_hero.jpg': 'Gauntlet menu — wrist-mounted UI for Tales from the Galaxy’s Edge.',
+      'Inventory.jpg': 'Inventory UI in Tales from the Galaxy’s Edge.',
+      'AllKit.jpg': 'The full UI kit for Tales — menus, HUD, tutorials.',
+      'compass.jpg': 'In-game compass for navigation in Tales.',
+      'main-menu.jpg': 'Main menu of Tales from the Galaxy’s Edge.',
+      'tales-poster1.jpg': 'Promo art for Tales from the Galaxy’s Edge.',
+      'inventory_poster.jpg': 'Tales inventory grid layout.',
+      'gauntlet_walkthrough.mp4': 'Live walkthrough of the wrist gauntlet UI in VR.',
+      'MCT_Compass_web.mp4': 'In-game compass guiding the player.',
+      'AllKit_web.mp4': 'Animated demo of the full Tales UI kit.',
+      'Daphne-Leaves-1.jpg': 'Daphne — a 3D-printed shoe inspired by leaves.',
+      'Strvct-wedge-black.jpg': 'Strvct — algorithmically generated 3D-printed wedge.',
+      'Laurel-shoe-on-model.jpg': 'Laurel pump worn on the runway.',
+      'Laurel_timelapse2.gif': 'Time-lapse of the Laurel shoe being 3D printed.',
+      'shoe_butterfly.jpg': 'Butterfly-inspired generative shoe pattern.',
+      'printing-leaf-shoe.jpg': 'Daphne shoe printing on a powder-bed 3D printer.',
+      'N12-bikini-set-top.jpg': 'The N12 — the world’s first ready-to-wear 3D-printed bikini.',
+      'N12-bikini-seamless2.jpg': 'Articulated chainmail-like links forming a flexible textile.',
+      'N12-detail.jpg': 'Detail of the interlocking 3D-printed links.',
+      'N12-hallway1.jpg': 'N12 photographed for press in a gallery hallway.',
+      'N12-bikini-seamless-detail1.jpg': 'Macro view of the printed link structure.',
+      'rose_runway_poster.png': 'Google Rose — generative fashion design tool.',
+      'rose-main.png': 'Hero shot of the Rose generative design system.',
+      'generate-2.jpg': 'Generated dress variation from the Rose system.',
+      'rose_step2_poster.png': 'Step 2 of the Rose generation flow.',
+      'CONSTRVCT_composite1.jpg': 'Constrvct — browser tool for designing custom-printed dresses.',
+      'GeekChic.jpg': 'Constrvct dress featuring a circuit-board print.',
+      'art_story.jpg': 'A community story of designing a Constrvct dress.',
+      'smithsonian.jpg': 'Constrvct dress on display at the Cooper-Hewitt Smithsonian.',
+      'constrvct_community_designs1.jpg': 'A grid of dresses designed by the Constrvct community.',
+      'ilm-volume.jpg': 'ILM Stagecraft — the LED Volume used for virtual production.',
+      'lightcard.png': 'Stagecraft iPad app — light card placement on the volume.',
+      'Lean_In.gif': 'Quill Gallery — leaning in to inspect a 3D illustration.',
+      'shadowbox.gif': 'Shadowbox view in Quill Gallery.',
+      'Quill_Viewer_shorter.mp4': 'Quill Gallery — browsing VR illustrations in headset.',
+      'Gesture-Planets_small.gif': 'Hand gesture controlling a planetary system in VR.',
+      'Gesture-Spaceship_small.gif': 'Steering a spaceship using hand gestures.',
+      'Steering_Wheel_small.gif': 'Two-handed steering wheel gesture.',
+      'Picture_Frame.mp4': 'Framing-with-fingers gesture for screen capture.',
+      'Nodes-All_small.gif': 'Viralnet — force-directed graph of virus genome relationships.',
+      'render0.png': 'Static render from the Viralnet visualization.',
+      'Console.gif': 'Coding Land — interactive console for kids learning to code.',
+      'Color Lesson.jpg': 'Coding Land color lesson screen.',
+      'Ddress-selected1.jpg': 'D.dress — turning sketches into wearable patterns.',
+      'dress1.jpg': 'A finished D.dress garment.',
+      'sake1.jpg': 'Custom 3D-printed sake set designed at Shapeways.',
+      'vibe_white.jpg': 'Vibe — a Shapeways customization tool concept.',
+      'MODA_slides.jpg': 'ModaKit — a modular hardware toolkit for wearable computing.',
+      'Amazon_tool.jpg': 'Amazon Made For You — custom t-shirt design tool.',
+      'monogram.mp4': 'Monogram interaction in the Made For You app.',
+      'seaworld1.jpg': 'SeaWorld TurtleLink — interactive multi-touch wall exhibit.',
+      'seaworld3.jpg': 'Visitors interacting with the TurtleLink wall.',
+      'seaworld5.jpg': 'TurtleLink wall featuring real sea turtle migration paths.',
+      'TurtleLink1.mp4': 'Demo of the SeaWorld TurtleLink interactive wall.',
+      'typeface-screencap-1.jpg': 'Typeface — generating a font from facial features.',
+      'typeface_poster.jpg': 'Typeface project poster.',
+      'TYPEFACE_alpha.mp4': 'Live demo of Typeface generating letterforms from a face.',
+      'Hack Characters.jpg': 'Hack — characters that guide kids through coding lessons.',
+      'storyboard_drawing.mp4': 'Storyboard app — drawing across multiple iPad frames.',
+      'Fox_cards.mp4': 'AR concept — animated fox card in augmented reality.',
+    };
+
+    function captionFor(src) {
+      const base = src.split('/').pop();
+      return captions[base] || '';
+    }
+
     // Tag every item from the template using its href
     const tpl = document.getElementById('items').content;
     const items = [...tpl.querySelectorAll('a')].map(a => {
@@ -350,6 +453,44 @@
     }
 
     render();
+
+    // Tooltip
+    const tooltip = document.createElement('div');
+    tooltip.id = 'tooltip';
+    tooltip.innerHTML = '<span class="tt-title"></span><span class="tt-desc"></span>';
+    document.body.appendChild(tooltip);
+    const tipTitle = tooltip.querySelector('.tt-title');
+    const tipDesc = tooltip.querySelector('.tt-desc');
+
+    galleryEl.addEventListener('mouseover', e => {
+      const a = e.target.closest('a');
+      if (!a || !galleryEl.contains(a)) return;
+      const media = a.querySelector('img, video');
+      if (!media) return;
+      const m = a.getAttribute('href').match(/projects\/([^/]+)\//);
+      const slug = m ? m[1] : '';
+      const meta = projectMeta[slug];
+      const desc = captionFor(media.getAttribute('src')) || media.getAttribute('alt') || '';
+      tipTitle.textContent = meta ? meta.name : '';
+      tipDesc.textContent = desc;
+      tooltip.classList.add('visible');
+    });
+    galleryEl.addEventListener('mouseout', e => {
+      if (!e.relatedTarget || !e.target.closest('a')?.contains(e.relatedTarget)) {
+        tooltip.classList.remove('visible');
+      }
+    });
+    galleryEl.addEventListener('mousemove', e => {
+      if (!tooltip.classList.contains('visible')) return;
+      const pad = 14;
+      let x = e.clientX + pad;
+      let y = e.clientY + pad;
+      const r = tooltip.getBoundingClientRect();
+      if (x + r.width + 8 > window.innerWidth) x = e.clientX - r.width - pad;
+      if (y + r.height + 8 > window.innerHeight) y = e.clientY - r.height - pad;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+    });
   </script>
 
 </body>
