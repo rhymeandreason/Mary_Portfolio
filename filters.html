@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <title>Mary Huang : Portfolio</title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+  <script src="https://cdn.jsdelivr.net/npm/mixitup@3.3.1/dist/mixitup.min.js"></script>
+
+</head>
+<body>
+
+  <div class="container index">
+    <div class="row top-nav">
+      <div class="one-half column">
+        <h5 class="title null">Mary Huang</h5>
+      </div>
+
+      <div class="one-half column nav-right">
+        <p>
+          <a href="about.html">about me</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="portfolio-controls">
+      <div class="filter-group">
+        <button type="button" class="filter active" data-filter="all">All</button>
+        <button type="button" class="filter" data-filter=".web-mobile">Web/Mobile</button>
+        <button type="button" class="filter" data-filter=".ar-vr">AR/VR</button>
+        <button type="button" class="filter" data-filter=".hardware">Hardware</button>
+        <button type="button" class="filter" data-filter=".games">Games</button>
+      </div>
+      <div class="sort-group">
+        <span class="sort-label">Sort:</span>
+        <button type="button" class="sort active" data-sort="order:asc">Date</button>
+        <button type="button" class="sort" data-sort="category:asc order:asc">Category</button>
+        <button type="button" class="sort" data-sort="client:asc order:asc">Client</button>
+        <button type="button" class="featured-toggle">★ Featured only</button>
+      </div>
+    </div>
+
+    <div class="portfolio-grid">
+
+      <div class="project-nav mix web-mobile" data-order="1" data-category="web-mobile" data-client="independent">
+        <a href="https://colorandcraft.co" target="_blank" rel="noopener">
+          <img src="images/thumbs/Colorandcraft_c.png" class="rounded"/>
+          <h6 class="small-title">Color &amp; Craft</h6>
+          <p class="description">Modern crafting kits connecting digital and physical.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix hardware featured" data-order="2" data-category="hardware" data-client="independent">
+        <a href="projects/impulse/impulse.html">
+          <img src="images/thumbs/Impulse_c.png" class="rounded"/>
+          <h6 class="small-title">Impulse</h6>
+          <p class="description">Interaction design for a cutting-edge induction stove with a novel knob interface.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile ar-vr featured" data-order="3" data-category="ar-vr" data-client="independent">
+        <a href="projects/biome/biome.html">
+          <img src="images/thumbs/Biome_c2.png" class="rounded"/>
+          <h6 class="small-title">Biome</h6>
+          <p class="description">ML and AR mobile platform for global reforestation.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix ar-vr games featured" data-order="4" data-category="ar-vr" data-client="ilm">
+        <a href="projects/tales/tales.html">
+          <img src="images/thumbs/Tales_c.png" class="rounded"/>
+          <h6 class="small-title">Star Wars: Tales from the Galaxy's Edge</h6>
+          <p class="description">Spatial and 2D UI/UX for the Star Wars VR adventure game.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile featured" data-order="5" data-category="web-mobile" data-client="ilm">
+        <a href="projects/stagecraft/ilm.html">
+          <img src="images/thumbs/stagecraft_c2.jpg" class="rounded"/>
+          <h6 class="small-title">ILM Stagecraft</h6>
+          <p class="description">iPad app for user-friendly immersive controls for virtual production.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix ar-vr games" data-order="6" data-category="ar-vr" data-client="ilm">
+        <a href="projects/ig88/ig88.html">
+          <img src="images/thumbs/star-wars-ig88.webp" class="rounded"/>
+          <h6 class="small-title">The Bounty of Boggs Triff</h6>
+          <p class="description">Story-driven VR HUD for the iconic IG-88.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix ar-vr featured" data-order="7" data-category="ar-vr" data-client="meta">
+        <a href="projects/gestures/gestures.html">
+          <img src="images/thumbs/Gestures_c.png" class="rounded"/>
+          <h6 class="small-title">VR Hand Gestures</h6>
+          <p class="description">Exploration prototypes of hand gesture based UI.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="8" data-category="web-mobile" data-client="uc-berkeley">
+        <a href="projects/viralnet/viralnet.html">
+          <img src="images/thumbs/Viralnet_c.png" class="rounded"/>
+          <h6 class="small-title">Viralnet</h6>
+          <p class="description">Data visualization for the UC Berkeley Genome Institute.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="9" data-category="web-mobile" data-client="amazon">
+        <a href="projects/Amazon/amazon.html">
+          <img src="images/thumbs/Amazon_c2.jpg" class="rounded"/>
+          <h6 class="small-title">Amazon Made For You</h6>
+          <p class="description">Make custom t-shirts in 3D.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="10" data-category="web-mobile" data-client="independent">
+        <a href="projects/lore/lore.html">
+          <img src="images/thumbs/Local_Lore.jpg" class="rounded"/>
+          <h6 class="small-title">Local Lore</h6>
+          <p class="description">Sketches for a mobile app for local storytelling.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix ar-vr" data-order="11" data-category="ar-vr" data-client="independent">
+        <a href="projects/ar_ideas/ar_ideas.html">
+          <img src="images/thumbs/AR_ideas.jpg" class="rounded"/>
+          <h6 class="small-title">AR Ideas</h6>
+          <p class="description">Sketches and prototypes exploring everyday AR.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile hardware" data-order="12" data-category="web-mobile" data-client="shield-ai">
+        <a href="projects/shield/shield.html">
+          <img src="images/thumbs/Shield_c.png" class="rounded"/>
+          <h6 class="small-title">Shield.ai</h6>
+          <p class="description">Mobile &amp; desktop apps for piloting and managing autonomous drones.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="13" data-category="web-mobile" data-client="independent">
+        <a href="projects/codeland/codeland.html">
+          <img src="images/thumbs/CodingLand_c.jpg" class="rounded"/>
+          <h6 class="small-title">Coding Land</h6>
+          <p class="description">A platform for kids to learn and build things with code.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="14" data-category="web-mobile" data-client="independent">
+        <a href="projects/storyboard/storyboard.html">
+          <img src="images/thumbs/Storyboard_c2.png" class="rounded"/>
+          <h6 class="small-title">Storyboard</h6>
+          <p class="description">A minimal app for sketching across multiple frames.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="15" data-category="web-mobile" data-client="independent">
+        <a href="projects/hack/hack.html">
+          <img src="images/thumbs/Hack_c.png" class="rounded"/>
+          <h6 class="small-title">Hack</h6>
+          <p class="description">Playful prototypes from hackathons and side projects.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix ar-vr" data-order="16" data-category="ar-vr" data-client="meta">
+        <a href="projects/quill_gallery/quill_gallery.html">
+          <img src="images/thumbs/Quill_Gallery.png" class="rounded"/>
+          <h6 class="small-title">Quill Gallery</h6>
+          <p class="description">In-headset gallery for browsing and remixing Quill VR illustrations.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix ar-vr featured" data-order="17" data-category="ar-vr" data-client="meta">
+        <a href="projects/quill/quill.html">
+          <img src="images/thumbs/Quill_c.png" class="rounded"/>
+          <h6 class="small-title">Oculus Quill</h6>
+          <p class="description">VR-native illustration and animation tool for immersive storytelling.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="18" data-category="web-mobile" data-client="google">
+        <a href="projects/rose/rose.html">
+          <img src="images/thumbs/Rose_c.png" class="rounded"/>
+          <h6 class="small-title">Google Rose</h6>
+          <p class="description">Concept design for a Google product experience.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix hardware" data-order="19" data-category="hardware" data-client="westfield-labs">
+        <a href="projects/westfield/westfield.html">
+          <img src="images/thumbs/Westfield.png" class="rounded"/>
+          <h6 class="small-title">Westfield</h6>
+          <p class="description">Retail concepts developed with Westfield Labs.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix hardware" data-order="20" data-category="hardware" data-client="sols">
+        <a href="projects/sols/sols.html">
+          <img src="images/thumbs/Sols.png" class="rounded"/>
+          <h6 class="small-title">Sols Adaptiv</h6>
+          <p class="description">Custom 3D-printed insoles tailored to each foot.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="21" data-category="web-mobile" data-client="independent">
+        <a href="projects/data_collection/">
+          <img src="images/thumbs/Map.png" class="rounded"/>
+          <h6 class="small-title">Data Collection</h6>
+          <p class="description">Field research and visualization of personal data.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="22" data-category="web-mobile" data-client="independent">
+        <a href="projects/modakit/modakit.html">
+          <img src="images/thumbs/ModaKit_c.jpg" class="rounded"/>
+          <h6 class="small-title">ModaKit</h6>
+          <p class="description">A modular toolkit for designing your own fashion.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="23" data-category="web-mobile" data-client="continuum-fashion">
+        <a href="projects/constrvct/constrvct.html">
+          <img src="images/thumbs/Constrvct_c.png" class="rounded"/>
+          <h6 class="small-title">Constrvct</h6>
+          <p class="description">Browser-based design tool for custom-printed dresses.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix hardware" data-order="24" data-category="hardware" data-client="independent">
+        <a href="projects/shoes/shoes.html">
+          <img src="images/thumbs/Shoes.png" class="rounded"/>
+          <h6 class="small-title">3D Printed Shoes</h6>
+          <p class="description">Experiments in 3D-printed footwear design.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix hardware" data-order="25" data-category="hardware" data-client="continuum-fashion">
+        <a href="projects/n12/n12.html">
+          <img src="images/thumbs/N12.png" class="rounded"/>
+          <h6 class="small-title">N12 Bikini</h6>
+          <p class="description">The world's first ready-to-wear, fully 3D-printed bikini.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix hardware" data-order="26" data-category="hardware" data-client="shapeways">
+        <a href="projects/shapeways/shapeways.html">
+          <img src="images/thumbs/Shapeways.png" class="rounded"/>
+          <h6 class="small-title">Shapeways</h6>
+          <p class="description">Designs and tools for the on-demand 3D printing marketplace.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix hardware" data-order="27" data-category="hardware" data-client="seaworld">
+        <a href="projects/turtlelink/turtlelink.html">
+          <img src="images/thumbs/Seaworld_c2.png" class="rounded"/>
+          <h6 class="small-title">SeaWorld TurtleLink</h6>
+          <p class="description">Interactive wall visualizing sea turtle journeys.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix hardware" data-order="28" data-category="hardware" data-client="continuum-fashion">
+        <a href="projects/ddress/ddress.html">
+          <img src="images/thumbs/Ddress.png" class="rounded"/>
+          <h6 class="small-title">D.dress</h6>
+          <p class="description">Sketch-to-dress: turn a drawing into a custom garment.</p>
+        </a>
+      </div>
+
+      <div class="project-nav mix web-mobile" data-order="29" data-category="web-mobile" data-client="independent">
+        <a href="projects/typeface/typeface.html">
+          <img src="images/thumbs/Typeface.png" class="rounded"/>
+          <h6 class="small-title">Typeface</h6>
+          <p class="description">A custom typeface design exploration.</p>
+        </a>
+      </div>
+
+    </div>
+
+    <div class="row spacer"></div>
+  </div>
+
+  <script src="js/portfolio.js"></script>
+
+</body>
+</html>
