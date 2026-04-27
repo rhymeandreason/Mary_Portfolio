@@ -90,6 +90,19 @@
       overflow: hidden;
       border-radius: 3px;
       background: #ececec;
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+      animation: itemIn 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    }
+    @keyframes itemIn {
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .group-section {
+      animation: itemIn 0.35s ease forwards;
+    }
+    #gallery.fading { opacity: 0; transform: translateY(4px); }
+    #gallery {
+      transition: opacity 0.18s ease, transform 0.18s ease;
     }
     .masonry img,
     .masonry video {
@@ -220,29 +233,29 @@
 
   <script>
     const projectMeta = {
-      impulse:        { name: 'Impulse Stove',     year: 2024, cat: 'hardware' },
-      biome:          { name: 'Biome',             year: 2022, cat: 'web/mobile' },
-      stagecraft:     { name: 'ILM Stagecraft',    year: 2021, cat: 'tools' },
-      tales:          { name: 'Tales from the Galaxy’s Edge', year: 2021, cat: 'spatial' },
-      gestures:       { name: 'VR Hand Gestures',  year: 2020, cat: 'spatial' },
-      viralnet:       { name: 'Viralnet',          year: 2020, cat: 'tools' },
-      storyboard:     { name: 'Storyboard',        year: 2020, cat: 'tools' },
-      codeland:       { name: 'Coding Land',       year: 2020, cat: 'web/mobile' },
-      Amazon:         { name: 'Amazon Made For You', year: 2019, cat: 'web/mobile' },
-      hack:           { name: 'Hack',              year: 2019, cat: 'web/mobile' },
-      shield:         { name: 'Shield.ai',         year: 2018, cat: 'web/mobile' },
-      quill_gallery:  { name: 'Quill Gallery',     year: 2017, cat: 'spatial' },
-      quill:          { name: 'Oculus Quill',      year: 2016, cat: 'spatial' },
-      ar_ideas:       { name: 'AR Ideas',          year: 2017, cat: 'spatial' },
-      modakit:        { name: 'ModaKit',           year: 2014, cat: 'hardware' },
-      rose:           { name: 'Google Rose',       year: 2014, cat: 'fashion' },
-      constrvct:      { name: 'Constrvct',         year: 2013, cat: 'fashion' },
-      shoes:          { name: '3D Printed Shoes',  year: 2013, cat: 'fashion' },
-      shapeways:      { name: 'Shapeways',         year: 2012, cat: '3D' },
-      n12:            { name: 'N12 Bikini',        year: 2012, cat: 'fashion' },
-      turtlelink:     { name: 'SeaWorld TurtleLink', year: 2011, cat: 'spatial' },
-      ddress:         { name: 'D.dress',           year: 2010, cat: 'fashion' },
-      typeface:       { name: 'Typeface',          year: 2010, cat: 'tools' },
+      impulse:        { name: 'Impulse Stove',     year: 2024, cats: ['hardware', 'tools'] },
+      biome:          { name: 'Biome',             year: 2022, cats: ['web/mobile', 'spatial', 'tools'] },
+      stagecraft:     { name: 'ILM Stagecraft',    year: 2021, cats: ['tools', 'web/mobile'] },
+      tales:          { name: 'Tales from the Galaxy’s Edge', year: 2021, cats: ['spatial', '3D'] },
+      gestures:       { name: 'VR Hand Gestures',  year: 2020, cats: ['spatial', '3D'] },
+      viralnet:       { name: 'Viralnet',          year: 2020, cats: ['tools', 'web/mobile', '3D'] },
+      storyboard:     { name: 'Storyboard',        year: 2020, cats: ['tools', 'web/mobile'] },
+      codeland:       { name: 'Coding Land',       year: 2020, cats: ['web/mobile', 'tools'] },
+      Amazon:         { name: 'Amazon Made For You', year: 2019, cats: ['web/mobile', 'fashion', '3D'] },
+      hack:           { name: 'Hack',              year: 2019, cats: ['web/mobile', 'tools'] },
+      shield:         { name: 'Shield.ai',         year: 2018, cats: ['web/mobile', 'tools'] },
+      quill_gallery:  { name: 'Quill Gallery',     year: 2017, cats: ['spatial', 'tools', '3D'] },
+      quill:          { name: 'Oculus Quill',      year: 2016, cats: ['spatial', 'tools', '3D'] },
+      ar_ideas:       { name: 'AR Ideas',          year: 2017, cats: ['spatial', '3D'] },
+      modakit:        { name: 'ModaKit',           year: 2014, cats: ['hardware','tools'] },
+      rose:           { name: 'Google Rose',       year: 2014, cats: ['fashion', 'tools', '3D'] },
+      constrvct:      { name: 'Constrvct',         year: 2013, cats: ['fashion', 'web/mobile', 'tools', '3D'] },
+      shoes:          { name: '3D Printed Shoes',  year: 2013, cats: ['fashion', '3D'] },
+      shapeways:      { name: 'Shapeways',         year: 2012, cats: ['3D', 'web/mobile', 'tools'] },
+      n12:            { name: 'N12 Bikini',        year: 2012, cats: ['fashion', '3D'] },
+      turtlelink:     { name: 'SeaWorld TurtleLink', year: 2011, cats: ['spatial', 'hardware', '3D'] },
+      ddress:         { name: 'D.dress',           year: 2010, cats: ['fashion', 'tools', '3D'] },
+      typeface:       { name: 'Typeface',          year: 2010, cats: ['tools'] },
     };
 
     const categories = ['all', 'web/mobile', 'spatial', '3D', 'hardware', 'fashion', 'tools'];
@@ -252,8 +265,9 @@
     const items = [...tpl.querySelectorAll('a')].map(a => {
       const m = a.getAttribute('href').match(/projects\/([^/]+)\//);
       const slug = m ? m[1] : '';
-      const meta = projectMeta[slug] || { name: slug, year: 0, cat: 'tools' };
-      return { el: a, slug, ...meta };
+      const meta = projectMeta[slug] || { name: slug, year: 0, cats: ['tools'] };
+      const cats = meta.cats || (meta.cat ? [meta.cat] : []);
+      return { el: a, slug, name: meta.name, year: meta.year, cats };
     });
 
     // Build filter buttons
@@ -276,9 +290,18 @@
     groupByEl.addEventListener('change', render);
     const galleryEl = document.getElementById('gallery');
 
-    function render() {
-      const filtered = items.filter(i => activeFilter === 'all' || i.cat === activeFilter);
+    let renderToken = 0;
+    async function render() {
+      const myToken = ++renderToken;
+      const hasContent = galleryEl.children.length > 0;
+      if (hasContent) {
+        galleryEl.classList.add('fading');
+        await new Promise(r => setTimeout(r, 180));
+        if (myToken !== renderToken) return;
+      }
+      const filtered = items.filter(i => activeFilter === 'all' || i.cats.includes(activeFilter));
       galleryEl.innerHTML = '';
+      galleryEl.classList.remove('fading');
 
       if (!filtered.length) {
         galleryEl.innerHTML = '<div class="empty">Nothing here yet.</div>';
@@ -290,16 +313,20 @@
       if (groupBy === 'none') {
         const m = document.createElement('div');
         m.className = 'masonry';
-        filtered.forEach(i => m.appendChild(i.el.cloneNode(true)));
+        filtered.forEach((i, idx) => { const c = i.el.cloneNode(true); c.style.animationDelay = Math.min(idx * 18, 600) + 'ms'; m.appendChild(c); });
         galleryEl.appendChild(m);
         return;
       }
 
       const groups = new Map();
       filtered.forEach(i => {
-        const key = groupBy === 'project' ? i.name : groupBy === 'year' ? String(i.year) : i.cat;
-        if (!groups.has(key)) groups.set(key, []);
-        groups.get(key).push(i);
+        const keys = groupBy === 'project' ? [i.name]
+                   : groupBy === 'year' ? [String(i.year)]
+                   : i.cats;
+        keys.forEach(key => {
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(i);
+        });
       });
 
       const sortedKeys = [...groups.keys()].sort((a, b) => {
