@@ -110,6 +110,7 @@
   display: block;
   text-decoration: none;
   color: inherit;
+  max-width:360px;
 }
 .tl-project img {
   width: 100%;
