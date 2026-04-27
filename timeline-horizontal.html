@@ -95,7 +95,7 @@
       max-width: 320px;
     }
     .panel.compact .panel-meta .project-card + .project-card {
-      margin-top: 24px;
+      //margin-top: 24px;
     }
     .panel:last-child { border-right: none; }
     .panel-meta {
@@ -125,8 +125,8 @@
       gap: 6px;
     }
     .company-logo {
-      height: 36px;
-      max-width: 160px;
+      height: 60px;
+      max-width: 220px;
       margin-bottom: 6px;
       object-fit: contain;
       object-position: left center;
@@ -181,6 +181,20 @@
       font-weight: 700;
       letter-spacing: -0.01em;
       margin: 12px 0 4px;
+      color: #000;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .project-card .title::after {
+    //  content: "↗";
+      font-size: 1.3rem;
+      color: rgba(0,0,0,0.35);
+      font-weight: 500;
+      transition: transform 0.25s ease, color 0.25s ease;
+    }
+    .project-card:hover .title::after {
+      transform: translate(2px, -2px);
       color: #000;
     }
     .project-card .desc {
@@ -266,7 +280,6 @@
     const data = [
       {
         year: '2026',
-        rangeLabel: 'now',
         company: {
           logo: null,
           role: 'Adjunct Professor · USF',
@@ -292,8 +305,7 @@
         ],
       },
       {
-        year: '2022',
-        rangeLabel: '2022 – 2023',
+        year: '2023',
         company: {
           logo: 'images/logos/earthshot.png',
           role: 'Product Design Lead · Earthshot Labs',
@@ -305,8 +317,7 @@
         ],
       },
       {
-        year: '2021',
-        rangeLabel: '2020 – 2022',
+        year: '2022',
         company: {
           logo: 'images/logos/ILM.png',
           role: 'UX Designer & UI Lead · ILM Immersive',
@@ -378,7 +389,6 @@ This team was lightning, existing at a magical moment when the stars aligned.`,
       },
       {
         year: '2017',
-        rangeLabel: '2016 – 2018',
         company: {
           logo: 'images/logos/oculus.png',
           role: 'UX Designer & Prototyper · Oculus',
@@ -417,7 +427,7 @@ Invented the interaction pattern for tactile moveable menus — letting users us
 
 Conceived, built, and managed constrvct.com — a 3D design tool and commerce site for creating custom clothing designs. 10,000+ users in 6 months. Techstars Boston 2013 alum.
 
-Presented work at SXSW, Eyeo, LeWeb Paris, NEXT Berlin, Maker Faire Rome, FITC Toronto. Concept work for Google Mexico, Swarovski, Hackster.io, Sols, Intel, and Resonance.`,
+Presented work at SXSW, Eyeo, LeWeb Paris, NEXT Berlin, Maker Faire Rome, FITC Toronto.`,
         },
         projects: [
           { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.jpg', title: 'ModaKit', desc: 'A modular toolkit for wearable computing.' },
@@ -463,7 +473,6 @@ UI/UX design and prototyping for online customization tools for 3D printing — 
       },
       {
         year: '2010',
-        rangeLabel: '2009 – 2010',
         company: {
           logo: 'images/logos/ciid.png',
           role: 'MA Interaction Design · CIID',
