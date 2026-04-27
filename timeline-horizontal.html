@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mary Huang : Timeline</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700,800" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+  <style>
+    html, body { height: 100%; overflow: hidden; }
+    body { background: #fafafa; }
+
+    .page-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 24px 40px 0;
+    }
+    .page-header h5 { margin: 0; font-weight: 700; letter-spacing: -0.01em; }
+    .page-header a { color: #555; text-decoration: none; font-size: 1.4rem; }
+    .page-header a:hover { color: #000; }
+
+    /* Year nav */
+    .year-nav {
+      display: flex;
+      gap: 4px;
+      padding: 18px 40px 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      border-bottom: 1px solid #eee;
+    }
+    .year-nav::-webkit-scrollbar { display: none; }
+    .year-btn {
+      flex: 0 0 auto;
+      background: none;
+      border: none;
+      font: inherit;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #aaa;
+      letter-spacing: 0.02em;
+      padding: 6px 14px;
+      cursor: pointer;
+      border-radius: 999px;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+    .year-btn:hover { color: #555; }
+    .year-btn.active {
+      color: #fff;
+      background: #000;
+    }
+
+    /* Scroll track */
+    .track {
+      display: flex;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      height: calc(100vh - 110px);
+    }
+    .track::-webkit-scrollbar { height: 8px; }
+    .track::-webkit-scrollbar-track { background: transparent; }
+    .track::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+    .panel {
+      flex: 0 0 100vw;
+      scroll-snap-align: start;
+      padding: 50px 80px 60px;
+      display: grid;
+      grid-template-columns: minmax(320px, 380px) 1fr;
+      gap: 60px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      position: relative;
+    }
+    .panel-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .panel-year {
+      font-size: 9rem;
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: #000;
+      margin: 0;
+    }
+    .panel-year .range {
+      display: block;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #999;
+      margin-top: 6px;
+    }
+    .company {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .company-logo {
+      height: 36px;
+      max-width: 160px;
+      margin-bottom: 6px;
+      object-fit: contain;
+      object-position: left center;
+      mix-blend-mode: multiply;
+    }
+    .company .role {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0;
+      color: #000;
+    }
+    .company .dates {
+      font-size: 1.2rem;
+      color: rgba(0,0,0,0.45);
+      margin: 0;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .company .blurb {
+      font-size: 1.4rem;
+      line-height: 1.6;
+      color: rgba(0,0,0,0.7);
+      margin: 6px 0 0;
+    }
+
+    .panel-projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px;
+      align-content: start;
+    }
+    .project-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+    .project-card img {
+      width: 100%;
+      display: block;
+      border-radius: 4px;
+      border: 1px solid #ececec;
+      box-shadow: 0 1px 2px rgba(0,0,0,0);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .project-card:hover img {
+      box-shadow: 0 7px 22px rgba(0,0,0,0.18);
+      transform: translateY(-2px);
+    }
+    .project-card .title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 12px 0 4px;
+      color: #000;
+    }
+    .project-card .desc {
+      font-size: 1.25rem;
+      line-height: 1.5;
+      color: rgba(0,0,0,0.6);
+      margin: 0;
+    }
+
+    /* Special "narrative" panel for 2026 */
+    .narrative {
+      grid-column: 1 / -1;
+      max-width: 720px;
+      font-size: 1.5rem;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+    }
+    .narrative .title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #000;
+      margin: 0 0 12px;
+    }
+
+    /* Hint to scroll */
+    .scroll-hint {
+      position: fixed;
+      bottom: 24px;
+      right: 32px;
+      font-size: 1.2rem;
+      color: rgba(0,0,0,0.4);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .scroll-hint.hidden { opacity: 0; }
+
+    @media (max-width: 900px) {
+      .panel {
+        grid-template-columns: 1fr;
+        padding: 32px 28px 40px;
+        gap: 32px;
+      }
+      .panel-year { font-size: 6rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <h5 class="title null">Mary Huang</h5>
+    <a href="about.html">about me</a>
+  </header>
+
+  <nav class="year-nav" id="yearNav"></nav>
+
+  <div class="track" id="track"></div>
+
+  <div class="scroll-hint" id="scrollHint">scroll →</div>
+
+  <script>
+    const data = [
+      {
+        year: '2026',
+        rangeLabel: 'now',
+        company: {
+          logo: null,
+          role: 'Adjunct Professor · USF',
+          dates: 'Jan 2026 – current',
+          blurb: 'I teach UI/UX Design at University of San Francisco. The students are a mix of design and CS majors. I emphasize fundamentals, prototyping, and where AI fits into the design process.',
+        },
+        narrative: {
+          title: "What's Next?",
+          html: `AI has opened up a new age of computing. All the wild ideas I've worked on in previous years are now straightforward.<br><br>I believe we must dream bigger dreams of The Good Future. More nature, more making, less screen time. Technology can finally fit within our lives in personal ways and empower all the unique things we want to do.<br><br>I'm experimenting on several concepts and also looking to join a team to explore this emerging space further.`,
+        },
+        projects: [],
+      },
+      {
+        year: '2024',
+        company: {
+          logo: 'images/logos/impulse.png',
+          role: 'Product Designer · Impulse Labs',
+          dates: 'Jun 2023 – Apr 2024',
+          blurb: 'Solo in-house UI/UX designer. Core interaction design for all MVP features, bridging the concept from the industrial design studio in London.',
+        },
+        projects: [
+          { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.png', title: 'Impulse Stove', desc: 'A cutting-edge 15kW induction stove with a novel knob interface.' },
+        ],
+      },
+      {
+        year: '2022',
+        rangeLabel: '2022 – 2023',
+        company: {
+          logo: 'images/logos/earthshot.png',
+          role: 'Product Design Lead · Earthshot Labs',
+          dates: 'Mar 2022 – Feb 2023',
+          blurb: 'Earthshot accelerates global reforestation by bridging carbon finance and ground operations with technology. I joined as the second designer to turn scrappy prototypes into functional tools.',
+        },
+        projects: [
+          { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.png', title: 'Biome', desc: 'ML and AR mobile platform for measuring rainforests.' },
+        ],
+      },
+      {
+        year: '2021',
+        rangeLabel: '2020 – 2022',
+        company: {
+          logo: 'images/logos/ILM.png',
+          role: 'UX Designer & UI Lead · ILM Immersive',
+          dates: 'May 2020 – Mar 2022',
+          blurb: 'First and only UI/UX designer at ILM Immersive — VR/AR story experiences and virtual production tools. Shipped the game UI in 5 months. This team was lightning.',
+        },
+        projects: [
+          { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.jpg', title: 'ILM Stagecraft', desc: 'iPad app for user-friendly immersive controls for virtual production.' },
+          { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.png', title: "Tales from the Galaxy's Edge", desc: 'Spatial and 2D UI/UX for the Star Wars VR adventure game.' },
+        ],
+      },
+      {
+        year: '2020',
+        companies: [
+          {
+            logo: 'images/logos/JGI.png',
+            role: 'UC Berkeley Joint Genome Institute',
+            dates: '2020 – 2021',
+            blurb: 'Using force-directed graphs to visualize virus genomes, in partnership with Dr. Russell Neches, computational biologist.',
+          },
+          {
+            logo: null,
+            role: 'Independent',
+            dates: '2020',
+            blurb: 'Personal exploratory work.',
+          },
+        ],
+        projects: [
+          { href: 'projects/viralnet/viralnet.html', img: 'images/thumbs/Viralnet_c.png', title: 'Viralnet', desc: 'Data visualization of virus genome relationships.' },
+          { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.png', title: 'VR Hand Gestures', desc: 'Exploration prototypes of hand gesture based UI.' },
+        ],
+      },
+      {
+        year: '2019',
+        companies: [
+          {
+            logo: 'images/logos/amazon.png',
+            role: 'UX Designer · Amazon (Made For You)',
+            dates: 'May 2019 – Oct 2019',
+            blurb: 'Designed the consumer mobile app and built the first version of the custom pattern generation engine. Two long-time friends had each had their startups acquired by Amazon and brought me on.',
+          },
+          {
+            logo: 'images/logos/endless.png',
+            role: 'UX Designer · Hack Computer',
+            dates: 'Feb 2019 – Jun 2019',
+            blurb: 'Designed learning mechanics, non-linear lesson progression, and a coding IDE for children ages 8–14. Weekly playtests with kids.',
+          },
+        ],
+        projects: [
+          { href: 'projects/Amazon/amazon.html', img: 'images/thumbs/Amazon_c2.jpg', title: 'Amazon Made For You', desc: 'Make custom t-shirts in 3D.' },
+          { href: 'projects/hack/hack.html', img: 'images/thumbs/Hack_c.png', title: 'Hack', desc: 'Linux platform for teaching kids to code.' },
+        ],
+      },
+      {
+        year: '2018',
+        company: {
+          logo: 'images/logos/shield.png',
+          role: 'UX Designer · Shield AI',
+          dates: 'Feb 2018 – Jun 2018',
+          blurb: 'Contracted with Shield right after their Series A while they were putting together their first product.',
+        },
+        projects: [
+          { href: 'projects/shield/shield.html', img: 'images/thumbs/Shield_c.png', title: 'Shield.ai', desc: 'Mobile & desktop apps for piloting and managing autonomous drones.' },
+        ],
+      },
+      {
+        year: '2017',
+        rangeLabel: '2016 – 2018',
+        company: {
+          logo: 'images/logos/oculus.png',
+          role: 'UX Designer & Prototyper · Oculus',
+          dates: 'Aug 2016 – Feb 2018',
+          blurb: 'Foundational VR interaction patterns for spatial navigation, avatar customization, controller mapping, and 2D/3D UI for PC and mobile VR.',
+        },
+        projects: [
+          { href: 'projects/quill_gallery/quill_gallery.html', img: 'images/thumbs/Quill_Gallery.png', title: 'Quill Gallery', desc: 'In-headset gallery for browsing and remixing Quill VR illustrations.' },
+        ],
+      },
+      {
+        year: '2016',
+        company: {
+          logo: 'images/logos/storystudio.png',
+          role: 'UX Designer · Oculus Story Studio',
+          dates: '2016',
+          blurb: 'I moved to the Bay Area to join a dream team of artists and engineers making animation in VR.',
+        },
+        projects: [
+          { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.png', title: 'Oculus Quill', desc: 'VR-native illustration and animation tool for immersive storytelling.' },
+        ],
+      },
+      {
+        year: '2015',
+        rangeLabel: '2011 – 2016',
+        company: {
+          logo: 'images/logos/continuum.png',
+          role: 'Founder & Design Lead · Continuum Fashion',
+          dates: 'May 2011 – Aug 2016',
+          blurb: 'Early innovator imagining the future of fashion with 3D technology. Techstars Boston 2013 alum.',
+        },
+        projects: [
+          { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.jpg', title: 'ModaKit', desc: 'A modular toolkit for wearable computing.' },
+          { href: 'projects/rose/rose.html', img: 'images/thumbs/Rose_c.png', title: 'Google Rose', desc: 'Generative fashion design.' },
+          { href: 'projects/constrvct/constrvct.html', img: 'images/thumbs/Constrvct_c.png', title: 'Constrvct', desc: 'Browser-based design tool for custom-printed dresses.' },
+          { href: 'projects/shoes/shoes.html', img: 'images/thumbs/Shoes.png', title: '3D Printed Shoes', desc: 'Experiments in 3D-printed footwear design.' },
+        ],
+      },
+      {
+        year: '2012',
+        companies: [
+          {
+            logo: 'images/logos/shapeways.png',
+            role: 'Product Designer · Shapeways',
+            dates: 'Jun 2011 – Jun 2012',
+            blurb: 'Second designer at Shapeways. The early days of 3D printing — we were at the epicenter of the excitement.',
+          },
+          {
+            logo: 'images/logos/continuum.png',
+            role: 'N12 Bikini Launch',
+            dates: 'June 2012',
+            blurb: 'Made the world\'s first 3D-printed bikini with a friend. We received a crazy amount of press, got invited to conferences, and were featured in museum exhibitions.',
+          },
+        ],
+        projects: [
+          { href: 'projects/shapeways/shapeways.html', img: 'images/thumbs/Shapeways.png', title: 'Shapeways', desc: 'Design tools for democratizing 3D design and custom products.' },
+          { href: 'projects/n12/n12.html', img: 'images/thumbs/N12.png', title: 'N12 Bikini', desc: "The world's first ready-to-wear, fully 3D-printed bikini." },
+        ],
+      },
+      {
+        year: '2011',
+        company: {
+          logo: 'images/logos/localprojects.png',
+          role: 'Interaction Designer · Local Projects',
+          dates: 'Jan 2011 – May 2011',
+          blurb: 'Moved to NYC to work at this award-winning design studio building interactive experiences for museums.',
+        },
+        projects: [
+          { href: 'projects/turtlelink/turtlelink.html', img: 'images/thumbs/Seaworld_c2.png', title: 'SeaWorld TurtleLink', desc: 'Interactive wall visualizing sea turtle journeys.' },
+        ],
+      },
+      {
+        year: '2010',
+        rangeLabel: '2009 – 2010',
+        company: {
+          logo: 'images/logos/ciid.png',
+          role: 'MA Interaction Design · CIID',
+          dates: 'Sep 2009 – Aug 2010',
+          blurb: 'Grad school in Copenhagen. Living in Denmark was an entire education in itself. My thesis on computational fashion was featured by Fast Co Design. Typeface was published at Siggraph and IEEE.',
+        },
+        projects: [
+          { href: 'projects/ddress/ddress.html', img: 'images/thumbs/Ddress.png', title: 'D.dress', desc: 'Fashion as software.' },
+          { href: 'projects/typeface/typeface.html', img: 'images/thumbs/Typeface.png', title: 'Typeface', desc: 'Type design + facial recognition.' },
+        ],
+      },
+    ];
+
+    const track = document.getElementById('track');
+    const yearNav = document.getElementById('yearNav');
+    const scrollHint = document.getElementById('scrollHint');
+
+    // Build year nav
+    data.forEach((d, i) => {
+      const b = document.createElement('button');
+      b.className = 'year-btn' + (i === 0 ? ' active' : '');
+      b.textContent = d.year;
+      b.dataset.idx = i;
+      b.addEventListener('click', () => goTo(i));
+      yearNav.appendChild(b);
+    });
+
+    // Build panels
+    data.forEach((d, i) => {
+      const panel = document.createElement('section');
+      panel.className = 'panel';
+      panel.dataset.idx = i;
+
+      const meta = document.createElement('div');
+      meta.className = 'panel-meta';
+
+      const yearEl = document.createElement('h1');
+      yearEl.className = 'panel-year';
+      yearEl.innerHTML = d.year + (d.rangeLabel ? `<span class="range">${d.rangeLabel}</span>` : '');
+      meta.appendChild(yearEl);
+
+      const companies = d.companies || (d.company ? [d.company] : []);
+      companies.forEach(co => {
+        const c = document.createElement('div');
+        c.className = 'company';
+        if (co.logo) {
+          const img = document.createElement('img');
+          img.className = 'company-logo';
+          img.src = co.logo;
+          img.alt = '';
+          c.appendChild(img);
+        }
+        const role = document.createElement('h2');
+        role.className = 'role';
+        role.textContent = co.role;
+        c.appendChild(role);
+
+        const dates = document.createElement('p');
+        dates.className = 'dates';
+        dates.textContent = co.dates;
+        c.appendChild(dates);
+
+        if (co.blurb) {
+          const blurb = document.createElement('p');
+          blurb.className = 'blurb';
+          blurb.textContent = co.blurb;
+          c.appendChild(blurb);
+        }
+        meta.appendChild(c);
+      });
+      panel.appendChild(meta);
+
+      const projects = document.createElement('div');
+      projects.className = 'panel-projects';
+
+      if (d.narrative) {
+        const n = document.createElement('div');
+        n.className = 'narrative';
+        n.innerHTML = `<h3 class="title">${d.narrative.title}</h3><p>${d.narrative.html}</p>`;
+        projects.appendChild(n);
+      }
+
+      d.projects.forEach(p => {
+        const a = document.createElement('a');
+        a.className = 'project-card';
+        a.href = p.href;
+        a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy"><h4 class="title">${p.title}</h4><p class="desc">${p.desc}</p>`;
+        projects.appendChild(a);
+      });
+      panel.appendChild(projects);
+
+      track.appendChild(panel);
+    });
+
+    function goTo(idx) {
+      const panel = track.children[idx];
+      if (panel) {
+        track.scrollTo({ left: panel.offsetLeft, behavior: 'smooth' });
+      }
+    }
+
+    // Track active panel
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && e.intersectionRatio > 0.6) {
+          const idx = Number(e.target.dataset.idx);
+          [...yearNav.children].forEach((b, i) => b.classList.toggle('active', i === idx));
+          // scroll the year nav so active is in view
+          const activeBtn = yearNav.children[idx];
+          if (activeBtn) {
+            const navRect = yearNav.getBoundingClientRect();
+            const btnRect = activeBtn.getBoundingClientRect();
+            if (btnRect.left < navRect.left + 40 || btnRect.right > navRect.right - 40) {
+              yearNav.scrollTo({ left: activeBtn.offsetLeft - navRect.width / 2 + btnRect.width / 2, behavior: 'smooth' });
+            }
+          }
+        }
+      });
+    }, { root: track, threshold: [0.6] });
+    [...track.children].forEach(p => observer.observe(p));
+
+    // Hide scroll hint after first scroll
+    let scrolled = false;
+    track.addEventListener('scroll', () => {
+      if (!scrolled && track.scrollLeft > 50) {
+        scrolled = true;
+        scrollHint.classList.add('hidden');
+      }
+    });
+
+    // Wheel: convert vertical scroll to horizontal on track
+    track.addEventListener('wheel', (e) => {
+      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        track.scrollLeft += e.deltaY;
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    // Keyboard arrows
+    document.addEventListener('keydown', (e) => {
+      const active = [...yearNav.children].findIndex(b => b.classList.contains('active'));
+      if (e.key === 'ArrowRight' && active < data.length - 1) goTo(active + 1);
+      if (e.key === 'ArrowLeft' && active > 0) goTo(active - 1);
+    });
+  </script>
+
+</body>
+</html>
