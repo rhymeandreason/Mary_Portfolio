@@ -18,6 +18,67 @@
       margin: 0 auto;
       padding: 0 24px 80px;
     }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 24px;
+      margin: 24px 0 32px;
+      font-size: 1.3rem;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .filter-btn {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font: inherit;
+      color: #555;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+    }
+    .filter-btn:hover { border-color: #888; color: #000; }
+    .filter-btn.active { background: #000; color: #fff; border-color: #000; }
+    .group-by {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+      color: #555;
+    }
+    .group-by select {
+      font: inherit;
+      padding: 5px 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+    }
+    .group-section { margin-bottom: 40px; }
+    .group-header {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      color: #000;
+    }
+    .group-header .count {
+      font-weight: 400;
+      color: #999;
+      font-size: 1.3rem;
+      margin-left: 8px;
+    }
+    .empty {
+      color: #999;
+      font-size: 1.4rem;
+      padding: 40px 0;
+      text-align: center;
+    }
     .masonry {
       column-count: 4;
       column-gap: 12px;
@@ -30,12 +91,14 @@
       border-radius: 3px;
       background: #ececec;
     }
-    .masonry img {
+    .masonry img,
+    .masonry video {
       width: 100%;
       display: block;
       transition: transform 0.4s ease, opacity 0.3s ease;
     }
-    .masonry a:hover img {
+    .masonry a:hover img,
+    .masonry a:hover video {
       transform: scale(1.03);
       opacity: 0.92;
     }
@@ -64,6 +127,21 @@
   </div>
 
   <div class="images-page">
+    <div class="controls">
+      <div class="filters" id="filters"></div>
+      <label class="group-by">Group by
+        <select id="groupBy">
+          <option value="none">None</option>
+          <option value="project">Project</option>
+          <option value="year">Date</option>
+          <option value="category">Category</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="gallery"></div>
+
+    <template id="items">
     <div class="masonry">
       <a href="projects/impulse/impulse.html"><img src="projects/impulse/stove1.png" alt="Impulse Stove" loading="lazy"></a>
       <a href="projects/biome/biome.html"><img src="projects/biome/Biome_main.jpg" alt="Biome" loading="lazy"></a>
@@ -126,8 +204,126 @@
       <a href="projects/turtlelink/turtlelink.html"><img src="projects/turtlelink/seaworld5.jpg" alt="SeaWorld" loading="lazy"></a>
       <a href="projects/typeface/typeface.html"><img src="projects/typeface/typeface_poster.jpg" alt="Typeface poster" loading="lazy"></a>
       <a href="projects/gestures/gestures.html"><img src="projects/gestures/Steering_Wheel_small.gif" alt="Gesture steering wheel" loading="lazy"></a>
+      <a href="projects/tales/tales.html"><video src="projects/tales/gauntlet_walkthrough.mp4" autoplay muted loop playsinline></video></a>
+      <a href="projects/tales/tales.html"><video src="projects/tales/MCT_Compass_web.mp4" autoplay muted loop playsinline></video></a>
+      <a href="projects/tales/tales.html"><video src="projects/tales/AllKit_web.mp4" autoplay muted loop playsinline></video></a>
+      <a href="projects/quill_gallery/quill_gallery.html"><video src="projects/quill_gallery/Quill_Viewer_shorter.mp4" autoplay muted loop playsinline></video></a>
+      <a href="projects/storyboard/storyboard.html"><video src="projects/storyboard/storyboard_drawing.mp4" autoplay muted loop playsinline></video></a>
+      <a href="projects/Amazon/amazon.html"><video src="projects/Amazon/monogram.mp4" autoplay muted loop playsinline></video></a>
+      <a href="projects/turtlelink/turtlelink.html"><video src="projects/turtlelink/TurtleLink1.mp4" autoplay muted loop playsinline></video></a>
+      <a href="projects/typeface/typeface.html"><video src="projects/typeface/TYPEFACE_alpha.mp4" autoplay muted loop playsinline></video></a>
+      <a href="projects/gestures/gestures.html"><video src="projects/gestures/Picture_Frame.mp4" autoplay muted loop playsinline></video></a>
+      <a href="projects/ar_ideas/ar_ideas.html"><video src="projects/ar_ideas/Fox_cards.mp4" autoplay muted loop playsinline></video></a>
     </div>
+    </template>
   </div>
+
+  <script>
+    const projectMeta = {
+      impulse:        { name: 'Impulse Stove',     year: 2024, cat: 'hardware' },
+      biome:          { name: 'Biome',             year: 2022, cat: 'web/mobile' },
+      stagecraft:     { name: 'ILM Stagecraft',    year: 2021, cat: 'tools' },
+      tales:          { name: 'Tales from the Galaxy’s Edge', year: 2021, cat: 'spatial' },
+      gestures:       { name: 'VR Hand Gestures',  year: 2020, cat: 'spatial' },
+      viralnet:       { name: 'Viralnet',          year: 2020, cat: 'tools' },
+      storyboard:     { name: 'Storyboard',        year: 2020, cat: 'tools' },
+      codeland:       { name: 'Coding Land',       year: 2020, cat: 'web/mobile' },
+      Amazon:         { name: 'Amazon Made For You', year: 2019, cat: 'web/mobile' },
+      hack:           { name: 'Hack',              year: 2019, cat: 'web/mobile' },
+      shield:         { name: 'Shield.ai',         year: 2018, cat: 'web/mobile' },
+      quill_gallery:  { name: 'Quill Gallery',     year: 2017, cat: 'spatial' },
+      quill:          { name: 'Oculus Quill',      year: 2016, cat: 'spatial' },
+      ar_ideas:       { name: 'AR Ideas',          year: 2017, cat: 'spatial' },
+      modakit:        { name: 'ModaKit',           year: 2014, cat: 'hardware' },
+      rose:           { name: 'Google Rose',       year: 2014, cat: 'fashion' },
+      constrvct:      { name: 'Constrvct',         year: 2013, cat: 'fashion' },
+      shoes:          { name: '3D Printed Shoes',  year: 2013, cat: 'fashion' },
+      shapeways:      { name: 'Shapeways',         year: 2012, cat: '3D' },
+      n12:            { name: 'N12 Bikini',        year: 2012, cat: 'fashion' },
+      turtlelink:     { name: 'SeaWorld TurtleLink', year: 2011, cat: 'spatial' },
+      ddress:         { name: 'D.dress',           year: 2010, cat: 'fashion' },
+      typeface:       { name: 'Typeface',          year: 2010, cat: 'tools' },
+    };
+
+    const categories = ['all', 'web/mobile', 'spatial', '3D', 'hardware', 'fashion', 'tools'];
+
+    // Tag every item from the template using its href
+    const tpl = document.getElementById('items').content;
+    const items = [...tpl.querySelectorAll('a')].map(a => {
+      const m = a.getAttribute('href').match(/projects\/([^/]+)\//);
+      const slug = m ? m[1] : '';
+      const meta = projectMeta[slug] || { name: slug, year: 0, cat: 'tools' };
+      return { el: a, slug, ...meta };
+    });
+
+    // Build filter buttons
+    const filtersEl = document.getElementById('filters');
+    let activeFilter = 'all';
+    categories.forEach(cat => {
+      const b = document.createElement('button');
+      b.className = 'filter-btn' + (cat === 'all' ? ' active' : '');
+      b.textContent = cat;
+      b.dataset.cat = cat;
+      b.addEventListener('click', () => {
+        activeFilter = cat;
+        filtersEl.querySelectorAll('.filter-btn').forEach(x => x.classList.toggle('active', x.dataset.cat === cat));
+        render();
+      });
+      filtersEl.appendChild(b);
+    });
+
+    const groupByEl = document.getElementById('groupBy');
+    groupByEl.addEventListener('change', render);
+    const galleryEl = document.getElementById('gallery');
+
+    function render() {
+      const filtered = items.filter(i => activeFilter === 'all' || i.cat === activeFilter);
+      galleryEl.innerHTML = '';
+
+      if (!filtered.length) {
+        galleryEl.innerHTML = '<div class="empty">Nothing here yet.</div>';
+        return;
+      }
+
+      const groupBy = groupByEl.value;
+
+      if (groupBy === 'none') {
+        const m = document.createElement('div');
+        m.className = 'masonry';
+        filtered.forEach(i => m.appendChild(i.el.cloneNode(true)));
+        galleryEl.appendChild(m);
+        return;
+      }
+
+      const groups = new Map();
+      filtered.forEach(i => {
+        const key = groupBy === 'project' ? i.name : groupBy === 'year' ? String(i.year) : i.cat;
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(i);
+      });
+
+      const sortedKeys = [...groups.keys()].sort((a, b) => {
+        if (groupBy === 'year') return Number(b) - Number(a);
+        return a.localeCompare(b);
+      });
+
+      sortedKeys.forEach(key => {
+        const section = document.createElement('section');
+        section.className = 'group-section';
+        const h = document.createElement('h3');
+        h.className = 'group-header';
+        h.innerHTML = `${key} <span class="count">${groups.get(key).length}</span>`;
+        section.appendChild(h);
+        const m = document.createElement('div');
+        m.className = 'masonry';
+        groups.get(key).forEach(i => m.appendChild(i.el.cloneNode(true)));
+        section.appendChild(m);
+        galleryEl.appendChild(section);
+      });
+    }
+
+    render();
+  </script>
 
 </body>
 </html>
