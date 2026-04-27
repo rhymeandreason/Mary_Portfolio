@@ -80,6 +80,12 @@
       position: relative;
       border-right: 1px solid #eee;
     }
+    .panel.wide {
+      width: 1080px;
+    }
+    .panel.wide .panel-projects {
+      grid-template-columns: repeat(2, 1fr);
+    }
     .panel:last-child { border-right: none; }
     .panel-meta {
       display: flex;
@@ -383,6 +389,7 @@
       {
         year: '2015',
         rangeLabel: '2011 – 2016',
+        wide: true,
         company: {
           logo: 'images/logos/continuum.png',
           role: 'Founder & Design Lead · Continuum Fashion',
@@ -462,7 +469,7 @@
     // Build panels
     data.forEach((d, i) => {
       const panel = document.createElement('section');
-      panel.className = 'panel';
+      panel.className = 'panel' + (d.wide ? ' wide' : '');
       panel.dataset.idx = i;
 
       const meta = document.createElement('div');
