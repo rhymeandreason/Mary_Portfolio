@@ -89,10 +89,23 @@
       break-inside: avoid;
       overflow: hidden;
       border-radius: 3px;
-      background: #ececec;
+      background:
+        linear-gradient(110deg, #ececec 30%, #f5f5f5 50%, #ececec 70%);
+      background-size: 200% 100%;
+      animation:
+        itemIn 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) forwards,
+        shimmer 1.6s linear infinite;
       opacity: 0;
       transform: translateY(8px) scale(0.98);
+      position: relative;
+    }
+    .masonry a.loaded {
+      background: #ececec;
       animation: itemIn 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+    }
+    @keyframes shimmer {
+      0% { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
     }
     @keyframes itemIn {
       to { opacity: 1; transform: translateY(0) scale(1); }
@@ -108,13 +121,19 @@
     .masonry video {
       width: 100%;
       display: block;
-      transition: transform 0.4s ease, opacity 0.3s ease;
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.4s ease;
     }
-    .masonry a:hover img,
-    .masonry a:hover video {
+    .masonry a.loaded img,
+    .masonry a.loaded video {
+      opacity: 1;
+    }
+    .masonry a.loaded:hover img,
+    .masonry a.loaded:hover video {
       transform: scale(1.03);
       opacity: 0.92;
     }
+    .masonry a video { min-height: 120px; }
     #tooltip {
       position: fixed;
       pointer-events: none;
@@ -390,6 +409,11 @@
     groupByEl.addEventListener('change', render);
     const galleryEl = document.getElementById('gallery');
 
+    function markLoaded(media) {
+      const a = media.closest('a');
+      if (a) a.classList.add('loaded');
+    }
+
     let renderToken = 0;
     async function render() {
       const myToken = ++renderToken;
@@ -416,7 +440,7 @@
       if (groupBy === 'none') {
         const m = document.createElement('div');
         m.className = 'masonry';
-        filtered.forEach((i, idx) => { const c = i.el.cloneNode(true); c.style.animationDelay = Math.min(idx * 18, 600) + 'ms'; m.appendChild(c); });
+        filtered.forEach((i, idx) => { const c = i.el.cloneNode(true); c.style.animationDelay = Math.min(idx * 18, 600) + 'ms'; const media = c.querySelector('img, video'); if (media) { if (media.tagName === 'IMG') { if (media.complete && media.naturalWidth) c.classList.add('loaded'); else media.addEventListener('load', () => markLoaded(media), { once: true }); media.addEventListener('error', () => markLoaded(media), { once: true }); } else { if (media.readyState >= 2) c.classList.add('loaded'); else media.addEventListener('loadeddata', () => markLoaded(media), { once: true }); media.addEventListener('error', () => markLoaded(media), { once: true }); } } m.appendChild(c); });
         galleryEl.appendChild(m);
         return;
       }
