@@ -61,7 +61,6 @@
       display: flex;
       overflow-x: auto;
       overflow-y: hidden;
-      scroll-snap-type: x mandatory;
       scroll-behavior: smooth;
       height: calc(100vh - 110px);
     }
@@ -70,16 +69,18 @@
     .track::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
 
     .panel {
-      flex: 0 0 100vw;
-      scroll-snap-align: start;
-      padding: 50px 80px 60px;
+      flex: 0 0 auto;
+      width: 720px;
+      padding: 50px 60px 60px;
       display: grid;
-      grid-template-columns: minmax(320px, 380px) 1fr;
-      gap: 60px;
+      grid-template-columns: minmax(280px, 320px) 1fr;
+      gap: 48px;
       box-sizing: border-box;
       overflow-y: auto;
       position: relative;
+      border-right: 1px solid #eee;
     }
+    .panel:last-child { border-right: none; }
     .panel-meta {
       display: flex;
       flex-direction: column;
@@ -202,12 +203,32 @@
     .scroll-hint.hidden { opacity: 0; }
 
     @media (max-width: 900px) {
-      .panel {
-        grid-template-columns: 1fr;
-        padding: 32px 28px 40px;
-        gap: 32px;
+      html, body { overflow: auto; height: auto; }
+      .track {
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: visible;
+        height: auto;
       }
+      .panel {
+        width: 100%;
+        flex: 0 0 auto;
+        grid-template-columns: 1fr;
+        padding: 40px 24px 48px;
+        gap: 32px;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        overflow-y: visible;
+      }
+      .panel:last-child { border-bottom: none; }
       .panel-year { font-size: 6rem; }
+      .year-nav {
+        position: sticky;
+        top: 0;
+        background: #fafafa;
+        z-index: 10;
+      }
+      .scroll-hint { display: none; }
     }
   </style>
 </head>
@@ -505,44 +526,66 @@
       track.appendChild(panel);
     });
 
+    const isMobile = () => window.matchMedia('(max-width: 900px)').matches;
+
     function goTo(idx) {
       const panel = track.children[idx];
-      if (panel) {
+      if (!panel) return;
+      if (isMobile()) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
         track.scrollTo({ left: panel.offsetLeft, behavior: 'smooth' });
       }
     }
 
-    // Track active panel
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting && e.intersectionRatio > 0.6) {
-          const idx = Number(e.target.dataset.idx);
-          [...yearNav.children].forEach((b, i) => b.classList.toggle('active', i === idx));
-          // scroll the year nav so active is in view
-          const activeBtn = yearNav.children[idx];
-          if (activeBtn) {
-            const navRect = yearNav.getBoundingClientRect();
-            const btnRect = activeBtn.getBoundingClientRect();
-            if (btnRect.left < navRect.left + 40 || btnRect.right > navRect.right - 40) {
-              yearNav.scrollTo({ left: activeBtn.offsetLeft - navRect.width / 2 + btnRect.width / 2, behavior: 'smooth' });
-            }
-          }
+    // Track active panel based on which one is closest to the focal point
+    function updateActive() {
+      let activeIdx = 0;
+      let bestDist = Infinity;
+      if (isMobile()) {
+        const focalY = window.scrollY + 200;
+        [...track.children].forEach((p, i) => {
+          const top = p.offsetTop + track.offsetTop;
+          const dist = Math.abs(top - focalY);
+          if (top <= focalY && dist < bestDist) { bestDist = dist; activeIdx = i; }
+        });
+      } else {
+        const focalX = track.scrollLeft + 120;
+        [...track.children].forEach((p, i) => {
+          const left = p.offsetLeft;
+          const dist = Math.abs(left - focalX);
+          if (left <= focalX + 50 && dist < bestDist) { bestDist = dist; activeIdx = i; }
+        });
+      }
+      [...yearNav.children].forEach((b, i) => b.classList.toggle('active', i === activeIdx));
+      const activeBtn = yearNav.children[activeIdx];
+      if (activeBtn) {
+        const navRect = yearNav.getBoundingClientRect();
+        const btnRect = activeBtn.getBoundingClientRect();
+        if (btnRect.left < navRect.left + 40 || btnRect.right > navRect.right - 40) {
+          yearNav.scrollTo({ left: activeBtn.offsetLeft - navRect.width / 2 + btnRect.width / 2, behavior: 'smooth' });
         }
-      });
-    }, { root: track, threshold: [0.6] });
-    [...track.children].forEach(p => observer.observe(p));
+      }
+    }
 
-    // Hide scroll hint after first scroll
+    // Hide scroll hint + update active year as user scrolls
     let scrolled = false;
-    track.addEventListener('scroll', () => {
-      if (!scrolled && track.scrollLeft > 50) {
+    function onScroll() {
+      const offset = isMobile() ? window.scrollY : track.scrollLeft;
+      if (!scrolled && offset > 50) {
         scrolled = true;
         scrollHint.classList.add('hidden');
       }
-    });
+      updateActive();
+    }
+    track.addEventListener('scroll', onScroll);
+    window.addEventListener('scroll', onScroll);
+    window.addEventListener('resize', updateActive);
+    updateActive();
 
-    // Wheel: convert vertical scroll to horizontal on track
+    // Wheel: convert vertical scroll to horizontal on desktop only
     track.addEventListener('wheel', (e) => {
+      if (isMobile()) return;
       if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
         track.scrollLeft += e.deltaY;
         e.preventDefault();
