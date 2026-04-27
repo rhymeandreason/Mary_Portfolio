@@ -223,7 +223,6 @@
       <a href="projects/quill/quill.html"><img src="projects/quill/wesley.jpg" alt="Quill Wesley" loading="lazy"></a>
       <a href="projects/biome/biome.html"><img src="projects/biome/field_work.jpg" alt="Biome field work" loading="lazy"></a>
       <a href="projects/shoes/shoes.html"><img src="projects/shoes/shoe_butterfly.jpg" alt="Butterfly shoe" loading="lazy"></a>
-      <a href="projects/shoes/shoes.html"><img src="projects/shoes/printing-leaf-shoe.jpg" alt="Printing leaf shoe" loading="lazy"></a>
       <a href="projects/n12/n12.html"><img src="projects/n12/N12-hallway1.jpg" alt="N12 hallway" loading="lazy"></a>
       <a href="projects/n12/n12.html"><img src="projects/n12/N12-bikini-seamless-detail1.jpg" alt="N12 seamless detail" loading="lazy"></a>
       <a href="projects/rose/rose.html"><img src="projects/rose/generate-2.jpg" alt="Rose generate" loading="lazy"></a>
@@ -400,7 +399,10 @@
         await new Promise(r => setTimeout(r, 180));
         if (myToken !== renderToken) return;
       }
-      const filtered = items.filter(i => activeFilter === 'all' || i.cats.includes(activeFilter));
+      const filtered = items
+        .filter(i => activeFilter === 'all' || i.cats.includes(activeFilter))
+        .map(i => ({ ...i, _sortKey: -i.year + (Math.random() - 0.5) * 2 }))
+        .sort((a, b) => a._sortKey - b._sortKey);
       galleryEl.innerHTML = '';
       galleryEl.classList.remove('fading');
 
