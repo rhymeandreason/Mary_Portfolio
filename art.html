@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mary Huang : Art</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <link rel="icon" type="image/png" href="images/favicon.png">
+
+  <style>
+    .images-page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 24px;
+      margin: 24px 0 32px;
+      font-size: 1.3rem;
+    }
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .filter-btn {
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      padding: 6px 14px;
+      font: inherit;
+      color: #555;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      text-transform: capitalize;
+    }
+    .filter-btn:hover { border-color: #888; color: #000; }
+    .filter-btn.active { background: #000; color: #fff; border-color: #000; }
+    .group-by {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+      color: #555;
+    }
+    .group-by select {
+      font: inherit;
+      padding: 5px 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      background: #fff;
+    }
+    .group-section { margin-bottom: 40px; }
+    .group-header {
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee;
+      color: #000;
+    }
+    .group-header .count {
+      font-weight: 400;
+      color: #999;
+      font-size: 1.3rem;
+      margin-left: 8px;
+    }
+    .empty {
+      color: #999;
+      font-size: 1.4rem;
+      padding: 40px 0;
+      text-align: center;
+    }
+    .masonry {
+      column-count: 4;
+      column-gap: 12px;
+    }
+    .masonry a {
+      display: block;
+      margin: 0 0 12px;
+      break-inside: avoid;
+      overflow: hidden;
+      border-radius: 3px;
+      background: #ececec;
+      position: relative;
+    }
+    .masonry img,
+    .masonry video {
+      display: block;
+      width: 100%;
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    .masonry a:hover img,
+    .masonry a:hover video {
+      transform: scale(1.03);
+      opacity: 0.92;
+    }
+    .masonry a video { min-height: 120px; }
+
+    #tooltip {
+      position: fixed;
+      pointer-events: none;
+      background: rgba(20, 20, 20, 0.94);
+      color: #fff;
+      font-size: 1.2rem;
+      line-height: 1.4;
+      padding: 8px 12px;
+      border-radius: 4px;
+      max-width: 260px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 1000;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    }
+    #tooltip.visible { opacity: 1; transform: translateY(0); }
+    #tooltip .tt-title { font-weight: 700; display: block; margin-bottom: 2px; }
+    #tooltip .tt-desc { color: rgba(255,255,255,0.8); }
+
+    @media (max-width: 1100px) {
+      .masonry { column-count: 3; }
+    }
+    @media (max-width: 750px) {
+      .masonry { column-count: 2; }
+    }
+    @media (max-width: 450px) {
+      .masonry { column-count: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container index">
+    <div class="row top-nav">
+      <div class="one-half column">
+        <h5 class="title null">Mary Huang &mdash; Art</h5>
+      </div>
+      <div class="one-half column nav-right">
+        <p><a href="about.html">about me</a></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="images-page">
+    <div class="controls">
+      <div class="filters" id="filters"></div>
+      <label class="group-by">Group by
+        <select id="groupBy">
+          <option value="project">Project</option>
+          <option value="category">Category</option>
+          <option value="none" selected>None</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="gallery"></div>
+
+    <template id="items">
+    <div class="masonry">
+
+      <!-- Color & Craft -->
+      <a href="https://colorandcraft.co" target="_blank" rel="noopener"><img src="images/thumbs/Colorandcraft_c.png" alt="Color & Craft" loading="lazy"></a>
+      <a href="https://colorandcraft.co" target="_blank" rel="noopener"><img src="projects/colorandcraft/plant-wall.jpg" alt="Paper plant wall" loading="lazy"></a>
+      <a href="https://colorandcraft.co" target="_blank" rel="noopener"><img src="projects/colorandcraft/maranta hero.jpg" alt="Maranta paper plant" loading="lazy"></a>
+      <a href="https://colorandcraft.co" target="_blank" rel="noopener"><img src="projects/colorandcraft/brevirimosa close up.jpg" alt="Brevirimosa close up" loading="lazy"></a>
+      <a href="https://colorandcraft.co" target="_blank" rel="noopener"><img src="projects/colorandcraft/polka-dot-plant.jpeg" alt="Polka dot plant" loading="lazy"></a>
+
+
+      <!-- Data Collection -->
+      <a href="projects/data_collection/"><img src="projects/data_collection/gallery.jpg" alt="Exploring the ubiquity of personal data logging and privacy" loading="lazy"></a>
+  <!--
+      <a href="projects/data_collection/"><img src="projects/data_collection/map-negligee.jpg" alt="Exploring the ubiquity of personal data logging and privacy" loading="lazy"></a>
+      <a href="projects/data_collection/"><img src="projects/data_collection/map-negligee-closeup2.jpg" alt="Exploring the ubiquity of personal data logging and privacy" loading="lazy"></a>
+      <a href="projects/data_collection/"><img src="projects/data_collection/mary-card.png" alt="Exploring the ubiquity of personal data logging and privacy" loading="lazy"></a>
+      <a href="projects/data_collection/"><img src="projects/data_collection/gina-card.png" alt="Exploring the ubiquity of personal data logging and privacy" loading="lazy"></a>
+      <a href="projects/data_collection/"><img src="projects/data_collection/oscar-card.png" alt="Exploring the ubiquity of personal data logging and privacy" loading="lazy"></a>
+      <a href="projects/data_collection/"><img src="projects/data_collection/oscar-shirt.jpg" alt="Exploring the ubiquity of personal data logging and privacy" loading="lazy"></a>
+-->
+      <a href="projects/data_collection/"><img src="projects/data_collection/gina-shirt.jpg" alt="Exploring the ubiquity of personal data logging and privacy" loading="lazy"></a>
+      <a href="projects/data_collection/"><video src="projects/data_collection/mary-1export.m4v" autoplay muted loop playsinline></video></a>
+
+      <!-- AR Ideas -->
+      <a href="projects/ar_ideas/ar_ideas.html"><video src="projects/ar_ideas/Fox_cards.mp4" autoplay muted loop playsinline></video></a>
+
+      <!-- Local Lore -->
+      <a href="projects/lore/lore.html"><img src="projects/lore/Lore_main.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <!--
+      <a href="projects/lore/lore.html"><img src="projects/lore/Sketches.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <a href="projects/lore/lore.html"><img src="projects/lore/2018.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <a href="projects/lore/lore.html"><img src="projects/lore/2019.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+    -->
+      <a href="projects/lore/lore.html"><img src="projects/lore/SF map.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <a href="projects/lore/lore.html"><img src="projects/lore/SF icons.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <a href="projects/lore/lore.html"><img src="projects/lore/SF_places.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <!--
+      <a href="projects/lore/lore.html"><img src="projects/lore/oakland_places.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <a href="projects/lore/lore.html"><img src="projects/lore/map styles.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+    -->
+      <a href="projects/lore/lore.html"><img src="projects/lore/clues.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <a href="projects/lore/lore.html"><img src="projects/lore/mobile sketch.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <a href="projects/lore/lore.html"><img src="projects/lore/mobile sketch 2.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+
+      <!-- Typeface -->
+      <a href="projects/typeface/typeface.html"><video src="projects/typeface/TYPEFACE_alpha.mp4" autoplay muted loop playsinline></video></a>
+      <a href="projects/typeface/typeface.html"><img src="projects/typeface/typeface-screencap-1.jpg" alt="Type + Facial Recognition" loading="lazy"></a>
+      <a href="projects/typeface/typeface.html"><img src="projects/typeface/typeface-screencap-3.jpg" alt="Type + Facial Recognition" loading="lazy"></a>
+<!--
+      <a href="projects/typeface/typeface.html"><img src="projects/typeface/typeface-screencap-5.jpg" alt="Type + Facial Recognition" loading="lazy"></a>
+      <a href="projects/typeface/typeface.html"><img src="projects/typeface/typeface-screencap-7.jpg" alt="Type + Facial Recognition" loading="lazy"></a>
+
+      <a href="projects/typeface/typeface.html"><img src="projects/typeface/typeface-screencap-9.jpg" alt="Type + Facial Recognition" loading="lazy"></a>
+-->
+      <a href="projects/typeface/typeface.html"><img src="projects/typeface/typeface-writing-1.jpg" alt="Type + Facial Recognition" loading="lazy"></a>
+
+      <!-- N12 Bikini -->
+      <a href="projects/n12/n12.html"><img src="projects/n12/N12-bikini-set-top.jpg" alt="3D printed textile" loading="lazy"></a>
+      <a href="projects/n12/n12.html"><img src="projects/n12/N12-detail.jpg" alt="3D printed textile" loading="lazy"></a>
+      <!--
+      <a href="projects/n12/n12.html"><img src="projects/n12/N12-bikini-seamless2.jpg" alt="3D printed textile" loading="lazy"></a>
+      <a href="projects/n12/n12.html"><img src="projects/n12/N12-bikini-seamless-detail1.jpg" alt="3D printed textile" loading="lazy"></a>
+    -->
+      <a href="projects/n12/n12.html"><img src="projects/n12/N12-hallway1.jpg" alt="3D printed textile" loading="lazy"></a>
+      <a href="projects/n12/n12.html"><img src="projects/n12/N12-white_detail.jpg" alt="3D printed textile" loading="lazy"></a>
+
+      <!-- 3D Printed Shoes -->
+      <a href="projects/shoes/shoes.html"><img src="projects/shoes/Daphne-Leaves-1.jpg" alt="Daphne shoe" loading="lazy"></a>
+      <a href="projects/shoes/shoes.html"><img src="projects/shoes/Laurel-pump.jpg" alt="Laurel pump" loading="lazy"></a>
+      <a href="projects/shoes/shoes.html"><img src="projects/shoes/Laurel-shoe-on-model.jpg" alt="Laurel on model" loading="lazy"></a>
+      <a href="projects/shoes/shoes.html"><img src="projects/shoes/Laurel_timelapse2.gif" alt="Laurel timelapse" loading="lazy"></a>
+      <a href="projects/shoes/shoes.html"><img src="projects/shoes/Strvct-wedge-black.jpg" alt="Strvct wedge" loading="lazy"></a>
+      <a href="projects/shoes/shoes.html"><img src="projects/shoes/shoe_butterfly.jpg" alt="Butterfly shoe" loading="lazy"></a>
+      <a href="projects/shoes/shoes.html"><img src="projects/shoes/shoe_black_main.jpg" alt="Black shoe" loading="lazy"></a>
+      <a href="projects/shoes/shoes.html"><img src="projects/shoes/Laurel-Tree-sandal.jpg" alt="Laurel tree sandal" loading="lazy"></a>
+
+      <!-- Constrvct -->
+      <a href="projects/constrvct/constrvct.html"><img src="projects/constrvct/CONSTRVCT_composite1.jpg" alt="Digital to physical dress" loading="lazy"></a>
+      <a href="projects/constrvct/constrvct.html"><img src="projects/constrvct/GeekChic.jpg" alt="Photoshoot at MIT" loading="lazy"></a>
+      <a href="projects/constrvct/constrvct.html"><img src="projects/constrvct/smithsonian_edit.jpg" alt="Beautiful Users show at Smithsonian Cooper-Hewitt" loading="lazy"></a>
+      <a href="projects/constrvct/constrvct.html"><img src="projects/constrvct/constrvct_community_designs1.jpg" alt="Constrvct.com community designs" loading="lazy"></a>
+      <!--
+      <a href="projects/constrvct/constrvct.html"><img src="projects/constrvct/constrvct_community_designs2.jpg" alt="Constrvct.com community designs" loading="lazy"></a>
+    -->
+      <a href="projects/constrvct/constrvct.html"><img src="projects/constrvct/felicia-constrvct-dress.png" alt="Felicia Day Constrvct dress" loading="lazy"></a>
+      <a href="projects/constrvct/constrvct.html"><img src="projects/constrvct/nervous-print-pattern.jpg" alt="Nervous System print pattern" loading="lazy"></a>
+      <a href="projects/constrvct/constrvct.html"><video src="projects/constrvct/Screencap_6_2015.mp4" autoplay muted loop playsinline></video></a>
+
+      <!-- D.dress -->
+      <a href="projects/ddress/ddress.html"><img src="projects/ddress/Ddress-selected1.jpg" alt="Computational couture" loading="lazy"></a>
+      <a href="projects/ddress/ddress.html"><img src="projects/ddress/Ddress-selected2.jpg" alt="Computational couture" loading="lazy"></a>
+      <a href="projects/ddress/ddress.html"><img src="projects/ddress/Ddress-selected3.jpg" alt="Computational couture" loading="lazy"></a>
+      <a href="projects/ddress/ddress.html"><img src="projects/ddress/dress1.jpg" alt="Computational couture" loading="lazy"></a>
+      <a href="projects/ddress/ddress.html"><img src="projects/ddress/dress2.jpg" alt="Computational couture" loading="lazy"></a>
+      <a href="projects/ddress/ddress.html"><img src="projects/ddress/dress3.jpg" alt="Computational couture" loading="lazy"></a>
+
+      <!-- ModaKit -->
+      <a href="projects/modakit/modakit.html"><img src="projects/modakit/MODA_slides.jpg" alt="Modular prototyping system for wearable tech" loading="lazy"></a>
+      <a href="projects/modakit/modakit.html"><img src="projects/modakit/MODA_slides1.jpg" alt="Modular prototyping system for wearable tech" loading="lazy"></a>
+      <a href="projects/modakit/modakit.html"><img src="projects/modakit/MODA_slides2.jpg" alt="Modular prototyping system for wearable tech" loading="lazy"></a>
+      <a href="projects/modakit/modakit.html"><img src="projects/modakit/MODA_slides4.jpg" alt="Modular prototyping system for wearable tech" loading="lazy"></a>
+
+      <!-- Google Rose -->
+      <a href="projects/rose/rose.html"><img src="projects/rose/rose-main.png" alt="Generative fashion design" loading="lazy"></a>
+<!--
+      <a href="projects/rose/rose.html"><img src="projects/rose/rose_runway_poster.png" alt="Generative fashion design" loading="lazy"></a>
+    -->
+      <a href="projects/rose/rose.html"><img src="projects/rose/rose-sketch.png" alt="Generative fashion design" loading="lazy"></a>
+      <a href="projects/rose/rose.html"><video src="projects/rose/Rose_Step4.m4v" autoplay muted loop playsinline></video></a>
+      <a href="projects/rose/rose.html"><img src="projects/rose/rose_step2_poster.png" alt="Generative fashion design" loading="lazy"></a>
+      <!--
+      <a href="projects/rose/rose.html"><img src="projects/rose/generate-0.jpg" alt="Generative fashion design" loading="lazy"></a>
+      <a href="projects/rose/rose.html"><img src="projects/rose/generate-1.jpg" alt="Generative fashion design" loading="lazy"></a>
+      <a href="projects/rose/rose.html"><img src="projects/rose/generate-2.jpg" alt="Generative fashion design" loading="lazy"></a>
+-->
+
+      <!-- Shapeways -->
+      <a href="projects/shapeways/shapeways.html"><video src="projects/shapeways/yuniku.m4v" autoplay muted loop playsinline alt="Custom 3D printed ceramics"></video></a>
+      <a href="projects/shapeways/shapeways.html"><img src="projects/shapeways/sake1.jpg" alt="Custom 3D printed ceramics" loading="lazy"></a>
+      <a href="projects/shapeways/shapeways.html"><img src="projects/shapeways/sake2.jpg" alt="Custom 3D printed ceramics" loading="lazy"></a>
+      <a href="projects/shapeways/shapeways.html"><img src="projects/shapeways/sake3.jpg" alt="Custom 3D printed ceramics" loading="lazy"></a>
+  <!--
+      <a href="projects/shapeways/shapeways.html"><img src="projects/shapeways/sake4.jpg" alt="Shapeways sake" loading="lazy"></a>
+  -->
+      <a href="projects/shapeways/shapeways.html"><img src="projects/shapeways/vibe_white.jpg" alt="Soundcloud generated phone case" loading="lazy"></a>
+      <a href="projects/shapeways/shapeways.html"><img src="projects/shapeways/vibe_group.jpg" alt="Soundcloud generated phone case" loading="lazy"></a>
+
+
+      <!-- Westfield -->
+      <a href="projects/westfield/westfield.html"><img src="projects/westfield/sculpture_front.jpg" alt="Concept for large scale outdoor sculpture" loading="lazy"></a>
+      <a href="projects/westfield/westfield.html"><img src="projects/westfield/sculpture_2.jpg" alt="Concept for large scale outdoor sculpture" loading="lazy"></a>
+      <a href="projects/westfield/westfield.html"><img src="projects/westfield/sculpture_3.jpg" alt="Concept for large scale outdoor sculpture" loading="lazy"></a>
+      <a href="projects/westfield/westfield.html"><img src="projects/westfield/sculpture_night1.jpg" alt="Concept for large scale outdoor sculpture" loading="lazy"></a>
+      <a href="projects/westfield/westfield.html"><img src="projects/westfield/sculpture_night2.jpg" alt="Concept for large scale outdoor sculpture" loading="lazy"></a>
+      <a href="projects/westfield/westfield.html"><img src="projects/westfield/sculpture-parts.jpg" alt="Concept for large scale outdoor sculpture" loading="lazy"></a>
+      <a href="projects/westfield/westfield.html"><img src="projects/westfield/fabrication1.jpg" alt="Concept for large scale outdoor sculpture" loading="lazy"></a>
+      <a href="projects/westfield/westfield.html"><img src="projects/westfield/fabrication4.jpg" alt="Concept for large scale outdoor sculpture" loading="lazy"></a>
+
+    </div>
+    </template>
+  </div>
+
+  <script>
+    const projectMeta = {
+      colorandcraft: { name: 'Color & Craft',         year: 2026, cats: ['craft'] },
+      ar_ideas:      { name: 'AR Board Game Prototype',              year: 2019, cats: ['ar'] },
+      data_collection: { name: 'Data Collection',     year: 2014, cats: ['fashion', 'sketches'], caption: 'Exploring the ubiquity of personal data logging and privacy' },
+      lore:          { name: 'Local Lore',            year: 2019, cats: ['sketches'], caption: 'A location-based scavenger hunt game set in San Francisco.' },
+      typeface:      { name: 'Typeface',              year: 2011, cats: ['typography'], caption: 'Type + Facial Recognition' },
+      n12:           { name: 'N12 Bikini',            year: 2013, cats: ['fashion', '3d-printing'], caption: '3D printed textile' },
+      shoes:         { name: '3D Printed Shoes',      year: 2014, cats: ['fashion', '3d-printing'] },
+      constrvct:     { name: 'Constrvct',             year: 2014, cats: ['fashion'] },
+      ddress:        { name: 'D.dress',               year: 2011, cats: ['fashion'], caption: 'Computational couture' },
+      modakit:       { name: 'ModaKit',               year: 2014, cats: ['fashion'], caption: 'Modular prototyping system for wearable tech' },
+      rose:          { name: 'Google Rose',           year: 2015, cats: ['fashion'], caption: 'Generative fashion design' },
+      shapeways:     { name: 'Shapeways',             year: 2013, cats: ['3d-printing'] },
+      westfield:     { name: 'Westfield',              year: 2015, cats: ['sculpture'], caption: 'Concept for large scale outdoor sculpture' },
+    };
+
+    const categories = ['all', 'fashion', '3d-printing', 'ar', 'sketches', 'typography', 'craft', 'sculpture'];
+
+    function slugFromHref(href) {
+      if (href.startsWith('http')) return 'colorandcraft';
+      const m = href.match(/projects\/([^/]+)\//);
+      return m ? m[1] : '';
+    }
+
+    const tpl = document.getElementById('items').content;
+    const items = [...tpl.querySelectorAll('a')].map(a => {
+      const slug = slugFromHref(a.getAttribute('href'));
+      const meta = projectMeta[slug] || { name: slug, year: 0, cats: [] };
+      return { el: a, slug, name: meta.name, year: meta.year, cats: meta.cats };
+    });
+
+    const filtersEl = document.getElementById('filters');
+    let activeFilter = 'all';
+    categories.forEach(cat => {
+      const b = document.createElement('button');
+      b.className = 'filter-btn' + (cat === 'all' ? ' active' : '');
+      b.textContent = cat.replace('-', ' ');
+      b.dataset.cat = cat;
+      b.addEventListener('click', () => {
+        activeFilter = cat;
+        filtersEl.querySelectorAll('.filter-btn').forEach(x => x.classList.toggle('active', x.dataset.cat === cat));
+        render();
+      });
+      filtersEl.appendChild(b);
+    });
+
+    const groupByEl = document.getElementById('groupBy');
+    groupByEl.addEventListener('change', render);
+    const galleryEl = document.getElementById('gallery');
+
+    // Stable per-project order for grouping
+    const projectOrder = ['colorandcraft','ar_ideas','lore','data_collection','typeface','n12','shoes','constrvct','ddress','modakit','rose','shapeways','westfield'];
+
+    function render() {
+      const filtered = items.filter(i => activeFilter === 'all' || i.cats.includes(activeFilter));
+      galleryEl.innerHTML = '';
+      if (!filtered.length) {
+        galleryEl.innerHTML = '<div class="empty">Nothing here yet.</div>';
+        return;
+      }
+      const groupBy = groupByEl.value;
+
+      if (groupBy === 'none') {
+        const m = document.createElement('div');
+        m.className = 'masonry';
+        filtered.forEach(i => m.appendChild(i.el.cloneNode(true)));
+        galleryEl.appendChild(m);
+        return;
+      }
+
+      const groups = new Map();
+      filtered.forEach(i => {
+        const keys = groupBy === 'project' ? [i.slug] : i.cats;
+        keys.forEach(key => {
+          if (!groups.has(key)) groups.set(key, []);
+          groups.get(key).push(i);
+        });
+      });
+
+      const sortedKeys = [...groups.keys()].sort((a, b) => {
+        if (groupBy === 'project') {
+          return projectOrder.indexOf(a) - projectOrder.indexOf(b);
+        }
+        return a.localeCompare(b);
+      });
+
+      sortedKeys.forEach(key => {
+        const section = document.createElement('section');
+        section.className = 'group-section';
+        const h = document.createElement('h3');
+        h.className = 'group-header';
+        const label = groupBy === 'project' ? (projectMeta[key]?.name || key) : key.replace('-', ' ');
+        h.innerHTML = `${label} <span class="count">${groups.get(key).length}</span>`;
+        section.appendChild(h);
+        const m = document.createElement('div');
+        m.className = 'masonry';
+        groups.get(key).forEach(i => m.appendChild(i.el.cloneNode(true)));
+        section.appendChild(m);
+        galleryEl.appendChild(section);
+      });
+    }
+
+    render();
+
+    // Tooltip
+    const tooltip = document.createElement('div');
+    tooltip.id = 'tooltip';
+    tooltip.innerHTML = '<span class="tt-title"></span><span class="tt-desc"></span>';
+    document.body.appendChild(tooltip);
+    const tipTitle = tooltip.querySelector('.tt-title');
+    const tipDesc = tooltip.querySelector('.tt-desc');
+
+    galleryEl.addEventListener('mouseover', e => {
+      const a = e.target.closest('a');
+      if (!a || !galleryEl.contains(a)) return;
+      const media = a.querySelector('img, video');
+      if (!media) return;
+      const slug = slugFromHref(a.getAttribute('href'));
+      const meta = projectMeta[slug];
+      tipTitle.textContent = meta ? meta.name : '';
+      tipDesc.textContent = media.getAttribute('alt') || (meta && meta.caption) || '';
+      tooltip.classList.add('visible');
+    });
+    galleryEl.addEventListener('mouseout', e => {
+      if (!e.relatedTarget || !e.target.closest('a')?.contains(e.relatedTarget)) {
+        tooltip.classList.remove('visible');
+      }
+    });
+    galleryEl.addEventListener('mousemove', e => {
+      if (!tooltip.classList.contains('visible')) return;
+      const pad = 14;
+      let x = e.clientX + pad;
+      let y = e.clientY + pad;
+      const r = tooltip.getBoundingClientRect();
+      if (x + r.width + 8 > window.innerWidth) x = e.clientX - r.width - pad;
+      if (y + r.height + 8 > window.innerHeight) y = e.clientY - r.height - pad;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+    });
+  </script>
+
+</body>
+</html>
