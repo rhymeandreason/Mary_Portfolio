@@ -97,10 +97,15 @@
     .masonry video {
       display: block;
       width: 100%;
-      transition: transform 0.4s ease, opacity 0.4s ease;
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.25s ease;
     }
-    .masonry a:hover img,
-    .masonry a:hover video {
+    .masonry a.loaded img,
+    .masonry a.loaded video {
+      opacity: 1;
+    }
+    .masonry a.loaded:hover img,
+    .masonry a.loaded:hover video {
       transform: scale(1.03);
       opacity: 0.92;
     }
@@ -548,6 +553,7 @@
       if (item.external) { a.target = '_blank'; a.rel = 'noopener'; }
 
       let media;
+      const markLoaded = () => a.classList.add('loaded');
       if (item.isVideo) {
         media = document.createElement('video');
         media.muted = true;
@@ -555,12 +561,18 @@
         media.setAttribute('muted', '');
         media.setAttribute('loop', '');
         media.setAttribute('playsinline', '');
+        media.addEventListener('loadeddata', markLoaded, { once: true });
+        media.addEventListener('error', markLoaded, { once: true });
       } else {
         media = document.createElement('img');
         media.loading = 'lazy';
+        media.addEventListener('load', markLoaded, { once: true });
+        media.addEventListener('error', markLoaded, { once: true });
       }
       if (item.caption) media.setAttribute('alt', item.caption);
       media.src = item.src;
+      // Already-cached media may finish before we attach the listener
+      if (!item.isVideo && media.complete && media.naturalWidth) markLoaded();
       a.appendChild(media);
       return a;
     }
