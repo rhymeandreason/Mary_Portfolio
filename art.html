@@ -204,21 +204,19 @@
 
       <!-- Local Lore -->
       <a href="projects/lore/lore.html"><img src="projects/lore/Lore_main.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
-      <!--
-      <a href="projects/lore/lore.html"><img src="projects/lore/Sketches.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
-      <a href="projects/lore/lore.html"><img src="projects/lore/2018.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
-      <a href="projects/lore/lore.html"><img src="projects/lore/2019.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
-      <a href="projects/lore/lore.html"><img src="projects/lore/SF icons.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
-    -->
-      <a href="projects/lore/lore.html"><img src="projects/lore/SF map.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
-      <a href="projects/lore/lore.html"><img src="projects/lore/SF_places.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
-      <!--
-      <a href="projects/lore/lore.html"><img src="projects/lore/oakland_places.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
-      <a href="projects/lore/lore.html"><img src="projects/lore/map styles.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
-      <a href="projects/lore/lore.html"><img src="projects/lore/clues.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
-      -->
+      <a href="projects/lore/lore.html"><video src="projects/lore/map-zoom.m4v" autoplay muted loop playsinline></video></a>
       <a href="projects/lore/lore.html"><img src="projects/lore/mobile sketch.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
       <a href="projects/lore/lore.html"><img src="projects/lore/mobile sketch 2.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+
+      <!-- Lore Illustrations -->
+      <a data-slug="lore_illustrations" href="projects/lore/lore.html"><img src="projects/lore/SF map.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <a data-slug="lore_illustrations" href="projects/lore/lore.html"><img src="projects/lore/SF_places.jpg" alt="A location-based scavenger hunt game set in San Francisco." loading="lazy"></a>
+      <!--
+      <a data-slug="lore_illustrations" href="projects/lore/lore.html"><img src="projects/lore/SF icons.jpg" alt="Illustrations from the Local Lore project." loading="lazy"></a>
+      <a data-slug="lore_illustrations" href="projects/lore/lore.html"><img src="projects/lore/oakland_places.jpg" alt="Illustrations from the Local Lore project." loading="lazy"></a>
+      <a data-slug="lore_illustrations" href="projects/lore/lore.html"><img src="projects/lore/map styles.jpg" alt="Illustrations from the Local Lore project." loading="lazy"></a>
+      <a data-slug="lore_illustrations" href="projects/lore/lore.html"><img src="projects/lore/clues.jpg" alt="Illustrations from the Local Lore project." loading="lazy"></a>
+    -->
 
       <!-- Typeface -->
       <a href="projects/typeface/typeface.html"><video src="projects/typeface/TYPEFACE_alpha.mp4" autoplay muted loop playsinline></video></a>
@@ -329,20 +327,21 @@
       ar_ideas:      { name: 'AR Board Game Prototype',              year: 2019, cats: ['interactive'] },
       data_collection: { name: 'Data Collection',     year: 2014, cats: ['fashion'], caption: 'Exploring the ubiquity of personal data logging and privacy' },
       illuminate:    { name: 'Illuminate',            year: 2017, cats: ['fashion'], caption: 'Modern dance performance about the Big Bang, collab with Indelible Dance' },
-      art:           { name: 'Pablo',                 year: 2020, cats: ['craft'] },
-      lore:          { name: 'Local Lore',            year: 2019, cats: ['interactive'], caption: 'A location-based scavenger hunt game set in San Francisco.' },
+      art:           { name: 'Pablo',                 year: 2020, cats: ['craft', 'illustration'] },
+      lore:          { name: 'Local Lore',            year: 2019, cats: ['interactive'], caption: 'A location-based scavenger hunt game set in San Francisco and Oakland.' },
+      lore_illustrations: { name: 'Lore Illustrations', year: 2019, cats: ['illustration'], caption: 'Illustrations from the Local Lore project.' },
       typeface:      { name: 'Typeface',              year: 2011, cats: ['interactive'], caption: 'Type + Facial Recognition' },
       n12:           { name: 'N12 Bikini',            year: 2013, cats: ['fashion', '3d-printing'], caption: '3D printed textile' },
       shoes:         { name: '3D Printed Shoes',      year: 2014, cats: ['fashion', '3d-printing'] },
       constrvct:     { name: 'Constrvct',             year: 2014, cats: ['fashion'] },
       ddress:        { name: 'D.dress',               year: 2011, cats: ['fashion'], caption: 'Computational couture' },
-      modakit:       { name: 'ModaKit',               year: 2014, cats: ['fashion'], caption: 'Modular prototyping system for wearable tech' },
-      rose:          { name: 'Google Rose',           year: 2015, cats: ['fashion'], caption: 'Generative fashion design' },
+      modakit:       { name: 'ModaKit',               year: 2014, cats: ['fashion', "interactive"], caption: 'Modular prototyping system for wearable tech' },
+      rose:          { name: 'Google Rose',           year: 2015, cats: ['fashion', "interactive"], caption: 'Generative fashion design' },
       shapeways:     { name: 'Shapeways',             year: 2013, cats: ['3d-printing'] },
       westfield:     { name: 'Westfield',              year: 2015, cats: ['sculpture'], caption: 'Concept for large scale outdoor sculpture' },
     };
 
-    const categories = ['all', 'fashion', '3d-printing', 'interactive', 'craft', 'sculpture'];
+    const categories = ['all', 'fashion', '3d-printing', 'interactive', 'craft', 'sculpture', 'illustration'];
 
     function slugFromHref(href) {
       if (href.startsWith('http')) return 'colorandcraft';
@@ -352,7 +351,7 @@
 
     const tpl = document.getElementById('items').content;
     const items = [...tpl.querySelectorAll('a')].map(a => {
-      const slug = slugFromHref(a.getAttribute('href'));
+      const slug = a.dataset.slug || slugFromHref(a.getAttribute('href'));
       const meta = projectMeta[slug] || { name: slug, year: 0, cats: [] };
       return { el: a, slug, name: meta.name, year: meta.year, cats: meta.cats };
     });
@@ -377,7 +376,7 @@
     const galleryEl = document.getElementById('gallery');
 
     // Stable per-project order for grouping
-    const projectOrder = ['colorandcraft','art','illuminate','ar_ideas','lore','data_collection','typeface','n12','shoes','constrvct','ddress','modakit','rose','shapeways','westfield'];
+    const projectOrder = ['colorandcraft','art','illuminate','ar_ideas','lore','lore_illustrations','data_collection','typeface','n12','shoes','constrvct','ddress','modakit','rose','shapeways','westfield'];
 
     function render() {
       const filtered = items.filter(i => activeFilter === 'all' || i.cats.includes(activeFilter));
@@ -398,7 +397,9 @@
 
       const groups = new Map();
       filtered.forEach(i => {
-        const keys = groupBy === 'project' ? [i.slug] : i.cats;
+        const keys = groupBy === 'project'
+          ? [i.slug]
+          : (activeFilter !== 'all' ? [activeFilter] : i.cats);
         keys.forEach(key => {
           if (!groups.has(key)) groups.set(key, []);
           groups.get(key).push(i);
@@ -443,7 +444,7 @@
       if (!a || !galleryEl.contains(a)) return;
       const media = a.querySelector('img, video');
       if (!media) return;
-      const slug = slugFromHref(a.getAttribute('href'));
+      const slug = a.dataset.slug || slugFromHref(a.getAttribute('href'));
       const meta = projectMeta[slug];
       tipTitle.textContent = meta ? meta.name : '';
       tipDesc.textContent = media.getAttribute('alt') || (meta && meta.caption) || '';
