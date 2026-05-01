@@ -21,10 +21,66 @@
       align-items: baseline;
       justify-content: space-between;
       padding: 24px 40px 0;
+      margin-bottom:50px;
     }
     .page-header h5 { margin: 0; font-weight: 700; letter-spacing: -0.01em; }
     .page-header a { color: #555; text-decoration: none; font-size: 1.4rem; }
     .page-header a:hover { color: #000; }
+
+    .view-toggle {
+      display: inline-flex;
+      gap: 4px;
+      background: #f0f0f0;
+      border-radius: 999px;
+      padding: 4px;
+    }
+    .view-toggle button {
+      background: none;
+      border: none;
+      font: inherit;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #777;
+      padding: 6px 16px;
+      cursor: pointer;
+      border-radius: 999px;
+      transition: color 0.2s ease, background 0.2s ease;
+      margin: 0px;
+    }
+    .view-toggle button:hover{
+      color:#111;
+    }
+    .view-toggle button.active {
+      color: #fff;
+      background: #000;
+    }
+
+    /* Selected Work grid */
+    .selected-work {
+      display: none;
+      padding: 30px 40px 60px;
+      height: calc(100vh - 70px);
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+    .selected-work.active { display: block; }
+    .selected-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px 28px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    @media (max-width: 1100px) {
+      .selected-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 800px) {
+      .selected-grid { grid-template-columns: repeat(2, 1fr); }
+      .selected-work { height: auto; }
+    }
+    @media (max-width: 500px) {
+      .selected-grid { grid-template-columns: 1fr; }
+    }
 
     /* Year nav */
     .year-nav {
@@ -188,7 +244,7 @@
       justify-content: space-between;
     }
     .project-card .title::after {
-      content: url('images/arrow_outward_20dp.svg');
+      //content: url('images/arrow_outward_20dp.svg');
       transition: transform 0.25s ease, color 0.25s ease;
       opacity: .35;
       height:20px;
@@ -270,12 +326,20 @@
 
   <header class="page-header">
     <h5 class="title null">Mary Huang</h5>
+    <div class="view-toggle" id="viewToggle">
+      <button data-view="timeline" class="active">Timeline</button>
+      <button data-view="selected">Selected Work</button>
+    </div>
     <a href="about.html">about me</a>
   </header>
 
   <nav class="year-nav" id="yearNav"></nav>
 
   <div class="track" id="track"></div>
+
+  <section class="selected-work" id="selectedWork">
+    <div class="selected-grid" id="selectedGrid"></div>
+  </section>
 
   <div class="scroll-hint" id="scrollHint">scroll →</div>
 
@@ -669,6 +733,39 @@ UI/UX design and prototyping for online customization tools for 3D printing — 
         e.preventDefault();
       }
     }, { passive: false });
+
+    // View toggle: Timeline vs Selected Work
+    const selectedProjects = [
+      { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.png', title: 'Impulse Stove', desc: 'A cutting-edge 15kW induction stove with a novel knob interface.' },
+      { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.png', title: 'Biome', desc: 'ML and AR mobile platform for measuring rainforests.' },
+      { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.png', title: "Star Wars: Tales from the Galaxy's Edge", desc: 'Spatial and 2D UI/UX for the Star Wars VR adventure game.' },
+      { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.jpg', title: 'ILM Stagecraft', desc: 'iPad app for user-friendly immersive controls for virtual production.' },
+      { href: 'projects/viralnet/viralnet.html', img: 'images/thumbs/Viralnet_c.png', title: 'Viralnet', desc: 'Data visualization of virus genome relationships.' },
+      { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.png', title: 'VR Hand Gestures', desc: 'Exploration prototypes of hand gesture based UI.' },
+      { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.png', title: 'Oculus Quill', desc: 'VR-native illustration and animation tool for immersive storytelling.' },
+      { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.jpg', title: 'ModaKit', desc: 'A modular toolkit for wearable computing.' },
+    ];
+    const selectedGrid = document.getElementById('selectedGrid');
+    selectedProjects.forEach(p => {
+      const a = document.createElement('a');
+      a.className = 'project-card';
+      a.href = p.href;
+      a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy"><h4 class="title">${p.title}</h4><p class="desc">${p.desc}</p>`;
+      selectedGrid.appendChild(a);
+    });
+
+    const viewToggle = document.getElementById('viewToggle');
+    const selectedWorkEl = document.getElementById('selectedWork');
+    viewToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-view]');
+      if (!btn) return;
+      [...viewToggle.children].forEach(b => b.classList.toggle('active', b === btn));
+      const showSelected = btn.dataset.view === 'selected';
+      selectedWorkEl.classList.toggle('active', showSelected);
+      track.style.display = showSelected ? 'none' : '';
+      yearNav.style.display = showSelected ? 'none' : '';
+      scrollHint.style.display = showSelected ? 'none' : '';
+    });
 
     // Keyboard arrows
     document.addEventListener('keydown', (e) => {
