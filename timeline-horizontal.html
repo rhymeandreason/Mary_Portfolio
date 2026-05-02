@@ -40,30 +40,29 @@
       font-weight: 800;
       font-size: clamp(8rem, 16vw, 22rem);
       line-height: 0.92;
-      letter-spacing: -0.04em;
+      letter-spacing: 0.02em;
       margin: 0;
       color: #000;
       text-transform: uppercase;
       max-width: 60%;
-      letter-spacing: 5%;
     }
     .hero-tagline {
-      font-size: 36px;
+      font-size: clamp(1.8rem, 3.4vw, 3.6rem);
       color: rgba(0,0,0,0.75);
       margin: 32px 0 0;
-      letter-spacing: 1%;
+      letter-spacing: 0.01em;
     }
     .hero-body {
       max-width: 460px;
       margin-left: auto;
-      margin-top:100px;
-      font-size: 22px;
+      margin-top: 100px;
+      font-size: clamp(1.5rem, 1.8vw, 2.2rem);
       line-height: 1.7;
       color: rgba(0,0,0,0.78);
     }
     .hero-body p { margin: 0 0 16px; }
     .hero-body p:last-child { margin-bottom: 0; }
-    @media (max-width: 900px) {
+    @media (max-width: 800px) {
       .hero { padding: 24px 24px 0; }
       .hero-name { max-width: 100%; font-size: clamp(5rem, 18vw, 12rem); }
       .hero-body { margin-top: 32px; max-width: 100%; }
@@ -85,7 +84,7 @@
       font-family: "futura-pt", sans-serif;
       font-size: 36px;
       font-weight: 700;
-      letter-spacing: 3%;
+      letter-spacing: 0.03em;
       text-transform: uppercase;
       color: #bdbdbd;
       padding: 4px 0;
@@ -100,7 +99,7 @@
       color: #000;
       border-bottom-color: #000;
     }
-    @media (max-width: 700px) {
+    @media (max-width: 800px) {
       .main-nav { gap: 24px; padding: 40px 24px 16px; flex-wrap: wrap; }
       .main-nav button { font-size: 1.5rem; }
     }
@@ -124,19 +123,17 @@
     }
     .art-filters { display: flex; flex-wrap: wrap; gap: 6px; }
     .filter-btn {
+      flex: 0 0 auto;
       background: none;
       border: 1px solid #ddd;
       border-radius: 999px;
-      padding: 6px 16px 10px 16px;
+      padding: 6px 16px 10px;
       font: inherit;
-      color: #555;
-      cursor: pointer;
-      letter-spacing: 2%;
-      text-transform: capitalize;
-
-      flex: 0 0 auto;
       font-size: 1.6rem;
       color: #aaa;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      text-transform: capitalize;
       transition: color 0.2s ease, background 0.2s ease;
     }
     .filter-btn:hover { border-color: #888; color: #000; }
@@ -211,8 +208,8 @@
     .lb-nav[disabled] { opacity: 0.2; cursor: default; }
 
     @media (max-width: 1100px) { .masonry { column-count: 3; } }
-    @media (max-width: 750px) { .masonry { column-count: 2; } .art-research { padding: 0 24px 60px; } }
-    @media (max-width: 450px) { .masonry { column-count: 1; } }
+    @media (max-width: 800px) { .masonry { column-count: 2; } .art-research { padding: 0 24px 60px; } }
+    @media (max-width: 500px) { .masonry { column-count: 1; } }
 
     .view-toggle {
       display: inline-flex;
@@ -482,7 +479,7 @@
     }
     .scroll-hint.hidden { opacity: 0; }
 
-    @media (max-width: 900px) {
+    @media (max-width: 800px) {
       html, body { overflow: auto; height: auto; }
       .track {
         flex-direction: column;
@@ -868,7 +865,7 @@ UI/UX design and prototyping for online customization tools for 3D printing — 
       track.appendChild(panel);
     });
 
-    const isMobile = () => window.matchMedia('(max-width: 900px)').matches;
+    const isMobile = () => window.matchMedia('(max-width: 800px)').matches;
 
     // Align company top with project top on compact desktop panels
     function alignCompactCompanies() {
