@@ -1,385 +1,1320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Mary Huang : Portfolio</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
-
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <title>Mary Huang : Timeline</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700" rel="stylesheet" type="text/css">
 
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
-  <link rel="stylesheet" href="css/main.css">
 
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
+  <style>
+    /* 62.5% root so 1rem = 10px (carried over from skeleton.css) */
+    html { font-size: 62.5%; box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: inherit; }
+    html, body { height: auto; }
+    body {
+      background: #fafafa;
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.5em;
+      line-height: 1.6;
+      color: rgba(0,0,0,0.85);
+      margin: 0;
+    }
+    img { max-width: 100%; }
+    a { color: inherit; }
+    button { font-family: inherit; }
 
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 24px 40px 0;
+    }
+    .page-header a { color: #555; text-decoration: none; font-size: 1.4rem; }
+    .page-header a:hover { color: #000; }
+    .header-links { display: inline-flex; gap: 14px; align-items: center; }
+    .header-links a { display: inline-flex; color: #777; }
+    .header-links a:hover { color: #000; }
 
-<style>
+    /* Hero */
+    .hero {
+      padding: 40px 60px 0;
+      max-width: 1400px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    .hero-name {
+      font-family: "futura-pt", sans-serif;
+      font-weight: 800;
+      font-size: clamp(8rem, 16vw, 22rem);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      margin: 0;
+      color: #000;
+      text-transform: uppercase;
+      max-width: 60%;
+    }
+    .hero-tagline {
+      font-size: clamp(1.8rem, 3.4vw, 3.6rem);
+      color: rgba(0,0,0,0.75);
+      margin: 32px 0 0;
+      letter-spacing: 0.01em;
+    }
+    .hero-body {
+      max-width: 460px;
+      margin-left: auto;
+      margin-top: 100px;
+      font-size: clamp(1.5rem, 1.8vw, 2.2rem);
+      line-height: 1.7;
+      color: rgba(0,0,0,0.78);
+    }
+    .hero-body p { margin: 0 0 16px; }
+    .hero-body p:last-child { margin-bottom: 0; }
+    @media (max-width: 800px) {
+      .hero-name { max-width: 100%; font-size: clamp(5rem, 18vw, 12rem); }
+      .hero-body { margin-top: 32px; max-width: 100%; line-height: 1.5; }
+    }
 
-</style>
+    /* Main tab nav (Selected Work / Timeline / Art & Research) */
+    .main-nav {
+      display: flex;
+      gap: 48px;
+      padding: 100px 60px 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    .main-nav button {
+      background: none;
+      border: none;
+      font: inherit;
+      font-family: "futura-pt", sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #bdbdbd;
+      padding: 4px 0;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      border-bottom: 4px solid transparent;
+      border-radius:0px;
+      height:60px;
+    }
+    .main-nav button:hover { color: #555; }
+    .main-nav button.active {
+      color: #000;
+      border-bottom-color: #000;
+    }
+    @media (max-width: 800px) {
+      .main-nav {
+        gap: 20px;
+        padding: 16px 20px;
+        flex-wrap: wrap;
+        margin-top:24px;
+        position: sticky;
+        top: 0;
+        background: #fafafa;
+        z-index: 30;
+        //border-bottom: 1px solid #eee;
+      }
+      .main-nav button { font-size: 1.5rem; height: 30px; padding: 0px; border-bottom-width: 3px; }
+    }
 
+    /* Art & Research gallery */
+    .art-research {
+      display: none;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 60px 80px;
+      box-sizing: border-box;
+    }
+    .art-research.active { display: block; }
+    .art-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 20px;
+      margin-bottom:40px;
+      font-size: 1.3rem;
+    }
+    .art-filters { display: flex; flex-wrap: wrap; gap: 10px; }
+    .filter-btn {
+      flex: 0 0 auto;
+      background: none;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      padding: 6px 16px 8px;
+      font: inherit;
+      font-size: 1.5rem;
+      color: #aaa;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      text-transform: capitalize;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+    .filter-btn:hover { border-color: #888; color: #000; }
+    .filter-btn.active { background: #000; color: #fff; border-color: #000; }
+
+@media (max-width: 800px) {
+  .art-controls{ margin-bottom: 24px;}
+  .art-filters{ gap:5px; overflow-x: auto; flex-wrap: nowrap; margin-top:12px;}
+  .filter-btn {padding: 4px 14px 4px; }
+}
+
+    .empty { color: #999; font-size: 1.4rem; padding: 40px 0; text-align: center; }
+    .masonry { column-count: 4; column-gap: 12px; }
+    .masonry a {
+      display: block;
+      margin: 0 0 12px;
+      break-inside: avoid;
+      overflow: hidden;
+      border-radius: 3px;
+      background: #ececec;
+      position: relative;
+    }
+    .masonry img, .masonry video {
+      display: block;
+      width: 100%;
+      opacity: 0;
+      transition: transform 0.4s ease, opacity 0.25s ease;
+    }
+    .masonry a.loaded img, .masonry a.loaded video { opacity: 1; }
+    .masonry a.loaded:hover img, .masonry a.loaded:hover video { transform: scale(1.03); opacity: 0.92; }
+    .masonry a video { min-height: 120px; }
+
+    #tooltip {
+      position: fixed; pointer-events: none;
+      background: rgba(20,20,20,0.94); color: #fff;
+      font-size: 1.2rem; line-height: 1.4;
+      padding: 8px 12px; border-radius: 4px; max-width: 260px;
+      opacity: 0; transform: translateY(4px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      z-index: 1000; box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    }
+    #tooltip.visible { opacity: 1; transform: translateY(0); }
+    #tooltip .tt-title { font-weight: 700; display: block; margin-bottom: 2px; }
+    #tooltip .tt-desc { color: rgba(255,255,255,0.8); }
+
+    .lightbox {
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,0.97);
+      display: none; align-items: center; justify-content: center;
+      z-index: 2000; opacity: 0; transition: opacity 0.2s ease;
+    }
+    .lightbox.open { display: flex; opacity: 1; }
+    .lightbox-stage { position: relative; max-width: 90vw; max-height: 88vh; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+    .lightbox-media { max-width: 90vw; max-height: 76vh; display: block; object-fit: contain; background: transparent; }
+    .lightbox-meta { color: #000; text-align: center; font-size: 1.3rem; max-width: 640px; line-height: 1.5; }
+    .lightbox-meta .lb-title { font-weight: 600; font-size: 1.4rem; letter-spacing: -0.01em; display: block; margin-bottom: 2px; color: #000; }
+    .lightbox-meta .lb-desc { color: rgba(0,0,0,0.55); }
+    .lightbox-meta .lb-more { display: inline-block; margin-top: 8px; margin-left: 12px; color: rgba(0,0,0,0.5); font-weight: 400; font-size: 1.2rem; }
+    .lightbox-meta .lb-more:hover { color: #000; }
+    .lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 60px; height: 60px; border: none; background: transparent;
+      color: rgba(0,0,0,0.4); font-size: 48px; line-height: 1; font-weight: 200;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: color 0.15s ease; font-family: inherit;
+    }
+    .lb-nav:hover { color: #000; }
+    .lb-prev { left: 32px; }
+    .lb-next { right: 32px; }
+    .lb-close {
+      position: absolute; top: 24px; right: 28px;
+      width: 60px; height: 60px; border: none; background: transparent;
+      color: rgba(0,0,0,0.5); font-size: 48px; font-weight: 300;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-family: inherit;
+    }
+    .lb-close:hover { color: #000; }
+    .lb-counter { position: absolute; top: 28px; left: 32px; color: rgba(0,0,0,0.4); font-size: 1.2rem; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+    .lb-nav[disabled] { opacity: 0.2; cursor: default; }
+
+    @media (max-width: 1100px) { .masonry { column-count: 3; } }
+    @media (max-width: 800px) { .masonry { column-count: 2; } }
+
+    .view-toggle {
+      display: inline-flex;
+      gap: 4px;
+      background: #f0f0f0;
+      border-radius: 999px;
+      padding: 4px;
+    }
+    .view-toggle button {
+      background: none;
+      border: none;
+      font: inherit;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #777;
+      padding: 6px 16px;
+      cursor: pointer;
+      border-radius: 999px;
+      transition: color 0.2s ease, background 0.2s ease;
+      margin: 0px;
+    }
+    .view-toggle button:hover{
+      color:#111;
+    }
+    .view-toggle button.active {
+      color: #fff;
+      background: #000;
+    }
+
+    /* Selected Work grid */
+    .selected-work {
+      display: none;
+      padding: 40px 60px 200px;
+      max-width: 1400px;
+      margin: 0 auto;
+      box-sizing: border-box;
+    }
+    .selected-work.active { display: block; }
+    .selected-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 48px 22px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    @media (max-width: 1100px) {
+      .selected-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 800px) {
+      .selected-grid { grid-template-columns: repeat(2, 1fr); }
+      .selected-work { height: auto; padding: 20px;}
+    }
+    @media (max-width: 500px) {
+      .selected-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Year nav */
+    .year-nav {
+      display: flex;
+      gap: 20px;
+      //padding: 18px 100px 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      //border-bottom: 1px solid #eee;
+
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 60px 15px;
+      box-sizing: border-box;
+    }
+    .year-nav::-webkit-scrollbar { display: none; }
+    .year-btn {
+      flex: 0 0 auto;
+      background: none;
+      border: none;
+      font: inherit;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #aaa;
+      letter-spacing: 0.02em;
+      padding: 6px 14px;
+      cursor: pointer;
+      border-radius: 999px;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+    .year-btn:hover { color: #555; }
+    .year-btn.active {
+      color: #fff;
+      background: #000;
+    }
+
+    /* Scroll track */
+    .track {
+      display: none;
+      overflow-x: auto;
+      overflow-y: visible;
+      scroll-behavior: smooth;
+      border-top: 1px solid #eee;
+    }
+    ::-webkit-scrollbar {
+    display: none;
+    }
+    .track.active { display: flex; }
+    .year-nav { display: none; }
+    .year-nav.active { display: flex; }
+    .track::-webkit-scrollbar { height: 8px; }
+    .track::-webkit-scrollbar-track { background: transparent; }
+    .track::-webkit-scrollbar-thumb { background: #ddd; border-radius: 4px; }
+
+    .panel {
+      flex: 0 0 auto;
+      width: 900px;
+      padding: 50px 100px 60px;
+      display: grid;
+      grid-template-columns: minmax(280px, 320px) 1fr;
+      gap: 48px;
+      box-sizing: border-box;
+      position: relative;
+      border-right: 1px solid #eee;
+    }
+    .panel:first-child {
+      padding-left: calc((100vw - min(100vw, 1400px)) / 2 + 60px);
+    }
+    .panel.wide {
+      width: 1180px;
+    }
+    .panel.wide .panel-projects {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .panel.compact {
+      grid-template-columns: minmax(280px, 320px) 1fr;
+      grid-template-rows: auto 1fr;
+      column-gap: 48px;
+      row-gap: 28px;
+    }
+    .panel.compact > .panel-year {
+      grid-column: 1 / -1;
+    }
+    .panel.compact .panel-projects {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .panel.compact .panel-projects .project-card {
+      max-width: 320px;
+    }
+    .panel:last-child { border-right: none; }
+    .panel-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .panel-year {
+      font-size: 9rem;
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      color: #000;
+      margin: 0;
+    }
+    .panel-year .range {
+      display: block;
+      font-size: 2rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #999;
+      margin-top: 6px;
+    }
+    .company {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .company-logo {
+      height: 60px;
+      max-width: 220px;
+      margin-bottom: 6px;
+      object-fit: contain;
+      object-position: left center;
+      mix-blend-mode: multiply;
+    }
+    .company .role {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 0;
+      color: #000;
+    }
+    .company .dates {
+      font-size: 1.2rem;
+      color: rgba(0,0,0,0.45);
+      margin: 0;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .company .blurb {
+      font-size: 16px;
+      line-height: 1.6;
+      color: rgba(0,0,0,0.7);
+      margin: 6px 0 0;
+    }
+
+    .panel-projects {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px;
+      align-content: start;
+    }
+    .project-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+    .project-card img {
+      width: 100%;
+      display: block;
+      border-radius: 4px;
+      border: 1px solid #ececec;
+      box-shadow: 0 1px 2px rgba(0,0,0,0);
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    }
+    .project-card.no-link { cursor: default; }
+    .project-card.no-link:hover img,
+    .project-card.no-link:hover .title::after { transform: none; box-shadow: none; opacity: inherit; }
+    .project-card.no-link .title::after { content: none; }
+    .project-card:hover img {
+      box-shadow: 0 7px 22px rgba(0,0,0,0.18);
+      transform: translateY(-2px);
+    }
+    .project-card .title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin: 12px 0 4px;
+      color: #000;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: space-between;
+    }
+    .project-card .title::after {
+      //content: url('images/arrow_outward_20dp.svg');
+      transition: transform 0.25s ease, color 0.25s ease;
+      opacity: .35;
+      height:20px;
+    }
+    .project-card:hover .title::after {
+      opacity: 1.0;
+    }
+    .title .img{
+      width: 20px;
+      float: right;
+    }
+    .project-card .desc {
+      font-size: 16px;
+      line-height: 1.5;
+      color: rgba(0,0,0,0.6);
+      margin: 0;
+    }
+
+    /* Special "narrative" panel for 2026 */
+    .narrative {
+      grid-column: 1 / -1;
+      max-width: 720px;
+      font-size: 1.5rem;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+    }
+    .narrative .title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #000;
+      margin: 0 0 12px;
+    }
+
+    /* Hint to scroll */
+    .scroll-hint {
+      position: fixed;
+      bottom: 24px;
+      right: 32px;
+      font-size: 1.2rem;
+      color: rgba(0,0,0,0.4);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .scroll-hint.hidden { opacity: 0; }
+
+    @media (max-width: 800px) {
+      html, body { overflow: visible; height: auto; }
+      .hero { padding: 30px 45px 0; }
+      .hero-body p{ width:95%;}
+      .art-research { padding: 0 20px 60px; }
+      .year-nav {
+        padding: 12px 20px;
+        position: sticky;
+        background: #fafafa;
+        z-index: 20;
+      }
+      .track {
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: visible;
+        height: auto;
+        padding-left: 0;
+      }
+      .panel,
+      .panel.compact {
+        width: 100%;
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        padding: 32px 30px 40px;
+        gap: 28px;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        overflow-y: visible;
+      }
+      .panel:first-child { padding-left: 30px; }
+      .panel:last-child { border-bottom: none; }
+      .panel-year { font-size: 6rem; order: 1; }
+      .panel-meta { display: contents; }
+      .panel-projects { order: 2; }
+      .panel-meta .company { order: 3; display: flex; flex-direction: column; gap: 6px; }
+      .scroll-hint { display: none; }
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Primary Page Layout
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <div class="container index">
-    <div class="row top-nav">
-      <div class="one-half column" >
-        <h5 class="title null">Mary Huang</h5>
-      </div>
-
-      <div class="one-half column nav-right" >
-        <p>
-          <a href="about.html">about me</a>
-        </p>
-      </div>
-    </div>
-
-
-
-    <div class="row selected-projects">
-<!--
-      <div class="four columns">
-        <a href="https://colorandcraft.co" target="blank" class="project-nav">
-            <img src="images/thumbs/Colorandcraft_c.png" class="rounded"/>
-          <h5 class="title">Color & Craft</h5>
-          <p class="description">
-            Modern crafting kits connecting digital and physical. Coming Soon!
-          </p>
-        </a>
-      </div>
--->
-      <div class="four columns">
-        <a href="projects/impulse/impulse.html" class="project-nav">
-          <img src="images/thumbs/Impulse_c.png" class="rounded"/>
-          <h5 class="title">Impulse</h5>
-          <p class="description">
-            Interaction design for a cutting-edge induction stove with a novel knob interface.
-          </p>
-        </a>
-      </div>
-
-      <div class="four columns">
-        <a href="projects/biome/biome.html" class="project-nav">
-          <img src="images/thumbs/Biome_c2.png" class="rounded"/>
-          <h5 class="title">Biome</h5>
-          <p class="description">
-            ML and AR mobile platform for global reforestation.
-          </p>
-        </a>
-      </div>
-
-      <div class="four columns">
-        <a href="projects/tales/tales.html" class="project-nav">
-          <img src="images/thumbs/Tales_c.png" />
-          <h5 class="title">Star Wars: Tales from the Galaxy's Edge</h5>
-          <p class="description">
-            Spatial and 2D UI/UX for the Star Wars VR adventure game.
-          </p>
-        </a>
-      </div>
-
-
-
-</div>
-
-    <div class="row selected-projects">
-
-
-      <div class="four columns">
-        <a href="projects/stagecraft/ilm.html" class="project-nav" >
-          <img src="images/thumbs/stagecraft_c2.jpg" class="rounded"/>
-          <h5 class="title">ILM Stagecraft</h5>
-          <p class="description">
-            iPad app for user-friendly immersive controls for virtual production.
-          </p>
-        </a>
-      </div>
-
-      <div class="four columns">
-        <a href="projects/quill/quill.html" class="project-nav">
-          <img src="images/thumbs/Quill_c.png" />
-          <h5 class="title">Oculus Quill</h5>
-          <p class="description">
-            VR-native illustration and animation tool for immersive storytelling.
-          </p>
-        </a>
-      </div>
-
-      <div class="four columns">
-        <a href="projects/gestures/gestures.html" class="project-nav" >
-          <img src="images/thumbs/Gestures_c.png" />
-          <h5 class="title">VR Hand Gestures</h5>
-          <p class="description">
-            Exploration prototypes of hand gesture based UI.
-          </p>
-        </a>
-      </div>
-
-
-    </div>
-
-<!--
-
-<div class="four columns">
-  <a href="projects/Amazon/amazon.html" class="project-nav" >
-    <img src="images/thumbs/Amazon_c2.jpg" />
-    <h5 class="title">Amazon Made For You</h5>
-    <p class="description">
-      Make custom t-shirts in 3D.
-    </p>
-  </a>
-</div>
-
-<div class="four columns">
-  <a href="projects/ig88/ig88.html" class="project-nav">
-    <img src="images/thumbs/star-wars-ig88.webp" />
-    <h5 class="title">The Bounty of Boggs Triff</h5>
-    <p class="description">
-      Story-driven VR HUD for the iconic IG-88.
-    </p>
-  </a>
-</div>
-
-<div class="four columns">
-  <a href="projects/turtlelink/turtlelink.html" class="project-nav">
-    <img src="images/thumbs/Seaworld_c2.png" />
-    <h5 class="title">Seaworld TurtleLink</h5>
-    <p class="description">
-      Interactive wall visualizing sea turtle journeys.
-    </p>
-  </a>
-</div>
-
-    <div id="wip">
-      <hr></hr>
-      <h5 class="title">Sketchbook & Ideas</h5>
-      <div class="row" >
-        <div class="four columns">
-          <a href="projects/codeland/codeland.html" class="project-nav">
-            <img src="images/thumbs/Codeland.png" />
-            <p class="description">
-              A platform for kids to learn and build things with code.
-            </p>
-          </a>
-        </div>
-
-
-        <div class="four columns">
-          <a href="projects/storyboard/storyboard.html" class="project-nav">
-            <img src="images/thumbs/Storyboard_c.png" />
-            <p class="description">
-              A minimal app for sketching across multiple frames.
-            </p>
-          </a>
-        </div>
-
-        <div class="four columns">
-          <a href="projects/lore/lore.html" class="project-nav">
-            <img src="images/thumbs/Lore.png" />
-            <p class="description">
-              Sketches for a mobile app for local storytelling.
-            </p>
-          </a>
-        </div>
-
-        <div class="three columns">
-          <a href="projects/shield/shield.html" class="project-nav">
-            <img src="images/thumbs/Shield_c.png" />
-            <h5 class="title">Shield.ai</h5>
-            <p class="description">
-              Mobile & desktop apps for piloting and managing autonomous drones.
-            </p>
-          </a>
-        </div>
-
-        <div class="four columns">
-          <a href="projects/viralnet/viralnet.html" class="project-nav" >
-            <img src="images/thumbs/Viralnet_c.png" />
-            <h5 class="title">Viralnet</h5>
-            <p class="description">
-              Data visualization for the UC Berkeley Genome Institute.
-            </p>
-          </a>
-        </div>
-
-
-      </div>
-    </div>
-
--->
-
-  <div id="more-projects">
-    <hr></hr>
-    <!--
-    <h5 class="title">More Work</h5>
--->
-    <div class="row" >
-
-      <div class="three columns">
-        <a href="projects/shield/shield.html" class="project-nav">
-          <img src="images/thumbs/Shield_c.png" />
-          <h6 class="small-title">Shield.ai</h6>
-        </a>
-      </div>
-
-      <div class="three columns">
-        <a href="projects/Amazon/amazon.html" class="project-nav" >
-          <img src="images/thumbs/Amazon_c2.jpg" />
-          <h6 class="small-title">Amazon Made For You</h6>
-        </a>
-      </div>
-
-      <div class="three columns">
-        <a href="projects/viralnet/viralnet.html" class="project-nav" >
-          <img src="images/thumbs/Viralnet_c.png" />
-          <h6 class="small-title">Viralnet</h6>
-        </a>
-      </div>
-
-      <div class="three columns">
-        <a href="projects/rose/rose.html" class="project-nav">
-          <img src="images/thumbs/Rose_c.png" />
-          <h6 class="small-title">Google Rose</h5>
-        </a>
-      </div>
-
-    </div>
-    <div class="row">
-
-      <div class="three columns">
-        <a href="projects/constrvct/constrvct.html" class="project-nav">
-          <img src="images/thumbs/Constrvct_c.png" />
-          <h6="small-title">Constrvct</h6>
-        </a>
-      </div>
-
-      <div class="three columns">
-        <a href="projects/codeland/codeland.html" class="project-nav">
-          <img src="images/thumbs/CodingLand_c.jpg" />
-          <h6 class="small-title">
-            Coding Land
-          </h6>
-        </a>
-      </div>
-
-      <div class="three columns">
-        <a href="projects/quill_gallery/quill_gallery.html" class="project-nav">
-          <img src="images/thumbs/Quill_Gallery.png" />
-          <h6 class="small-title">Quill Gallery</h6>
-        </a>
-      </div>
-
-<!--
-      <div class="three columns">
-        <a href="projects/lore/lore.html" class="project-nav">
-          <img src="images/thumbs/Local_Lore.jpg" />
-          <h6 class="small-title">
-            Local Lore
-          </h6>
-        </a>
-      </div>
-    -->
-    <div class="three columns">
-      <a href="projects/modakit/modakit.html" class="project-nav">
-        <img src="images/thumbs/ModaKit_c.jpg" />
-        <h6 class="small-title">
-          ModaKit
-        </h6>
+  <header class="page-header">
+    <div class="header-links">
+      <a href="https://www.linkedin.com/in/maryhuang1/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.28V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+      </a>
+      <a href="mailto:hello@mary-huang.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
       </a>
     </div>
+  </header>
 
-<!--
-      <div class="three columns">
-        <a href="projects/ddress/ddress.html" class="project-nav">
-          <img src="images/thumbs/Ddress.png" />
-          <h6 class="small-title">
-            D.dress
-          </h6>
-        </a>
+  <section class="hero">
+    <h1 class="hero-name">Mary<br>Huang</h1>
+    <p class="hero-tagline">interaction designer / technologist / artist</p>
+    <div class="hero-body">
+      <p>Hello!</p>
+      <p>I love making human-friendly experiences with new technologies.</p>
+      <p>I architect 0 → 1 core interaction principles, finesse key details, and figure out all the messy connecting bits to ship.</p>
+      <p>I've worked on over a dozen new launches at startups, big companies, and studios.</p>
+      <p>Here is my work, both professional and personal.</p>
+    </div>
+  </section>
+
+  <nav class="main-nav" id="viewToggle">
+    <button data-view="selected" class="active">Selected Work</button>
+    <button data-view="timeline">Timeline</button>
+    <button data-view="art">Art &amp; Research</button>
+  </nav>
+
+  <nav class="year-nav" id="yearNav"></nav>
+
+  <div class="track" id="track"></div>
+
+  <section class="selected-work active" id="selectedWork">
+    <div class="selected-grid" id="selectedGrid"></div>
+  </section>
+
+  <section class="art-research" id="artResearch">
+    <div class="art-controls">
+      <div class="art-filters" id="filters"></div>
+    </div>
+    <div id="gallery"></div>
+  </section>
+
+  <div class="scroll-hint" id="scrollHint">scroll →</div>
+
+  <script>
+    const data = [
+      {
+        year: '2026',
+        company: {
+          logo: null,
+          role: 'Adjunct Professor · USF',
+          dates: 'Jan 2026 – current',
+          blurb: `At USF, I teach UI/UX to a mix of designers and engineers. I focus on three pillars: design fundamentals for native mobile, prototyping and AI, and responsible accessibility and ethics.`,
+        },
+        narrative: {
+          title: "What's Next?",
+          html: `AI has opened up a new age of computing. All the wild ideas I've worked on in previous years are now straightforward.<br><br>I believe we must dream bigger dreams of The Good Future. More nature, more making, less screen time. Technology can finally fit within our lives in personal ways and empower all the unique things we want to do.<br><br>I'm experimenting on several concepts and also looking to join a team to explore this emerging space further.`,
+        },
+        projects: [],
+      },
+      {
+        year: '2024-2023',
+        company: {
+          logo: 'images/logos/impulse.png',
+          role: 'Product Designer · Impulse Labs',
+          dates: 'Jun 2023 – Apr 2024',
+          blurb: `I joined Impulse as the solo in-house UI/UX designer.
+
+          I did the core interaction design for all mvp features, bridging the concept from the industrial design studio in London. Launched at CES 2024.
+
+          Detents vs smooth knob, connecting wi-fi, temperature presets, and all that jazz. Ran user testing to validate usability.
+
+          I especially enjoyed working closely with the mechanical and firmware engineers on this team.`,
+        },
+        projects: [
+          { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.png', title: 'Impulse Stove', desc: 'A cutting-edge 15kW induction stove with a novel knob interface.' },
+        ],
+      },
+      {
+        year: '2022',
+        company: {
+          logo: 'images/logos/earthshot.png',
+          role: 'Product Design Lead · Earthshot Labs',
+          dates: 'Mar 2022 – Feb 2023',
+          blurb: `Earthshot Labs accelerates global reforestation by bridging carbon finance and ground operations with technology.
+
+          I joined as the second designer in the nascent days of turning scrappy prototypes into functional tools. We tested our app in a Panama rainforest and validated a 10x improvement over traditional field surveys.
+
+          We built the team culture quickly. In addition to product work, I also synthesized the brand studio team.`,
+        },
+        projects: [
+          { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.png', title: 'Biome', desc: 'ML and AR mobile platform for measuring rainforests.' },
+        ],
+      },
+      {
+        year: '2022-2020',
+        company: {
+          logo: 'images/logos/ILM.png',
+          role: 'UX Designer & UI Lead · ILM Immersive',
+          dates: 'May 2020 – Mar 2022',
+          blurb: `I was the first and only UI/UX designer ever hired at ILM, working on immersive story experiences in VR/AR and virtual production tools.
+
+I shipped all the UI for the game launch in November 2020 in just 5 months. Learned Unreal Engine and built shaders and blueprints. Championed player comprehension and accessibility. Then shipped it again with improvements from player feedback.
+
+This team was lightning, existing at a magical moment when the stars aligned.
+
+ILM will always be an inspiration of what a team culture can be. Where art and engineering are seamlessly intertwined in the joy of creating.`,
+        },
+        projects: [
+          { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.jpg', title: 'ILM Stagecraft', desc: 'iPad app for virtual production.' },
+          { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.png', title: "Tales from the Galaxy's Edge", desc: 'Spatial and 2D UI/UX for the Star Wars VR adventure game.' },
+        ],
+      },
+      {
+        year: '2020',
+        companies: [
+          {
+            logo: 'images/logos/JGI.png',
+            role: 'UC Berkeley Joint Genome Institute',
+            dates: '2020 – 2021',
+            blurb: `Using force-directed graphs to visualize virus genomes, in partnership with Dr. Russell Neches, computational biologist.`,
+          },
+          {
+            logo: null,
+            role: 'Independent',
+            dates: '2020',
+            blurb: `Personal Exploratory Work.`,
+          },
+        ],
+        projects: [
+          { href: 'projects/viralnet/viralnet.html', img: 'images/thumbs/Viralnet_c.png', title: 'Viralnet', desc: 'Data visualization of virus genome relationships.' },
+          { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.png', title: 'VR Hand Gestures', desc: 'Exploration prototypes of hand gesture based UI.' },
+        ],
+      },
+      {
+        year: '2019',
+        companies: [
+          {
+            logo: 'images/logos/amazon.png',
+            role: 'UX Designer · Amazon',
+            dates: 'May 2019 – Oct 2019',
+            blurb: `New launch product. I designed the consumer mobile app and built the first version of the custom pattern generation engine. Also got to work with two long-time friends who each had their startups acquired by Amazon, including the Bodylabs machine learning team`,
+          },
+          {
+            logo: 'images/logos/endless.png',
+            role: 'UX Designer · Hack Computer',
+            dates: 'Feb 2019 – Jun 2019',
+            blurb: `Designed learning mechanics, non-linear lesson progression, and a coding IDE tailored for children ages 8–14. Had too much fun making coding puzzles. Learned so much from these kids during weekly playtests.`,
+          },
+        ],
+        projects: [
+          { href: 'projects/Amazon/amazon.html', img: 'images/thumbs/Amazon_c2.jpg', title: 'Amazon Made For You', desc: 'Design custom fit t-shirts in 3D.' },
+          { href: 'projects/hack/hack.html', img: 'images/thumbs/Hack_c2.jpg', title: 'Hack', desc: 'Linux platform for teaching kids to code.' },
+        ],
+      },
+      {
+        year: '2018',
+        company: {
+          logo: 'images/logos/shield.png',
+          role: 'UX Designer · Shield AI',
+          dates: 'Feb 2018 – Jun 2018',
+          blurb: `I contracted with Shield right after their series A when they were putting together their first product.
+
+          They were making some of the first semi-autonomous flying drones. I worked closed with the engineers and head of product to figure out the core user flows and features.`,
+        },
+        projects: [
+          { href: 'projects/shield/shield.html', img: 'images/thumbs/Shield_c.png', title: 'Shield.ai', desc: 'Mobile & desktop apps for piloting and managing autonomous drones.' },
+        ],
+      },
+      {
+        year: '2017',
+        company: {
+          logo: 'images/logos/oculus.png',
+          role: 'UX Designer & Prototyper · Oculus',
+          dates: 'Aug 2016 – Feb 2018',
+          blurb: `
+
+Mainly worked on the First Time User Experience for the Oculus Go launch. Optimized controller usability and accessibility through user testing and precise iterations.
+
+Found that 50ms matters when a hardware button is double-mapped.
+`,
+        },
+        projects: [
+          { href: '', img: 'images/thumbs/oculusgo.webp', title: 'Oculus Go', desc: 'The first standalone mobile VR headset at a consumer price.' },
+        ],
+      },
+      {
+        year: '2016',
+        company: {
+          logo: 'images/logos/storystudio.png',
+          role: 'UX Designer · Oculus Story Studio',
+          dates: '2016',
+          blurb: `I moved to the Bay Area to join a dream team of artists and engineers making animation in VR.
+
+Focused on foundational VR interaction patterns for a production tool used for many hours by professional artists.
+
+Invented the interaction pattern for tactile moveable menus — letting users use both hands while accessing many controls efficiently.
+          `,
+        },
+        projects: [
+          { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.png', title: 'Oculus Quill', desc: 'VR-native illustration and animation tool for immersive storytelling.' },
+          { href: 'projects/quill_gallery/quill_gallery.html', img: 'images/thumbs/Quill_Gallery.png', title: 'Quill Gallery', desc: 'In-headset gallery for browsing Quill VR illustrations.' },
+        ],
+      },
+      {
+        year: '2016-2012',
+        wide: true,
+        company: {
+          logo: 'images/logos/continuum_logo_black.png',
+          role: 'Founder & Design Lead · Continuum Fashion',
+          dates: '2012 – 2016',
+          blurb: `I was an early innovator in imagining the future of fashion with 3D technology.
+
+My core product was constrvct.com — a 3D design tool and commerce site for creating custom clothing designs. 10,000+ users in 6 months. Techstars Boston 2013 alum.
+
+Got to travel around the world and present work at SXSW, Eyeo, LeWeb Paris, NEXT Berlin, Maker Faire Rome, FITC Toronto.`,
+        },
+        projects: [
+          { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.jpg', title: 'ModaKit', desc: 'A modular toolkit for wearable computing.' },
+          { href: 'projects/rose/rose.html', img: 'images/thumbs/Rose_c.png', title: 'Google Rose', desc: 'Generative fashion design.' },
+          { href: 'projects/constrvct/constrvct.html', img: 'images/thumbs/Constrvct_c.png', title: 'Constrvct', desc: 'Browser-based design tool for custom-printed dresses.' },
+          { href: 'projects/shoes/shoes.html', img: 'images/thumbs/Shoes.png', title: '3D Printed Shoes', desc: 'Experiments in 3D-printed footwear design.' },
+        ],
+      },
+      {
+        year: '2012',
+        companies: [
+          {
+            logo: 'images/logos/shapeways.png',
+            role: 'Product Designer · Shapeways',
+            dates: 'Jun 2011 – Jun 2012',
+            blurb: `I was the second designer. It was the early days of 3D printing, and we were at the epicenter of the excitement.
+
+Design and prototyping for online customization tools for 3D printing. Launched generative Soundcloud phone cases at SXSW.`,
+          },
+          {
+            logo: 'images/logos/continuum.png',
+            role: 'N12 Bikini Launch',
+            dates: 'June 2012',
+            blurb: `I designed the world's first 3D printed bikini with a friend and made it in partnership with Shapeways. We received a crazy amount of press, got invited to conferences, and were featured in museum exhibitions.`,
+          },
+        ],
+        projects: [
+          { href: 'projects/shapeways/shapeways.html', img: 'images/thumbs/Shapeways.png', title: 'Shapeways', desc: 'Design tools for democratizing 3D design and custom products.' },
+          { href: 'projects/n12/n12.html', img: 'images/thumbs/N12.png', title: 'N12 Bikini', desc: "The world's first ready-to-wear, fully 3D-printed bikini." },
+        ],
+      },
+      {
+        year: '2011',
+        company: {
+          logo: 'images/logos/localprojects.png',
+          role: 'Interaction Designer · Local Projects',
+          dates: 'Jan 2011 – May 2011',
+          blurb: 'Moved to NYC to work at this award-winning design studio building interactive experiences for museums.',
+        },
+        projects: [
+          { href: 'projects/turtlelink/turtlelink.html', img: 'projects/turtlelink/seaworld1.jpg', title: 'SeaWorld TurtleLink', desc: 'Interactive wall visualizing sea turtle journeys.' },
+          { href: '', img: 'projects/PoeMobile/PoMoNewMuseum.png', title: 'Poe Mobile New Museum', desc: 'Projection mapped poems with particle graphics' },
+        ],
+      },
+      {
+        year: '2010',
+        company: {
+          logo: 'images/logos/ciid.png',
+          role: 'MA Interaction Design · CIID',
+          dates: 'Sep 2009 – Aug 2010',
+          blurb: 'Grad school in Copenhagen. Living in Denmark was an entire education in itself. My thesis on computational fashion was featured by Fast Co Design. Typeface was published at Siggraph and IEEE.',
+        },
+        projects: [
+          { href: 'projects/ddress/ddress.html', img: 'images/thumbs/Ddress.png', title: 'D.dress', desc: 'Fashion as software.' },
+          { href: 'projects/typeface/typeface.html', img: 'images/thumbs/Typeface.png', title: 'Typeface', desc: 'Type design + facial recognition.' },
+        ],
+      },
+    ];
+
+    const track = document.getElementById('track');
+    const yearNav = document.getElementById('yearNav');
+    const scrollHint = document.getElementById('scrollHint');
+
+    // Build year nav
+    data.forEach((d, i) => {
+      const b = document.createElement('button');
+      b.className = 'year-btn' + (i === 0 ? ' active' : '');
+      b.textContent = d.year;
+      b.dataset.idx = i;
+      b.addEventListener('click', () => goTo(i));
+      yearNav.appendChild(b);
+    });
+
+    // Build panels
+    data.forEach((d, i) => {
+      const panel = document.createElement('section');
+      const compact = !d.wide && d.projects.length > 0 && d.projects.length <= 2;
+      panel.className = 'panel' + (d.wide ? ' wide' : '') + (compact ? ' compact' : '');
+      panel.dataset.idx = i;
+
+      const yearEl = document.createElement('h1');
+      yearEl.className = 'panel-year';
+      yearEl.innerHTML = d.year + (d.rangeLabel ? `<span class="range">${d.rangeLabel}</span>` : '');
+
+      const companies = d.companies || (d.company ? [d.company] : []);
+      const companyEls = companies.map(co => {
+        const c = document.createElement('div');
+        c.className = 'company';
+        if (co.logo) {
+          const img = document.createElement('img');
+          img.className = 'company-logo';
+          img.src = co.logo;
+          img.alt = '';
+          c.appendChild(img);
+        }
+        const role = document.createElement('h2');
+        role.className = 'role';
+        role.textContent = co.role;
+        c.appendChild(role);
+
+        const dates = document.createElement('p');
+        dates.className = 'dates';
+        dates.textContent = co.dates;
+        c.appendChild(dates);
+
+        if (co.blurb) {
+          co.blurb.split(/\n\s*\n/).forEach(para => {
+            const p = document.createElement('p');
+            p.className = 'blurb';
+            p.textContent = para.trim();
+            c.appendChild(p);
+          });
+        }
+        return c;
+      });
+
+      const meta = document.createElement('div');
+      meta.className = 'panel-meta';
+
+      const projects = document.createElement('div');
+      projects.className = 'panel-projects';
+
+      if (d.narrative) {
+        const n = document.createElement('div');
+        n.className = 'narrative';
+        n.innerHTML = `<h3 class="title">${d.narrative.title}</h3><p>${d.narrative.html}</p>`;
+        projects.appendChild(n);
+      }
+
+      const projectCards = d.projects.map(p => {
+        const hasLink = !!p.href;
+        const a = document.createElement(hasLink ? 'a' : 'div');
+        a.className = 'project-card' + (hasLink ? '' : ' no-link');
+        if (hasLink) a.href = p.href;
+        a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy"><h4 class="title">${p.title}</h4><p class="desc">${p.desc}</p>`;
+        return a;
+      });
+
+      if (compact) {
+        // Year is its own row spanning both columns; left = projects, right = companies
+        panel.appendChild(yearEl);
+        projectCards.forEach(a => projects.appendChild(a));
+        companyEls.forEach(c => meta.appendChild(c));
+        panel.appendChild(projects);
+        panel.appendChild(meta);
+      } else {
+        meta.appendChild(yearEl);
+        companyEls.forEach(c => meta.appendChild(c));
+        projectCards.forEach(a => projects.appendChild(a));
+        panel.appendChild(meta);
+        panel.appendChild(projects);
+      }
+
+      track.appendChild(panel);
+    });
+
+    const isMobile = () => window.matchMedia('(max-width: 800px)').matches;
+
+    // Keep year-nav stuck just below the main-nav on mobile, regardless of wrapping
+    function syncStickyOffsets() {
+      const mn = document.querySelector('.main-nav');
+      const yn = document.querySelector('.year-nav');
+      if (!mn || !yn) return;
+      yn.style.top = isMobile() ? (mn.offsetHeight + 'px') : '';
+    }
+    window.addEventListener('load', syncStickyOffsets);
+    window.addEventListener('resize', syncStickyOffsets);
+    syncStickyOffsets();
+
+
+    function goTo(idx) {
+      const panel = track.children[idx];
+      if (!panel) return;
+      if (isMobile()) {
+        panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        track.scrollTo({ left: panel.offsetLeft, behavior: 'smooth' });
+      }
+    }
+
+    // Track active panel based on which one is closest to the focal point
+    function updateActive() {
+      let activeIdx = 0;
+      let bestDist = Infinity;
+      if (isMobile()) {
+        const focalY = window.scrollY + 200;
+        [...track.children].forEach((p, i) => {
+          const top = p.offsetTop + track.offsetTop;
+          const dist = Math.abs(top - focalY);
+          if (top <= focalY && dist < bestDist) { bestDist = dist; activeIdx = i; }
+        });
+      } else {
+        const focalX = track.scrollLeft + 120;
+        [...track.children].forEach((p, i) => {
+          const left = p.offsetLeft;
+          const dist = Math.abs(left - focalX);
+          if (left <= focalX + 50 && dist < bestDist) { bestDist = dist; activeIdx = i; }
+        });
+      }
+      [...yearNav.children].forEach((b, i) => b.classList.toggle('active', i === activeIdx));
+      const activeBtn = yearNav.children[activeIdx];
+      if (activeBtn) {
+        const navRect = yearNav.getBoundingClientRect();
+        const btnRect = activeBtn.getBoundingClientRect();
+        if (btnRect.left < navRect.left + 40 || btnRect.right > navRect.right - 40) {
+          yearNav.scrollTo({ left: activeBtn.offsetLeft - navRect.width / 2 + btnRect.width / 2, behavior: 'smooth' });
+        }
+      }
+    }
+
+    // Hide scroll hint + update active year as user scrolls
+    let scrolled = false;
+    function onScroll() {
+      const offset = isMobile() ? window.scrollY : track.scrollLeft;
+      if (!scrolled && offset > 50) {
+        scrolled = true;
+        scrollHint.classList.add('hidden');
+      }
+      updateActive();
+    }
+    track.addEventListener('scroll', onScroll);
+    window.addEventListener('scroll', onScroll);
+    window.addEventListener('resize', updateActive);
+    updateActive();
+
+    // Wheel: convert vertical scroll to horizontal on desktop only
+
+    // View toggle: Timeline vs Selected Work
+    // Selected work is pulled from `data` above by title, so titles/descriptions
+    // stay in sync. Edit this list to change which projects appear.
+    const selectedTitles = [
+      'Impulse Stove',
+      'Biome',
+      "Tales from the Galaxy's Edge",
+      'ILM Stagecraft',
+      'Viralnet',
+      'VR Hand Gestures',
+      'Oculus Quill',
+      'ModaKit',
+    ];
+    const allProjects = data.flatMap(d => d.projects || []);
+    const selectedProjects = selectedTitles.map(title => {
+      const p = allProjects.find(x => x.title === title);
+      if (!p) console.warn('Selected project not found in data:', title);
+      return p;
+    }).filter(Boolean);
+    const selectedGrid = document.getElementById('selectedGrid');
+    selectedProjects.forEach(p => {
+      const hasLink = !!p.href;
+      const a = document.createElement(hasLink ? 'a' : 'div');
+      a.className = 'project-card' + (hasLink ? '' : ' no-link');
+      if (hasLink) a.href = p.href;
+      a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy"><h4 class="title">${p.title}</h4><p class="desc">${p.desc}</p>`;
+      selectedGrid.appendChild(a);
+    });
+
+    const viewToggle = document.getElementById('viewToggle');
+    const selectedWorkEl = document.getElementById('selectedWork');
+    const artResearchEl = document.getElementById('artResearch');
+    viewToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-view]');
+      if (!btn) return;
+      [...viewToggle.children].forEach(b => b.classList.toggle('active', b === btn));
+      const view = btn.dataset.view;
+      selectedWorkEl.classList.toggle('active', view === 'selected');
+      track.classList.toggle('active', view === 'timeline');
+      yearNav.classList.toggle('active', view === 'timeline');
+      artResearchEl.classList.toggle('active', view === 'art');
+      scrollHint.style.display = view === 'timeline' ? '' : 'none';
+    });
+    scrollHint.style.display = 'none';
+
+    // Keyboard arrows
+    document.addEventListener('keydown', (e) => {
+      const active = [...yearNav.children].findIndex(b => b.classList.contains('active'));
+      if (e.key === 'ArrowRight' && active < data.length - 1) goTo(active + 1);
+      if (e.key === 'ArrowLeft' && active > 0) goTo(active - 1);
+    });
+
+    /* ============ Art & Research gallery ============ */
+    const artCategories = ['all', 'fashion', 'digital-fabrication', 'interactive'];
+    const artProjects = [
+      { slug: 'colorandcraft', name: 'Color & Craft', year: 2026, cats: ['craft'], caption: 'Vibrant DIY plant kits with video tutorials', link: 'https://colorandcraft.co', media: ['images/thumbs/Colorandcraft_c.png','plant-wall.jpg','maranta hero.jpg','brevirimosa close up.jpg','polka-dot-plant.jpeg'] },
+      { slug: 'earthshot_zine', name: 'The Earthshot', year: 2022, cats: ['craft'], caption: 'A zine about ecological restoration and optimism', link: null, media: ['projects/art/earthshot_zine.jpg'] },
+      { slug: 'data_collection', name: 'Data Collection', year: 2014, cats: ['fashion'], caption: 'Exploring the ubiquity of personal data logging and privacy', link: null, media: ['gallery.jpg','gina-shirt.jpg','mary-1export.m4v'] },
+      { slug: 'art', name: 'Pablo', year: 2020, cats: ['craft','illustration'], caption: 'Stop motion animation of a lonely cubist romantic.', link: null, media: ['pablo_clip.mp4'] },
+      { slug: 'illuminate', name: 'Illuminate', year: 2017, cats: ['fashion'], caption: 'Modern dance performance about the Big Bang, collab with Indelible Dance', link: null, media: ['illuminate-1.jpg','illuminate-2.jpg','RR1.022c.jpg','RR1031.jpg'] },
+      { slug: 'ar_ideas', name: 'AR Board Game Prototype', year: 2019, cats: ['interactive'], link: 'projects/ar_ideas/ar_ideas.html', media: ['Fox_cards.mp4'] },
+      { slug: 'vr_gestures', name: 'VR Hand Gestures', year: 2020, cats: ['interactive'], link: 'projects/gestures/gestures.html', base: 'projects/gestures/', media: ['hands_sketch.png','Picture_zoom_small.gif','Map_Zoom.mp4'] },
+      { slug: 'lore', name: 'Local Lore', year: 2019, cats: ['interactive'], caption: 'A location-based scavenger hunt game set in San Francisco and Oakland.', link: 'projects/lore/lore.html', base: 'projects/lore/', media: ['Lore_main.jpg','map-zoom.m4v','mobile sketch.jpg','mobile sketch 2.jpg'] },
+      { slug: 'lore_illustrations', name: 'Lore Illustrations', year: 2019, cats: ['illustration'], caption: 'Illustrations from the Local Lore project.', link: 'projects/lore/lore.html', base: 'projects/lore/', media: ['SF map.jpg','SF_places.jpg'] },
+      { slug: 'typeface', name: 'Typeface', year: 2011, cats: ['interactive'], caption: 'Type + Facial Recognition', link: 'projects/typeface/typeface.html', media: ['TYPEFACE_alpha.mp4','typeface-screencap-1.jpg','typeface-screencap-3.jpg'] },
+      { slug: 'n12', name: 'N12 Bikini', year: 2013, cats: ['fashion','digital-fabrication'], caption: '3D printed textile', link: 'projects/n12/n12.html', media: ['N12-bikini-set-top.jpg','N12-detail.jpg','N12-hallway1.jpg','N12-white_detail.jpg'] },
+      { slug: 'shoes', name: '3D Printed Shoes', year: 2014, cats: ['fashion','digital-fabrication'], link: 'projects/shoes/shoes.html', media: [
+        { src: 'Daphne-Leaves-1.jpg', caption: 'Daphne shoe' },
+        { src: 'Laurel-pump.jpg', caption: 'Laurel pump' },
+        { src: 'Laurel-shoe-on-model.jpg', caption: 'Laurel on model' },
+        { src: 'Laurel_timelapse2.gif', caption: 'Laurel timelapse' },
+        { src: 'Strvct-wedge-black.jpg', caption: 'Strvct wedge' },
+        { src: 'shoe_butterfly.jpg', caption: 'Butterfly shoe' },
+        { src: 'shoe_black_main.jpg', caption: 'Black shoe' },
+        { src: 'Laurel-Tree-sandal.jpg', caption: 'Laurel tree sandal' },
+      ] },
+      { slug: 'constrvct', name: 'Constrvct', year: 2014, cats: ['fashion'], link: 'projects/constrvct/constrvct.html', media: [
+        { src: 'CONSTRVCT_composite1.jpg', caption: 'Digital to physical dress' },
+        { src: 'GeekChic.jpg', caption: 'Photoshoot at MIT' },
+        { src: 'smithsonian_edit.jpg', caption: 'Beautiful Users show at Smithsonian Cooper-Hewitt' },
+        { src: 'constrvct_community_designs1.jpg', caption: 'Constrvct.com community designs' },
+        { src: 'felicia-constrvct-dress.png', caption: 'Felicia Day Constrvct dress' },
+        { src: 'nervous-print-pattern.jpg', caption: 'Nervous System print pattern' },
+        'Screencap_6_2015.mp4',
+      ] },
+      { slug: 'ddress', name: 'D.dress', year: 2011, cats: ['fashion'], caption: 'Computational couture', link: 'projects/ddress/ddress.html', media: ['Ddress-selected1.jpg','Ddress-selected2.jpg','Ddress-selected3.jpg','dress1.jpg'] },
+      { slug: 'modakit', name: 'ModaKit', year: 2014, cats: ['fashion','interactive'], caption: 'Modular prototyping system for wearable tech', link: 'projects/modakit/modakit.html', media: ['MODA_slides.jpg','MODA_slides1.jpg','MODA_slides2.jpg','MODA_slides4.jpg'] },
+      { slug: 'rose', name: 'Google Rose', year: 2015, cats: ['fashion','interactive'], caption: 'Generative fashion design', link: 'projects/rose/rose.html', media: ['rose-main.png','rose-sketch.png','Rose_Step4.m4v','rose_step2_poster.png'] },
+      { slug: 'shapeways', name: 'Shapeways', year: 2013, cats: ['digital-fabrication'], link: 'projects/shapeways/shapeways.html', media: [
+        { src: 'yuniku.m4v', caption: 'Custom 3D printed ceramics' },
+        { src: 'sake1.jpg', caption: 'Custom 3D printed ceramics' },
+        { src: 'sake2.jpg', caption: 'Custom 3D printed ceramics' },
+        { src: 'sake3.jpg', caption: 'Custom 3D printed ceramics' },
+        { src: 'vibe_white.jpg', caption: 'Soundcloud generated phone case' },
+        { src: 'vibe_group.jpg', caption: 'Soundcloud generated phone case' },
+      ] },
+      { slug: 'westfield', name: 'Westfield', year: 2015, cats: ['sculpture','digital-fabrication'], caption: 'Concept for large scale outdoor sculpture', link: 'projects/westfield/westfield.html', media: ['sculpture_front.jpg','sculpture_2.jpg','sculpture_3.jpg','sculpture_night1.jpg','fabrication1.jpg','fabrication3.jpg'] },
+    ];
+
+    const VIDEO_RE = /\.(mp4|m4v|mov|webm)(\?|$)/i;
+    const ABS_RE = /^(https?:|images\/|projects\/)/;
+    const projectMeta = Object.fromEntries(artProjects.map(p => [p.slug, p]));
+    function resolveSrc(p, src) {
+      if (ABS_RE.test(src)) return src;
+      const base = p.base || `projects/${p.slug}/`;
+      return base + src;
+    }
+    const items = [];
+    artProjects.forEach(p => {
+      (p.media || []).forEach(m => {
+        const entry = (typeof m === 'string') ? { src: m } : m;
+        const src = resolveSrc(p, entry.src);
+        const caption = entry.caption || p.caption || '';
+        const isVideo = VIDEO_RE.test(src);
+        const href = p.link || '#';
+        items.push({ slug: p.slug, name: p.name, year: p.year, cats: p.cats, src, caption, isVideo, href, external: /^https?:/.test(href) });
+      });
+    });
+
+    function buildTile(item) {
+      const a = document.createElement('a');
+      a.dataset.slug = item.slug;
+      a.href = item.href;
+      if (item.external) { a.target = '_blank'; a.rel = 'noopener'; }
+      let media;
+      const markLoaded = () => a.classList.add('loaded');
+      if (item.isVideo) {
+        media = document.createElement('video');
+        media.muted = true;
+        media.setAttribute('autoplay', '');
+        media.setAttribute('muted', '');
+        media.setAttribute('loop', '');
+        media.setAttribute('playsinline', '');
+        media.addEventListener('loadeddata', markLoaded, { once: true });
+        media.addEventListener('error', markLoaded, { once: true });
+      } else {
+        media = document.createElement('img');
+        media.loading = 'lazy';
+        media.addEventListener('load', markLoaded, { once: true });
+        media.addEventListener('error', markLoaded, { once: true });
+      }
+      if (item.caption) media.setAttribute('alt', item.caption);
+      media.src = item.src;
+      if (!item.isVideo && media.complete && media.naturalWidth) markLoaded();
+      a.appendChild(media);
+      return a;
+    }
+
+    const filtersEl = document.getElementById('filters');
+    let activeFilter = 'all';
+    artCategories.forEach(cat => {
+      const b = document.createElement('button');
+      b.className = 'filter-btn' + (cat === 'all' ? ' active' : '');
+      b.textContent = cat.replace('-', ' ');
+      b.dataset.cat = cat;
+      b.addEventListener('click', () => {
+        activeFilter = cat;
+        filtersEl.querySelectorAll('.filter-btn').forEach(x => x.classList.toggle('active', x.dataset.cat === cat));
+        renderGallery();
+      });
+      filtersEl.appendChild(b);
+    });
+    const galleryEl = document.getElementById('gallery');
+
+    function renderGallery() {
+      const filtered = items.filter(i => activeFilter === 'all' || i.cats.includes(activeFilter));
+      galleryEl.innerHTML = '';
+      if (!filtered.length) { galleryEl.innerHTML = '<div class="empty">Nothing here yet.</div>'; return; }
+      const m = document.createElement('div');
+      m.className = 'masonry';
+      filtered.forEach(i => m.appendChild(buildTile(i)));
+      galleryEl.appendChild(m);
+    }
+    renderGallery();
+
+    // Tooltip
+    const tooltip = document.createElement('div');
+    tooltip.id = 'tooltip';
+    tooltip.innerHTML = '<span class="tt-title"></span><span class="tt-desc"></span>';
+    document.body.appendChild(tooltip);
+    const tipTitle = tooltip.querySelector('.tt-title');
+    const tipDesc = tooltip.querySelector('.tt-desc');
+    galleryEl.addEventListener('mouseover', e => {
+      const a = e.target.closest('a');
+      if (!a || !galleryEl.contains(a)) return;
+      const media = a.querySelector('img, video');
+      if (!media) return;
+      const meta = projectMeta[a.dataset.slug];
+      tipTitle.textContent = meta ? meta.name : '';
+      tipDesc.textContent = media.getAttribute('alt') || (meta && meta.caption) || '';
+      tooltip.classList.add('visible');
+    });
+    galleryEl.addEventListener('mouseout', e => {
+      if (!e.relatedTarget || !e.target.closest('a')?.contains(e.relatedTarget)) tooltip.classList.remove('visible');
+    });
+    galleryEl.addEventListener('mousemove', e => {
+      if (!tooltip.classList.contains('visible')) return;
+      const pad = 14;
+      let x = e.clientX + pad, y = e.clientY + pad;
+      const r = tooltip.getBoundingClientRect();
+      if (x + r.width + 8 > window.innerWidth) x = e.clientX - r.width - pad;
+      if (y + r.height + 8 > window.innerHeight) y = e.clientY - r.height - pad;
+      tooltip.style.left = x + 'px';
+      tooltip.style.top = y + 'px';
+    });
+
+    // Lightbox
+    const lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.innerHTML = `
+      <button class="lb-close" aria-label="Close">×</button>
+      <div class="lb-counter"></div>
+      <button class="lb-nav lb-prev" aria-label="Previous">‹</button>
+      <div class="lightbox-stage">
+        <div class="lb-media-wrap"></div>
+        <div class="lightbox-meta">
+          <span class="lb-title"></span>
+          <span class="lb-desc"></span>
+          <a class="lb-more" target="_blank" rel="noopener">See more →</a>
+        </div>
       </div>
+      <button class="lb-nav lb-next" aria-label="Next">›</button>
+    `;
+    document.body.appendChild(lb);
+    const lbMediaWrap = lb.querySelector('.lb-media-wrap');
+    const lbTitle = lb.querySelector('.lb-title');
+    const lbDesc = lb.querySelector('.lb-desc');
+    const lbMore = lb.querySelector('.lb-more');
+    const lbCounter = lb.querySelector('.lb-counter');
+    const lbPrev = lb.querySelector('.lb-prev');
+    const lbNext = lb.querySelector('.lb-next');
+    const lbClose = lb.querySelector('.lb-close');
+    let lbGroup = [], lbIndex = 0;
 
--->
+    function openLightbox(anchor) {
+      const slug = anchor.dataset.slug;
+      const tiles = [...galleryEl.querySelectorAll('.masonry a')];
+      lbGroup = tiles.filter(a => a.dataset.slug === slug);
+      lbIndex = lbGroup.indexOf(anchor);
+      if (lbIndex < 0) lbIndex = 0;
+      renderLightbox();
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function renderLightbox() {
+      const a = lbGroup[lbIndex];
+      const orig = a.querySelector('img, video');
+      lbMediaWrap.innerHTML = '';
+      let media;
+      if (orig.tagName === 'VIDEO') {
+        media = document.createElement('video');
+        media.src = orig.src;
+        media.autoplay = true; media.muted = true; media.loop = true; media.playsInline = true; media.controls = true;
+      } else {
+        media = document.createElement('img');
+        media.src = orig.src;
+        media.alt = orig.alt || '';
+      }
+      media.className = 'lightbox-media';
+      lbMediaWrap.appendChild(media);
+      const meta = projectMeta[a.dataset.slug];
+      lbTitle.textContent = meta ? meta.name : '';
+      lbDesc.textContent = orig.getAttribute('alt') || (meta && meta.caption) || '';
+      const href = a.getAttribute('href');
+      if (href && href !== '#') {
+        lbMore.style.display = 'inline-block';
+        lbMore.href = href;
+        if (href.startsWith('http')) lbMore.target = '_blank'; else lbMore.removeAttribute('target');
+      } else {
+        lbMore.style.display = 'none';
+      }
+      lbCounter.textContent = lbGroup.length > 1 ? `${lbIndex + 1} / ${lbGroup.length}` : '';
+      lbPrev.disabled = lbGroup.length <= 1;
+      lbNext.disabled = lbGroup.length <= 1;
+      lbPrev.style.display = lbGroup.length > 1 ? 'flex' : 'none';
+      lbNext.style.display = lbGroup.length > 1 ? 'flex' : 'none';
+    }
+    function closeLightbox() {
+      lb.classList.remove('open');
+      lbMediaWrap.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+    function lbStep(delta) {
+      if (!lbGroup.length) return;
+      lbIndex = (lbIndex + delta + lbGroup.length) % lbGroup.length;
+      renderLightbox();
+    }
+    galleryEl.addEventListener('click', e => {
+      const a = e.target.closest('.masonry a');
+      if (!a || !galleryEl.contains(a)) return;
+      e.preventDefault();
+      openLightbox(a);
+    });
+    lbPrev.addEventListener('click', () => lbStep(-1));
+    lbNext.addEventListener('click', () => lbStep(1));
+    lbClose.addEventListener('click', closeLightbox);
+    lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      else if (e.key === 'ArrowLeft') lbStep(-1);
+      else if (e.key === 'ArrowRight') lbStep(1);
+    });
+  </script>
 
-    </div>
-<!--
-
-  <div class="row" >
-
-    <div class="three columns">
-      <a href="projects/shapeways/shapeways.html" class="project-nav">
-        <img src="images/thumbs/Shapeways.png" />
-        <h6 class="small-title">
-          Shapeways
-        </h6>
-      </a>
-    </div>
-
-
-    <div class="three columns">
-      <a href="projects/shoes/shoes.html" class="project-nav">
-        <img src="images/thumbs/Shoes.png" />
-        <h6 class="small-title">
-          3D Printed Shoes
-        </h6>
-      </a>
-    </div>
-
-    <div class="three columns">
-      <a href="projects/n12/n12.html" class="project-nav">
-        <img src="images/thumbs/N12.png" />
-        <h6 class="small-title">
-          N12
-        </h6>
-      </a>
-    </div>
-
-    <div class="three columns">
-      <a href="projects/sols/sols.html" class="project-nav">
-        <img src="images/thumbs/Sols.png" />
-        <h6 class="small-title">
-          Sols Adaptiv
-        </h6>
-      </a>
-    </div>
-
-
-
-<div class="three columns">
-  <a href="projects/typeface/typeface.html" class="project-nav">
-    <img src="images/thumbs/Typeface.png" />
-    <h6 class="small-title">
-      Typeface
-    </h6>
-  </a>
-</div>
--->
-
-  </div>
-
-
-
-  <div class="row spacer"></div>
-  </div>
-
-
-
-<!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 </body>
 </html>
