@@ -110,7 +110,17 @@
       border-bottom-color: #000;
     }
     @media (max-width: 800px) {
-      .main-nav { gap: 24px; padding: 40px 24px 16px; flex-wrap: wrap; }
+      .main-nav {
+        gap: 20px;
+        padding: 16px 30px;
+        flex-wrap: wrap;
+        position: sticky;
+        top: 0;
+        background: #fafafa;
+        z-index: 30;
+        border-bottom: 1px solid #eee;
+      }
+      .main-nav button { font-size: 1.8rem; height: auto; padding: 6px 0; border-bottom-width: 3px; }
     }
 
     /* Art & Research gallery */
@@ -217,8 +227,7 @@
     .lb-nav[disabled] { opacity: 0.2; cursor: default; }
 
     @media (max-width: 1100px) { .masonry { column-count: 3; } }
-    @media (max-width: 800px) { .masonry { column-count: 2; } .art-research { padding: 0 24px 60px; } }
-    @media (max-width: 500px) { .masonry { column-count: 1; } }
+    @media (max-width: 800px) { .masonry { column-count: 2; } }
 
     .view-toggle {
       display: inline-flex;
@@ -505,33 +514,40 @@
     .scroll-hint.hidden { opacity: 0; }
 
     @media (max-width: 800px) {
-      html, body { overflow: auto; height: auto; }
-      .year-nav {padding: 18px 60px 14px;}
+      html, body { overflow: visible; height: auto; }
+      .hero { padding: 30px 30px 0; }
+      .art-research { padding: 0 30px 60px; }
+      .year-nav {
+        padding: 12px 30px;
+        position: sticky;
+        background: #fafafa;
+        z-index: 20;
+      }
       .track {
         flex-direction: column;
         overflow-x: hidden;
         overflow-y: visible;
         height: auto;
-        padding-left: 24px;
+        padding-left: 0;
       }
-      .panel {
+      .panel,
+      .panel.compact {
         width: 100%;
         flex: 0 0 auto;
-        grid-template-columns: 1fr;
-        padding: 40px 24px 48px;
-        gap: 32px;
+        display: flex;
+        flex-direction: column;
+        padding: 32px 30px 40px;
+        gap: 28px;
         border-right: none;
         border-bottom: 1px solid #eee;
         overflow-y: visible;
       }
+      .panel:first-child { padding-left: 30px; }
       .panel:last-child { border-bottom: none; }
-      .panel-year { font-size: 6rem; }
-      .year-nav {
-      //  position: sticky;
-        top: 0;
-        background: #fafafa;
-        z-index: 10;
-      }
+      .panel-year { font-size: 6rem; order: 1; }
+      .panel-meta { display: contents; }
+      .panel-projects { order: 2; }
+      .panel-meta .company { order: 3; display: flex; flex-direction: column; gap: 6px; }
       .scroll-hint { display: none; }
     }
   </style>
@@ -912,6 +928,17 @@ Design and prototyping for online customization tools for 3D printing. Launched 
     });
 
     const isMobile = () => window.matchMedia('(max-width: 800px)').matches;
+
+    // Keep year-nav stuck just below the main-nav on mobile, regardless of wrapping
+    function syncStickyOffsets() {
+      const mn = document.querySelector('.main-nav');
+      const yn = document.querySelector('.year-nav');
+      if (!mn || !yn) return;
+      yn.style.top = isMobile() ? (mn.offsetHeight + 'px') : '';
+    }
+    window.addEventListener('load', syncStickyOffsets);
+    window.addEventListener('resize', syncStickyOffsets);
+    syncStickyOffsets();
 
 
     function goTo(idx) {
