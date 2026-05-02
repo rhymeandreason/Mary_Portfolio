@@ -544,7 +544,7 @@ This team was lightning, existing at a magical moment when the stars aligned.`,
         companies: [
           {
             logo: 'images/logos/amazon.png',
-            role: 'UX Designer · Amazon (Made For You)',
+            role: 'UX Designer · Amazon',
             dates: 'May 2019 – Oct 2019',
             blurb: `New launch product. I designed the consumer mobile app and built the first version of the custom pattern generation engine. Also got to work with two long-time friends who each had their startups acquired by Amazon.`,
           },
@@ -578,11 +578,10 @@ This team was lightning, existing at a magical moment when the stars aligned.`,
           logo: 'images/logos/oculus.png',
           role: 'UX Designer & Prototyper · Oculus',
           dates: 'Aug 2016 – Feb 2018',
-          blurb: `Designed foundational VR interaction patterns for spatial navigation, avatar customization, controller mapping, and 2D/3D UI for PC and mobile VR.
+          blurb: `
 
-Authored the First Time User Experience for the Oculus Go launch, optimizing controller usability and accessibility through user testing and precise iterations.
-
-Invented the interaction pattern for tactile moveable menus — letting users use both hands while accessing many controls efficiently.`,
+First Time User Experience for the Oculus Go launch, optimizing controller usability and accessibility through user testing and precise iterations.
+`,
         },
         projects: [
           { href: '', img: 'images/thumbs/oculusgo.webp', title: 'Oculus Go', desc: 'Tutorial and controller usability for the Go launch.' },
@@ -594,7 +593,12 @@ Invented the interaction pattern for tactile moveable menus — letting users us
           logo: 'images/logos/storystudio.png',
           role: 'UX Designer · Oculus Story Studio',
           dates: '2016',
-          blurb: `I moved to the Bay Area to join a dream team of artists and engineers making animation in VR.`,
+          blurb: `I moved to the Bay Area to join a dream team of artists and engineers making animation in VR.
+
+Designed foundational VR interaction patterns for a production tool used for many hours by professional artists.
+
+Invented the interaction pattern for tactile moveable menus — letting users use both hands while accessing many controls efficiently.
+          `,
         },
         projects: [
           { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.png', title: 'Oculus Quill', desc: 'VR-native illustration and animation tool for immersive storytelling.' },
@@ -844,13 +848,6 @@ UI/UX design and prototyping for online customization tools for 3D printing — 
     updateActive();
 
     // Wheel: convert vertical scroll to horizontal on desktop only
-    track.addEventListener('wheel', (e) => {
-      if (isMobile()) return;
-      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        track.scrollLeft += e.deltaY;
-        e.preventDefault();
-      }
-    }, { passive: false });
 
     // View toggle: Timeline vs Selected Work
     const selectedProjects = [
