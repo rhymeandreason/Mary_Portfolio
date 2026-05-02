@@ -269,10 +269,15 @@
     .year-nav {
       display: flex;
       gap: 4px;
-      padding: 18px 100px 14px;
+      //padding: 18px 100px 14px;
       overflow-x: auto;
       scrollbar-width: none;
-      border-bottom: 1px solid #eee;
+      //border-bottom: 1px solid #eee;
+
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 60px 15px;
+      box-sizing: border-box;
     }
     .year-nav::-webkit-scrollbar { display: none; }
     .year-btn {
@@ -299,9 +304,13 @@
     .track {
       display: none;
       overflow-x: auto;
-      overflow-y: hidden;
+      overflow-y: visible;
       scroll-behavior: smooth;
       height: 80vh;
+      border-top: 1px solid #eee;
+    }
+    ::-webkit-scrollbar {
+    display: none;
     }
     .track.active { display: flex; }
     .year-nav { display: none; }
@@ -320,6 +329,9 @@
       box-sizing: border-box;
       position: relative;
       border-right: 1px solid #eee;
+    }
+    .panel:first-child {
+      padding-left:0px;
     }
     .panel.wide {
       width: 1180px;
@@ -499,7 +511,7 @@
       .panel:last-child { border-bottom: none; }
       .panel-year { font-size: 6rem; }
       .year-nav {
-        position: sticky;
+      //  position: sticky;
         top: 0;
         background: #fafafa;
         z-index: 10;
