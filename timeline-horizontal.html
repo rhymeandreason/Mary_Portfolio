@@ -339,16 +339,22 @@
     .panel.wide .panel-projects {
       grid-template-columns: repeat(2, 1fr);
     }
+    .panel.compact {
+      grid-template-columns: minmax(280px, 320px) 1fr;
+      grid-template-rows: auto 1fr;
+      column-gap: 48px;
+      row-gap: 28px;
+    }
+    .panel.compact > .panel-year {
+      grid-column: 1 / -1;
+    }
     .panel.compact .panel-projects {
       display: flex;
       flex-direction: column;
       gap: 28px;
     }
-    .panel.compact .panel-meta .project-card {
+    .panel.compact .panel-projects .project-card {
       max-width: 320px;
-    }
-    .panel.compact .panel-meta .project-card + .project-card {
-      //margin-top: 24px;
     }
     .panel:last-child { border-right: none; }
     .panel-meta {
@@ -586,7 +592,7 @@
         projects: [],
       },
       {
-        year: '2024',
+        year: '2024-2023',
         company: {
           logo: 'images/logos/impulse.png',
           role: 'Product Designer · Impulse Labs',
@@ -602,7 +608,7 @@
         ],
       },
       {
-        year: '2023',
+        year: '2022',
         company: {
           logo: 'images/logos/earthshot.png',
           role: 'Product Design Lead · Earthshot Labs',
@@ -618,7 +624,7 @@
         ],
       },
       {
-        year: '2022',
+        year: '2022-2020',
         company: {
           logo: 'images/logos/ILM.png',
           role: 'UX Designer & UI Lead · ILM Immersive',
@@ -857,7 +863,6 @@ Design and prototyping for online customization tools for 3D printing. Launched 
 
       const meta = document.createElement('div');
       meta.className = 'panel-meta';
-      meta.appendChild(yearEl);
 
       const projects = document.createElement('div');
       projects.className = 'panel-projects';
@@ -869,50 +874,34 @@ Design and prototyping for online customization tools for 3D printing. Launched 
         projects.appendChild(n);
       }
 
-      // Compact layout: projects under year on the left, companies on the right
-      if (compact) {
-        // (project cards appended below in the shared loop)
-        companyEls.forEach(c => projects.appendChild(c));
-      } else {
-        companyEls.forEach(c => meta.appendChild(c));
-      }
-      panel.appendChild(meta);
-
-      const projectsHost = compact ? meta : projects;
-      d.projects.forEach(p => {
+      const projectCards = d.projects.map(p => {
         const a = document.createElement('a');
         a.className = 'project-card';
         a.href = p.href;
         a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy"><h4 class="title">${p.title}</h4><p class="desc">${p.desc}</p>`;
-        projectsHost.appendChild(a);
+        return a;
       });
-      panel.appendChild(projects);
+
+      if (compact) {
+        // Year is its own row spanning both columns; left = projects, right = companies
+        panel.appendChild(yearEl);
+        projectCards.forEach(a => projects.appendChild(a));
+        companyEls.forEach(c => meta.appendChild(c));
+        panel.appendChild(projects);
+        panel.appendChild(meta);
+      } else {
+        meta.appendChild(yearEl);
+        companyEls.forEach(c => meta.appendChild(c));
+        projectCards.forEach(a => projects.appendChild(a));
+        panel.appendChild(meta);
+        panel.appendChild(projects);
+      }
 
       track.appendChild(panel);
     });
 
     const isMobile = () => window.matchMedia('(max-width: 800px)').matches;
 
-    // Align company top with project top on compact desktop panels
-    function alignCompactCompanies() {
-      document.querySelectorAll('.panel.compact').forEach(panel => {
-        const year = panel.querySelector('.panel-year');
-        const projects = panel.querySelector('.panel-projects');
-        if (!year || !projects) return;
-        if (isMobile()) {
-          projects.style.paddingTop = '';
-        } else {
-          const meta = panel.querySelector('.panel-meta');
-          const metaStyle = getComputedStyle(meta);
-          const gap = parseFloat(metaStyle.gap) || 0;
-          const offset = year.offsetHeight + gap;
-          projects.style.paddingTop = offset + 'px';
-        }
-      });
-    }
-    window.addEventListener('load', alignCompactCompanies);
-    window.addEventListener('resize', alignCompactCompanies);
-    alignCompactCompanies();
 
     function goTo(idx) {
       const panel = track.children[idx];
