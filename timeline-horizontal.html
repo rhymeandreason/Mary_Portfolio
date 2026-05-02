@@ -962,16 +962,24 @@ Design and prototyping for online customization tools for 3D printing. Launched 
     // Wheel: convert vertical scroll to horizontal on desktop only
 
     // View toggle: Timeline vs Selected Work
-    const selectedProjects = [
-      { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.png', title: 'Impulse Stove', desc: 'A cutting-edge 15kW induction stove with a novel knob interface.' },
-      { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.png', title: 'Biome', desc: 'ML and AR mobile platform for measuring rainforests.' },
-      { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.png', title: "Star Wars: Tales from the Galaxy's Edge", desc: 'Spatial and 2D UI/UX for the Star Wars VR adventure game.' },
-      { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.jpg', title: 'ILM Stagecraft', desc: 'iPad app for user-friendly immersive controls for virtual production.' },
-      { href: 'projects/viralnet/viralnet.html', img: 'images/thumbs/Viralnet_c.png', title: 'Viralnet', desc: 'Data visualization of virus genome relationships.' },
-      { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.png', title: 'VR Hand Gestures', desc: 'Exploration prototypes of hand gesture based UI.' },
-      { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.png', title: 'Oculus Quill', desc: 'VR-native illustration and animation tool for immersive storytelling.' },
-      { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.jpg', title: 'ModaKit', desc: 'A modular toolkit for wearable computing.' },
+    // Selected work is pulled from `data` above by title, so titles/descriptions
+    // stay in sync. Edit this list to change which projects appear.
+    const selectedTitles = [
+      'Impulse Stove',
+      'Biome',
+      "Tales from the Galaxy's Edge",
+      'ILM Stagecraft',
+      'Viralnet',
+      'VR Hand Gestures',
+      'Oculus Quill',
+      'ModaKit',
     ];
+    const allProjects = data.flatMap(d => d.projects || []);
+    const selectedProjects = selectedTitles.map(title => {
+      const p = allProjects.find(x => x.title === title);
+      if (!p) console.warn('Selected project not found in data:', title);
+      return p;
+    }).filter(Boolean);
     const selectedGrid = document.getElementById('selectedGrid');
     selectedProjects.forEach(p => {
       const a = document.createElement('a');
