@@ -250,7 +250,7 @@
     .selected-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 32px 28px;
+      gap: 48px 22px;
       max-width: 1400px;
       margin: 0 auto;
     }
@@ -308,7 +308,6 @@
       scroll-behavior: smooth;
       height: 80vh;
       border-top: 1px solid #eee;
-      padding-left: calc((100vw - min(100vw, 1400px)) / 2 + 60px);
     }
     ::-webkit-scrollbar {
     display: none;
@@ -332,7 +331,7 @@
       border-right: 1px solid #eee;
     }
     .panel:first-child {
-      padding-left:0px;
+      padding-left: calc((100vw - min(100vw, 1400px)) / 2 + 60px);
     }
     .panel.wide {
       width: 1180px;
