@@ -44,36 +44,6 @@
     }
     .filter-btn:hover { border-color: #888; color: #000; }
     .filter-btn.active { background: #000; color: #fff; border-color: #000; }
-    .group-by {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-left: auto;
-      color: #555;
-    }
-    .group-by select {
-      font: inherit;
-      padding: 5px 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      background: #fff;
-    }
-    .group-section { margin-bottom: 40px; }
-    .group-header {
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      margin: 0 0 16px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #eee;
-      color: #000;
-    }
-    .group-header .count {
-      font-weight: 400;
-      color: #999;
-      font-size: 1.3rem;
-      margin-left: 8px;
-    }
     .empty {
       color: #999;
       font-size: 1.4rem;
@@ -263,13 +233,6 @@
   <div class="images-page">
     <div class="controls">
       <div class="filters" id="filters"></div>
-      <label class="group-by">Group by
-        <select id="groupBy">
-          <option value="project">Project</option>
-          <option value="category">Category</option>
-          <option value="none" selected>None</option>
-        </select>
-      </label>
     </div>
 
     <div id="gallery"></div>
@@ -300,6 +263,7 @@
       {
         slug: 'colorandcraft', name: 'Color & Craft', year: 2026,
         cats: ['craft'],
+        caption: 'Vibrant DIY plant kits with video tutorials',
         link: 'https://colorandcraft.co',
         media: [
           'images/thumbs/Colorandcraft_c.png',
@@ -307,6 +271,15 @@
           'maranta hero.jpg',
           'brevirimosa close up.jpg',
           'polka-dot-plant.jpeg',
+        ],
+      },
+      {
+        slug: 'earthshot_zine', name: 'The Earthshot', year: 2022,
+        cats: ['craft'],
+        caption: 'A zine about ecological restoration and optimism',
+        link: null,
+        media: [
+          'projects/art/earthshot_zine.jpg',
         ],
       },
       {
@@ -351,6 +324,13 @@
         cats: ['interactive'],
         link: 'projects/ar_ideas/ar_ideas.html',
         media: ['Fox_cards.mp4'],
+      },
+      {
+        slug: 'vr_gestures', name: 'VR Hand Gestures', year: 2020,
+        cats: ['interactive'],
+        link: 'projects/gestures/gestures.html',
+        base: 'projects/gestures/',
+        media: ['hands_sketch.png','Picture_zoom_small.gif','Map_Zoom.mp4'],
       },
       {
         slug: 'lore', name: 'Local Lore', year: 2019,
@@ -594,8 +574,6 @@
       filtersEl.appendChild(b);
     });
 
-    const groupByEl = document.getElementById('groupBy');
-    groupByEl.addEventListener('change', render);
     const galleryEl = document.getElementById('gallery');
 
     function appendClone(container, item) {
@@ -609,48 +587,10 @@
         galleryEl.innerHTML = '<div class="empty">Nothing here yet.</div>';
         return;
       }
-      const groupBy = groupByEl.value;
-
-      if (groupBy === 'none') {
-        const m = document.createElement('div');
-        m.className = 'masonry';
-        filtered.forEach(i => appendClone(m, i));
-        galleryEl.appendChild(m);
-        return;
-      }
-
-      const groups = new Map();
-      filtered.forEach(i => {
-        const keys = groupBy === 'project'
-          ? [i.slug]
-          : (activeFilter !== 'all' ? [activeFilter] : i.cats);
-        keys.forEach(key => {
-          if (!groups.has(key)) groups.set(key, []);
-          groups.get(key).push(i);
-        });
-      });
-
-      const sortedKeys = [...groups.keys()].sort((a, b) => {
-        if (groupBy === 'project') {
-          return projectOrder.indexOf(a) - projectOrder.indexOf(b);
-        }
-        return a.localeCompare(b);
-      });
-
-      sortedKeys.forEach(key => {
-        const section = document.createElement('section');
-        section.className = 'group-section';
-        const h = document.createElement('h3');
-        h.className = 'group-header';
-        const label = groupBy === 'project' ? (projectMeta[key]?.name || key) : key.replace('-', ' ');
-        h.innerHTML = `${label} <span class="count">${groups.get(key).length}</span>`;
-        section.appendChild(h);
-        const m = document.createElement('div');
-        m.className = 'masonry';
-        groups.get(key).forEach(i => appendClone(m, i));
-        section.appendChild(m);
-        galleryEl.appendChild(section);
-      });
+      const m = document.createElement('div');
+      m.className = 'masonry';
+      filtered.forEach(i => appendClone(m, i));
+      galleryEl.appendChild(m);
     }
 
     render();
