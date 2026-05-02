@@ -73,9 +73,8 @@
     .hero-body p { margin: 0 0 16px; }
     .hero-body p:last-child { margin-bottom: 0; }
     @media (max-width: 800px) {
-      .hero { padding: 24px 24px 0; }
       .hero-name { max-width: 100%; font-size: clamp(5rem, 18vw, 12rem); }
-      .hero-body { margin-top: 32px; max-width: 100%; }
+      .hero-body { margin-top: 32px; max-width: 100%; line-height: 1.5; }
     }
 
     /* Main tab nav (Selected Work / Timeline / Art & Research) */
@@ -112,15 +111,16 @@
     @media (max-width: 800px) {
       .main-nav {
         gap: 20px;
-        padding: 16px 30px;
+        padding: 16px 20px;
         flex-wrap: wrap;
+        margin-top:24px;
         position: sticky;
         top: 0;
         background: #fafafa;
         z-index: 30;
-        border-bottom: 1px solid #eee;
+        //border-bottom: 1px solid #eee;
       }
-      .main-nav button { font-size: 1.8rem; height: auto; padding: 6px 0; border-bottom-width: 3px; }
+      .main-nav button { font-size: 1.5rem; height: 30px; padding: 0px; border-bottom-width: 3px; }
     }
 
     /* Art & Research gallery */
@@ -157,6 +157,13 @@
     }
     .filter-btn:hover { border-color: #888; color: #000; }
     .filter-btn.active { background: #000; color: #fff; border-color: #000; }
+
+@media (max-width: 800px) {
+  .art-controls{ margin-bottom: 24px;}
+  .art-filters{ gap:5px; overflow-x: auto; flex-wrap: nowrap; margin-top:12px;}
+  .filter-btn {padding: 4px 14px 4px; }
+}
+
     .empty { color: #999; font-size: 1.4rem; padding: 40px 0; text-align: center; }
     .masonry { column-count: 4; column-gap: 12px; }
     .masonry a {
@@ -278,7 +285,7 @@
     }
     @media (max-width: 800px) {
       .selected-grid { grid-template-columns: repeat(2, 1fr); }
-      .selected-work { height: auto; }
+      .selected-work { height: auto; padding: 20px;}
     }
     @media (max-width: 500px) {
       .selected-grid { grid-template-columns: 1fr; }
@@ -515,10 +522,11 @@
 
     @media (max-width: 800px) {
       html, body { overflow: visible; height: auto; }
-      .hero { padding: 30px 30px 0; }
-      .art-research { padding: 0 30px 60px; }
+      .hero { padding: 30px 45px 0; }
+      .hero-body p{ width:95%;}
+      .art-research { padding: 0 20px 60px; }
       .year-nav {
-        padding: 12px 30px;
+        padding: 12px 20px;
         position: sticky;
         background: #fafafa;
         z-index: 20;
