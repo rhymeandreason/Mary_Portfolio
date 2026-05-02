@@ -5,16 +5,26 @@
   <title>Mary Huang : Timeline</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700,800" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
-  <link rel="stylesheet" href="css/main.css">
 
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
   <style>
+    /* 62.5% root so 1rem = 10px (carried over from skeleton.css) */
+    html { font-size: 62.5%; box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: inherit; }
     html, body { height: auto; }
-    body { background: #fafafa; font-family: "futura-pt", sans-serif;}
+    body {
+      background: #fafafa;
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.5em;
+      line-height: 1.6;
+      color: rgba(0,0,0,0.85);
+      margin: 0;
+    }
+    img { max-width: 100%; }
+    a { color: inherit; }
+    button { font-family: inherit; }
 
     .page-header {
       display: flex;
