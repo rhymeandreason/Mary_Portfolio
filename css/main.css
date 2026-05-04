@@ -101,6 +101,10 @@ p a:hover {
   border-bottom: 2px solid black;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: "futura-pt", sans-serif;
+}
+
 h5{
   font-weight: 400;
 }
