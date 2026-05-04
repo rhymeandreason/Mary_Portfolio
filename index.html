@@ -1043,18 +1043,31 @@ Design and prototyping for online customization tools for 3D printing. Launched 
     const viewToggle = document.getElementById('viewToggle');
     const selectedWorkEl = document.getElementById('selectedWork');
     const artResearchEl = document.getElementById('artResearch');
-    viewToggle.addEventListener('click', (e) => {
-      const btn = e.target.closest('button[data-view]');
+
+    function activateView(view) {
+      const btn = viewToggle.querySelector(`button[data-view="${view}"]`);
       if (!btn) return;
       [...viewToggle.children].forEach(b => b.classList.toggle('active', b === btn));
-      const view = btn.dataset.view;
       selectedWorkEl.classList.toggle('active', view === 'selected');
       track.classList.toggle('active', view === 'timeline');
       yearNav.classList.toggle('active', view === 'timeline');
       artResearchEl.classList.toggle('active', view === 'art');
       scrollHint.style.display = view === 'timeline' ? '' : 'none';
+    }
+
+    viewToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-view]');
+      if (!btn) return;
+      const view = btn.dataset.view;
+      const slug = view === 'selected' ? '' : view;
+      history.pushState(null, '', slug ? `#${slug}` : location.pathname);
+      activateView(view);
     });
-    scrollHint.style.display = 'none';
+
+    // Set initial view from URL hash
+    const hashView = location.hash.replace('#', '');
+    activateView(['timeline', 'art'].includes(hashView) ? hashView : 'selected');
+    scrollHint.style.display = (hashView === 'timeline') ? '' : 'none';
 
     // Keyboard arrows
     document.addEventListener('keydown', (e) => {
