@@ -1079,8 +1079,12 @@ Design and prototyping for online customization tools for 3D printing. Launched 
     /* ============ Art & Research gallery ============ */
     const artCategories = ['all', 'fashion', 'digital-fabrication', 'interactive'];
     const artProjects = [
-      { slug: 'colorandcraft', name: 'Color & Craft', year: 2026, cats: ['craft'], caption: 'Vibrant DIY plant kits with video tutorials', link: 'https://colorandcraft.co', media: ['images/thumbs/Colorandcraft_c.png','PlantWall.mp4','maranta hero.jpg','brevirimosa close up.jpg','polka-dot-plant.jpeg'] },
-      { slug: 'earthshot_zine', name: 'The Earthshot', year: 2022, cats: ['craft'], caption: 'A zine about ecological restoration and optimism', link: null, media: ['projects/art/earthshot_zine.jpg'] },
+      { slug: 'colorandcraft', name: 'Color & Craft', year: 2026, cats: ['craft'], caption: 'Vibrant DIY plant kits with video tutorials', link: 'https://colorandcraft.co', media: ['images/thumbs/Colorandcraft_c.png','PlantWall.mp4','maranta hero.jpg','brevirimosa close up.jpg',
+      //'polka-dot-plant.jpeg'
+    ] },
+    { slug: 'earthshot_zine', name: 'The Earthshot', year: 2022, cats: ['craft'], caption: 'A zine about ecological restoration and optimism', link: null, media: ['projects/art/earthshot_zine.jpg'] },
+    { slug: 'seeds', name: 'Seed & lichen', year: 2026, cats: ['craft'], caption: 'semi-functional ceramics in organic forms', link: null, media: ['projects/art/seed.jpg','projects/art/spikey.jpg','projects/art/lichen.jpg','projects/art/holding-spikey-cup.jpg'] },
+
       { slug: 'data_collection', name: 'Data Collection', year: 2014, cats: ['fashion'], caption: 'Exploring the ubiquity of personal data logging and privacy', link: null, media: ['gallery.jpg','data-knitting.jpg', 'gina-shirt.jpg'] },
       { slug: 'art', name: 'Pablo', year: 2020, cats: ['craft','illustration'], caption: 'Stop motion animation of a lonely cubist romantic.', link: null, media: ['pablo_clip.mp4'] },
       { slug: 'illuminate', name: 'Illuminate', year: 2017, cats: ['fashion'], caption: 'Modern dance performance about the Big Bang, collab with Indelible Dance', link: null, media: ['illuminate-1.jpg','illuminate-2.jpg','RR1.022c.jpg','RR1031.jpg'] },
@@ -1117,7 +1121,7 @@ Design and prototyping for online customization tools for 3D printing. Launched 
         { src: 'yuniku.m4v', caption: 'Custom 3D printed ceramics' },
         //{ src: 'sake1.jpg', caption: 'Custom 3D printed ceramics' },
         { src: 'sake2.jpg', caption: 'Custom 3D printed ceramics' },
-        { src: 'sake3.jpg', caption: 'Custom 3D printed ceramics' },
+        //{ src: 'sake3.jpg', caption: 'Custom 3D printed ceramics' },
         { src: 'vibe_white.jpg', caption: 'Soundcloud generated phone case' },
         { src: 'vibe_group.jpg', caption: 'Soundcloud generated phone case' },
       ] },
