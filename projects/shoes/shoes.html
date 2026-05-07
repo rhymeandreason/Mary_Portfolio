@@ -28,8 +28,8 @@
     /* ── Hero ── */
     .hero {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
       margin-bottom: 0;
     }
     .hero-image {
@@ -99,32 +99,40 @@
 
     /* ── Editorial grid ── */
     .editorial-grid {
-      display: grid;
-      gap: 3px;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
     }
     .editorial-grid .row-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 3px;
+      gap: 48px;
     }
     .editorial-grid .row-3 {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 3px;
+      gap: 10px;
     }
     .editorial-grid .row-wide-narrow {
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 3px;
+      gap: 48px;
     }
     .editorial-grid .row-narrow-wide {
       display: grid;
       grid-template-columns: 1fr 2fr;
-      gap: 3px;
+      gap: 48px;
     }
     .editorial-grid img {
       width: 100%;
       display: block;
+    }
+    .grid-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px 52px;
+      background-color: #f9f8f6;
     }
 
     /* ── Press section ── */
@@ -266,7 +274,7 @@
     <div class="editorial-grid">
 
       <div class="row-2">
-        <div class="hero-text">
+        <div class="grid-text">
           <p class="description">
             STRVCT refers to structure. With 3D printed nylon, delicate looking forms are incredibly strong while also impossibly lightweight. A triangulated spin on the classic wedge pump, it echoes Cinderella's glass slipper in transparency.
           </p>
@@ -280,31 +288,23 @@
         <div><img src="Strvct-wedge-black.jpg" alt="STRVCT wedge black" /></div>
       </div>
 
-
-      <div style="height:3px;"></div>
-
       <div class="row-wide-narrow">
-        <div class="wide"><img src="Laurel-shoe-on-model.jpg" alt="Laurel shoe on model" /></div>
-        <div class="tall"><img src="Laurel-Tree-sandal.jpg" alt="Laurel Tree sandal" />
-          <img src="Laurel_timelapse2.gif" alt="Timelapse of shoe construction" style="width:100%; display:block;" />
+        <div><img src="Laurel-shoe-on-model.jpg" alt="Laurel shoe on model" /></div>
+        <div style="display:flex; flex-direction:column; gap:15px;">
+          <img src="Laurel-Tree-sandal.jpg" alt="Laurel Tree sandal" />
+          <img src="Laurel_timelapse2.gif" alt="Timelapse of shoe construction" />
         </div>
       </div>
-
-      <div style="height:3px;"></div>
 
       <div class="row-3">
         <div><img src="wood-shoe.jpg" alt="prototype in wood filament" /></div>
         <div><img src="Laurel-pump.jpg" alt="Laurel pump" /></div>
         <div><img src="Daphne-Leaves-1.jpg" alt="Daphne Leaves shoe" /></div>
-
       </div>
-
-      <div style="height:3px;"></div>
 
       <div class="row-2">
         <div><img src="shoe-prototypes.jpg" alt="Shoe prototypes" /></div>
-
-        <div class="hero-text">
+        <div class="grid-text">
           <p class="description">
             Achieving comfortable wearability with a design printable on a desktop FDM printer was the bulk of the challenge. No support material.
             <br><br>
@@ -314,8 +314,6 @@
           </p>
         </div>
       </div>
-
-      <div style="height:3px;"></div>
 
 
     </div>
