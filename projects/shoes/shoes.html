@@ -2,108 +2,383 @@
 <html lang="en">
 <head>
 
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Mary Huang : Portfolio</title>
+  <title>3D Printed Shoes — Mary Huang</title>
   <meta name="description" content="">
   <meta name="author" content="">
-
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
-
-  <!-- Video Player
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="../../css/normalize.css">
   <link rel="stylesheet" href="../../css/skeleton.css">
   <link rel="stylesheet" href="../../css/main.css">
-
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="../../images/favicon.png">
+
+  <style>
+    body {
+      background-color: #f9f8f6;
+    }
+
+    /* ── Nav ── */
+    .top-nav {
+      margin-bottom: 0;
+      padding: 30px 0 28px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin-bottom: 0;
+    }
+    .hero-image {
+      overflow: hidden;
+    }
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 60px 60px 60px 56px;
+      background-color: #f9f8f6;
+    }
+    .hero-text .eyebrow {
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.4);
+      margin-bottom: 20px;
+    }
+    .hero-text h1 {
+      font-family: "futura-pt", sans-serif;
+      font-weight: 300;
+      font-size: 5.2rem;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: 32px;
+      color: #111;
+    }
+    .hero-text .meta {
+      font-size: 1.35rem;
+      line-height: 2;
+      color: rgba(0,0,0,0.5);
+      margin-bottom: 32px;
+      font-family: "futura-pt", sans-serif;
+      font-weight: 400;
+    }
+    .hero-text .description {
+      font-size: 1.7rem;
+      line-height: 1.7;
+      color: #222;
+      max-width: 380px;
+    }
+
+    /* ── GIF accent ── */
+    .gif-row {
+      margin: 0 0 0;
+    }
+    .gif-row img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ── Divider ── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid #e0ddd8;
+      margin: 70px 0;
+    }
+
+    /* ── Editorial grid ── */
+    .editorial-grid {
+      display: grid;
+      gap: 3px;
+    }
+    .editorial-grid .row-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+    }
+    .editorial-grid .row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 3px;
+    }
+    .editorial-grid .row-wide-narrow {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 3px;
+    }
+    .editorial-grid .row-narrow-wide {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 3px;
+    }
+    .editorial-grid img {
+      width: 100%;
+      display: block;
+    }
+
+    /* ── Press section ── */
+    .press-section {
+      padding: 70px 0 60px;
+    }
+    .press-section .section-label {
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.35);
+      margin-bottom: 40px;
+    }
+    .press-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .press-list li {
+      border-top: 1px solid #e0ddd8;
+    }
+    .press-list li:last-child {
+      border-bottom: 1px solid #e0ddd8;
+    }
+    .press-list a {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 22px 0;
+      border-bottom: none !important;
+      color: #111 !important;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .press-list a:hover {
+      opacity: 0.55;
+      color: #111 !important;
+      border-bottom: none !important;
+    }
+    .press-outlet {
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.38);
+      min-width: 130px;
+      flex-shrink: 0;
+    }
+    .press-headline {
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      line-height: 1.4;
+      color: #111;
+    }
+    .press-arrow {
+      margin-left: auto;
+      font-size: 1.4rem;
+      color: rgba(0,0,0,0.2);
+      flex-shrink: 0;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .press-list a:hover .press-arrow {
+      transform: translateX(4px);
+      color: rgba(0,0,0,0.5);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .hero-image {
+        min-height: 60vw;
+      }
+      .hero-text {
+        padding: 40px 24px;
+      }
+      .hero-text h1 {
+        font-size: 3.6rem;
+      }
+      .editorial-grid .row-3 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 599px) {
+      .hero-text h1 { font-size: 2.8rem; }
+      .editorial-grid .row-2,
+      .editorial-grid .row-3,
+      .editorial-grid .row-wide-narrow,
+      .editorial-grid .row-narrow-wide {
+        grid-template-columns: 1fr;
+      }
+      .press-list a { flex-wrap: wrap; gap: 6px; }
+      .press-outlet { min-width: auto; width: 100%; }
+    }
+  </style>
 </head>
 
-
 <body>
-  <script>
-
-  window.addEventListener('load', function () {
-    var vid1 = document.getElementById("video1");
-    vid1.playbackRate = 2;
-/*
-    const players = Plyr.setup('.js-player', {
-      controls: ['play', 'progress']
-    });
-    */
-  });
-
-
-  </script>
-
   <div class="container project-page">
 
     <div class="row top-nav">
-      <div class="one-half column" >
+      <div class="one-half column">
         <a href="/index.html">
           <h5 class="title">Mary Huang</h5>
         </a>
       </div>
     </div>
 
-    <div class="row">
-      <div class="seven columns" >
-        <img src="Laurel_timelapse2.gif" />
+  </div>
+
+  <!-- Hero: full-width outside normal container -->
+  <div style="max-width:1350px; margin: 0 auto; padding: 0 4%;">
+
+    <div class="hero">
+      <div class="hero-image">
+        <img src="shoe_black_main.jpg" alt="3D printed shoe, black" />
       </div>
-      <div class="five columns">
-        <h5 class="large-title">3D Printed Shoes</h5>
-        <p>
-          Continuum Fashion <br>
-          2012-2014 <br>
-          Concept & Industrial Design
+      <div class="hero-text">
+        <p class="eyebrow">Continuum Fashion · 2012–2016</p>
+        <h1>3D Printed<br>Shoes</h1>
+        <p class="meta">
+          Concept, Art Direction &amp; Industrial Design
         </p>
-        <p>
-          3D printed shoes that you can actually wear.
+        <p class="description">
+          Using innovative materials to create designs striding digital and organic. The first wearable 3D printed shoes.
         </p>
       </div>
     </div>
 
+    <hr class="section-divider" style="margin-top: 70px;" />
 
-    <div class="row gallery">
-      <div class="twelve columns" >
-        <img src="shoe_black_main.jpg" class="image-crop"/>
-        <img src="shoes_on_feet.jpg" class="image-crop"/>
-        <img src="shoe_silver.jpg" class="image-crop"/>
-        <img src="shoe_butterfly.jpg" class="image-crop"/>
+    <!-- Editorial gallery -->
+    <div class="editorial-grid">
 
-        <img src="Laurel-Tree-sandal.jpg" class="image-crop"/>
-        <img src="Laurel-pump.jpg" class="image-crop"/>
-        <img src="Strvct-wedge-black.jpg" class="image-crop"/>
-        <img src="Daphne-Leaves-1.jpg" class="image-crop"/>
-
-        <img src="Laurel-shoe-on-model.jpg" class="image-crop"/>
-        <img src="shoe-prototypes.jpg" class="image-crop"/>
+      <div class="row-2">
+        <div class="hero-text">
+          <p class="description">
+            STRVCT refers to structure. With 3D printed nylon, delicate looking forms are incredibly strong while also impossibly lightweight. A triangulated spin on the classic wedge pump, it echoes Cinderella's glass slipper in transparency.
+          </p>
+        </div>
+        <div><img src="shoes_on_feet.jpg" alt="Shoes on feet" /></div>
       </div>
+
+      <div class="row-3">
+        <div><img src="shoe_silver.jpg" alt="Silver 3D printed shoe" /></div>
+        <div><img src="shoe_butterfly.jpg" alt="Butterfly shoe" /></div>
+        <div><img src="Strvct-wedge-black.jpg" alt="STRVCT wedge black" /></div>
+      </div>
+
+
+      <div style="height:3px;"></div>
+
+      <div class="row-wide-narrow">
+        <div class="wide"><img src="Laurel-shoe-on-model.jpg" alt="Laurel shoe on model" /></div>
+        <div class="tall"><img src="Laurel-Tree-sandal.jpg" alt="Laurel Tree sandal" />
+          <img src="Laurel_timelapse2.gif" alt="Timelapse of shoe construction" style="width:100%; display:block;" />
+        </div>
+      </div>
+
+      <div style="height:3px;"></div>
+
+      <div class="row-3">
+        <div><img src="wood-shoe.jpg" alt="prototype in wood filament" /></div>
+        <div><img src="Laurel-pump.jpg" alt="Laurel pump" /></div>
+        <div><img src="Daphne-Leaves-1.jpg" alt="Daphne Leaves shoe" /></div>
+
+      </div>
+
+      <div style="height:3px;"></div>
+
+      <div class="row-2">
+        <div><img src="shoe-prototypes.jpg" alt="Shoe prototypes" /></div>
+
+        <div class="hero-text">
+          <p class="description">
+            Achieving comfortable wearability with a design printable on a desktop FDM printer was the bulk of the challenge. No support material.
+            <br><br>
+            After dozens of prototypes, I settled on silk ribbon laces and 2 separate TPU pieces (the insole and sole), that were 3D printed on a separate machine.
+            <br><br>
+            In the years since, many people have made other 3D printed shoes designs. Yet no one has had the same obsession with getting every curve precisely right for that elegant look.
+          </p>
+        </div>
+      </div>
+
+      <div style="height:3px;"></div>
+
+
     </div>
 
-
+    <!-- Press section -->
+    <div class="press-section">
+      <p class="section-label">Press</p>
+      <ul class="press-list">
+        <li>
+          <a href="https://www.wired.com/2013/03/strvct-3d-printed-shoes/" target="_blank" rel="noopener">
+            <span class="press-outlet">Wired</span>
+            <span class="press-headline">These Gorgeous 3-D Printed Shoes Are Going on Sale This Summer</span>
+            <span class="press-arrow">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.dezeen.com/2013/03/05/strvct-shoes-by-continuum-fashion/" target="_blank" rel="noopener">
+            <span class="press-outlet">Dezeen</span>
+            <span class="press-headline">STRVCT Shoes by Continuum Fashion</span>
+            <span class="press-arrow">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.fastcompany.com/3007060/strvct-first-commercially-available-3d-printed-shoe" target="_blank" rel="noopener">
+            <span class="press-outlet">Fast Company</span>
+            <span class="press-headline">STRVCT: The First Commercially Available 3D-Printed Shoe</span>
+            <span class="press-arrow">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.vogue.com/article/3d-printed-shoes-continuum-fashion" target="_blank" rel="noopener">
+            <span class="press-outlet">Vogue</span>
+            <span class="press-headline">Continuum Fashion's 3D-Printed Shoes Are Here</span>
+            <span class="press-arrow">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.nytimes.com/2013/07/11/fashion/3d-printing-moves-into-shoes.html" target="_blank" rel="noopener">
+            <span class="press-outlet">New York Times</span>
+            <span class="press-headline">3-D Printing Moves Into Shoes</span>
+            <span class="press-arrow">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://techcrunch.com/2013/03/04/continuum-fashion-3d-prints-wearable-shoes-built-from-mathematical-algorithms/" target="_blank" rel="noopener">
+            <span class="press-outlet">TechCrunch</span>
+            <span class="press-headline">Continuum Fashion 3D Prints Wearable Shoes Built From Mathematical Algorithms</span>
+            <span class="press-arrow">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.huffpost.com/entry/3d-printed-shoes-continuum-fashion_n_2821004" target="_blank" rel="noopener">
+            <span class="press-outlet">HuffPost</span>
+            <span class="press-headline">Continuum Fashion's 3D-Printed STRVCT Shoes Are The Footwear Of The Future</span>
+            <span class="press-arrow">→</span>
+          </a>
+        </li>
+      </ul>
+    </div>
 
     <div class="row spacer"></div>
 
   </div>
 
-
-
-
-<!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 </body>
 </html>
