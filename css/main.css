@@ -113,7 +113,7 @@ h5{
   position: relative;
 }
 
-.top-nav .title:hover::before{
+.top-nav .name-title:hover::before{
   content: url("../images/arrow_left.svg");
   position: absolute;
   top: 0px;
@@ -144,6 +144,12 @@ h5{
 }
 
 .title {
+  font-weight: 600;
+  letter-spacing: initial;
+  font-size: 2rem;
+}
+.name-title{
+  text-transform: uppercase;
   font-weight: 600;
   letter-spacing: initial;
   font-size: 2rem;
