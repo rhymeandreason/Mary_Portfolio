@@ -276,7 +276,7 @@
     .selected-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 72px 10px;
+      gap: 48px 22px;
       max-width: 1400px;
       margin: 0 auto;
     }
@@ -289,6 +289,38 @@
     }
     @media (max-width: 500px) {
       .selected-grid { grid-template-columns: 1fr; }
+    }
+
+    .current-work {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-top: 80px;
+      padding-top: 80px;
+      border-top: 1px solid #e5e5e5;
+    }
+    .current-work-image img {
+      width: 100%;
+      display: block;
+      border-radius: 4px;
+    }
+    .current-work-text h3 {
+      font-size: clamp(2rem, 2.4vw, 2.8rem);
+      font-weight: 700;
+      margin: 0 0 16px;
+      color: #000;
+      letter-spacing: -0.01em;
+    }
+    .current-work-text p {
+      font-size: clamp(1.5rem, 1.6vw, 1.8rem);
+      line-height: 1.6;
+      color: rgba(0,0,0,0.7);
+      margin: 0 0 14px;
+    }
+    .current-work-text p:last-child { margin-bottom: 0; }
+    @media (max-width: 800px) {
+      .current-work { grid-template-columns: 1fr; gap: 28px; margin-top: 48px; }
     }
 
     /* Year nav */
@@ -601,6 +633,17 @@
 
   <section class="selected-work active" id="selectedWork">
     <div class="selected-grid" id="selectedGrid"></div>
+    <div class="current-work">
+      <div class="current-work-image">
+        <img src="projects/runes/runes.jpg" alt="Runes" loading="lazy">
+      </div>
+      <div class="current-work-text">
+        <h3>Currently working on…</h3>
+        <p>A collection of minimal tools rethinking personal computing.</p>
+        <p>Bridging digital and physical, open source and DIY. AI with intention.</p>
+        <p>More to share soon.</p>
+      </div>
+    </div>
   </section>
 
   <section class="art-research" id="artResearch">
@@ -1043,31 +1086,18 @@ Design and prototyping for online customization tools for 3D printing. Launched 
     const viewToggle = document.getElementById('viewToggle');
     const selectedWorkEl = document.getElementById('selectedWork');
     const artResearchEl = document.getElementById('artResearch');
-
-    function activateView(view) {
-      const btn = viewToggle.querySelector(`button[data-view="${view}"]`);
+    viewToggle.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-view]');
       if (!btn) return;
       [...viewToggle.children].forEach(b => b.classList.toggle('active', b === btn));
+      const view = btn.dataset.view;
       selectedWorkEl.classList.toggle('active', view === 'selected');
       track.classList.toggle('active', view === 'timeline');
       yearNav.classList.toggle('active', view === 'timeline');
       artResearchEl.classList.toggle('active', view === 'art');
       scrollHint.style.display = view === 'timeline' ? '' : 'none';
-    }
-
-    viewToggle.addEventListener('click', (e) => {
-      const btn = e.target.closest('button[data-view]');
-      if (!btn) return;
-      const view = btn.dataset.view;
-      const slug = view === 'selected' ? '' : view;
-      history.pushState(null, '', slug ? `#${slug}` : location.pathname);
-      activateView(view);
     });
-
-    // Set initial view from URL hash
-    const hashView = location.hash.replace('#', '');
-    activateView(['timeline', 'art'].includes(hashView) ? hashView : 'selected');
-    scrollHint.style.display = (hashView === 'timeline') ? '' : 'none';
+    scrollHint.style.display = 'none';
 
     // Keyboard arrows
     document.addEventListener('keydown', (e) => {
@@ -1077,27 +1107,19 @@ Design and prototyping for online customization tools for 3D printing. Launched 
     });
 
     /* ============ Art & Research gallery ============ */
-    const artCategories = ['all', 'fashion', 'digital-fabrication', 'interactive', 'craft', 'hardware'];
+    const artCategories = ['all', 'fashion', 'digital-fabrication', 'interactive'];
     const artProjects = [
-      { slug: 'colorandcraft', name: 'Color & Craft', year: 2026, cats: ['craft'], caption: 'Vibrant DIY plant kits with video tutorials', link: 'https://colorandcraft.co', media: ['images/thumbs/Colorandcraft_c.png','PlantWall.mp4','maranta hero.jpg','brevirimosa close up.jpg',
-      //'polka-dot-plant.jpeg'
-    ] },
-    { slug: 'seeds', name: 'Seed & lichen', year: 2026, cats: ['craft'], caption: 'semi-functional ceramics in organic forms', link: null, media: ['projects/art/seed.jpg','projects/art/spikey.jpg','projects/art/lichen.jpg','projects/art/holding-spikey-cup.jpg'] },
-      { slug: 'data_collection', name: 'Data Collection', year: 2014, cats: ['fashion'], caption: 'Exploring the ubiquity of personal data logging and privacy', link: null, media: ['gallery.jpg','data-knitting.jpg', 'gina-shirt.jpg'] },
-      { slug: 'illuminate', name: 'Illuminate', year: 2017, cats: ['fashion'], caption: 'Modern dance performance about the Big Bang, collab with Indelible Dance', link: null, media: ['illuminate-1.jpg','illuminate-2.jpg','RR1.022c.jpg','RR1031.jpg'] },
-      { slug: 'Runes', name: 'RUNES', year: 2026, cats: ['interactive', 'craft','hardware'], caption: 'a tangible interface for an agentic OS, work in progress concept', link: null, media: ['projects/art/RunesOS.png'] },
-
-      { slug: 'devices', name: 'Porcelain Devices', year: 2026, cats: ['hardware','craft'], caption: 'concept sketches of devices made to last a lifetime', link: null, base: 'projects/art/devices/', media: ['nokia-porcelain.jpg','ipod-porcelain.jpg','gameboy-porcelain.jpg'] },
-/*
+      { slug: 'colorandcraft', name: 'Color & Craft', year: 2026, cats: ['craft'], caption: 'Vibrant DIY plant kits with video tutorials', link: 'https://colorandcraft.co', media: ['images/thumbs/Colorandcraft_c.png','plant-wall.jpg','maranta hero.jpg','brevirimosa close up.jpg','polka-dot-plant.jpeg'] },
       { slug: 'earthshot_zine', name: 'The Earthshot', year: 2022, cats: ['craft'], caption: 'A zine about ecological restoration and optimism', link: null, media: ['projects/art/earthshot_zine.jpg'] },
-*/
+      { slug: 'data_collection', name: 'Data Collection', year: 2014, cats: ['fashion'], caption: 'Exploring the ubiquity of personal data logging and privacy', link: null, media: ['gallery.jpg','gina-shirt.jpg','mary-1export.m4v'] },
+      { slug: 'art', name: 'Pablo', year: 2020, cats: ['craft','illustration'], caption: 'Stop motion animation of a lonely cubist romantic.', link: null, media: ['pablo_clip.mp4'] },
+      { slug: 'illuminate', name: 'Illuminate', year: 2017, cats: ['fashion'], caption: 'Modern dance performance about the Big Bang, collab with Indelible Dance', link: null, media: ['illuminate-1.jpg','illuminate-2.jpg','RR1.022c.jpg','RR1031.jpg'] },
       { slug: 'ar_ideas', name: 'AR Board Game Prototype', year: 2019, cats: ['interactive'], link: 'projects/ar_ideas/ar_ideas.html', media: ['Fox_cards.mp4'] },
-      { slug: 'vr_gestures', name: 'VR Hand Gestures', year: 2020, cats: ['interactive'], caption: 'Exploration prototypes using hand tracking on a Quest', link: 'projects/gestures/gestures.html', base: 'projects/gestures/', media: ['hands_sketch.png','Picture_zoom_small.gif','Map_Zoom.mp4'] },
-      { slug: 'lore', name: 'Local Lore', year: 2019, cats: ['interactive'], caption: 'A location-based scavenger hunt game set in San Francisco and Oakland.', link: 'projects/lore/lore.html', base: 'projects/lore/', media: ['SF map.jpg','map-zoom.m4v','Lore_main.jpg','mobile sketch 2.jpg'] },
+      { slug: 'vr_gestures', name: 'VR Hand Gestures', year: 2020, cats: ['interactive'], link: 'projects/gestures/gestures.html', base: 'projects/gestures/', media: ['hands_sketch.png','Picture_zoom_small.gif','Map_Zoom.mp4'] },
+      { slug: 'lore', name: 'Local Lore', year: 2019, cats: ['interactive'], caption: 'A location-based scavenger hunt game set in San Francisco and Oakland.', link: 'projects/lore/lore.html', base: 'projects/lore/', media: ['Lore_main.jpg','map-zoom.m4v','mobile sketch.jpg','mobile sketch 2.jpg'] },
+      { slug: 'lore_illustrations', name: 'Lore Illustrations', year: 2019, cats: ['illustration'], caption: 'Illustrations from the Local Lore project.', link: 'projects/lore/lore.html', base: 'projects/lore/', media: ['SF map.jpg','SF_places.jpg'] },
       { slug: 'typeface', name: 'Typeface', year: 2011, cats: ['interactive'], caption: 'Type + Facial Recognition', link: 'projects/typeface/typeface.html', media: ['TYPEFACE_alpha.mp4','typeface-screencap-1.jpg','typeface-screencap-3.jpg'] },
       { slug: 'n12', name: 'N12 Bikini', year: 2013, cats: ['fashion','digital-fabrication'], caption: '3D printed textile', link: 'projects/n12/n12.html', media: ['N12-bikini-set-top.jpg','N12-detail.jpg','N12-hallway1.jpg','N12-white_detail.jpg'] },
-      { slug: 'daphne', name: 'Daphne wearable tech jewelry', year: 2014, cats: ['fashion','hardware'], caption: 'concept sketches', link: null, media: ['projects/art/daphne-bracelet.jpg', 'projects/art/daphne-earbuds1.jpg'] },
-
       { slug: 'shoes', name: '3D Printed Shoes', year: 2014, cats: ['fashion','digital-fabrication'], link: 'projects/shoes/shoes.html', media: [
         { src: 'Daphne-Leaves-1.jpg', caption: 'Daphne shoe' },
         { src: 'Laurel-pump.jpg', caption: 'Laurel pump' },
@@ -1108,34 +1130,27 @@ Design and prototyping for online customization tools for 3D printing. Launched 
         { src: 'shoe_black_main.jpg', caption: 'Black shoe' },
         { src: 'Laurel-Tree-sandal.jpg', caption: 'Laurel tree sandal' },
       ] },
-      { slug: 'constrvct', name: 'CONSTRVCT', year: 2014, cats: ['fashion'], link: 'projects/constrvct/constrvct.html', media: [
+      { slug: 'constrvct', name: 'Constrvct', year: 2014, cats: ['fashion'], link: 'projects/constrvct/constrvct.html', media: [
         { src: 'CONSTRVCT_composite1.jpg', caption: 'Digital to physical dress' },
         { src: 'GeekChic.jpg', caption: 'Photoshoot at MIT' },
         { src: 'smithsonian_edit.jpg', caption: 'Beautiful Users show at Smithsonian Cooper-Hewitt' },
-        { src: 'constrvct_community_designs1.jpg', caption: 'constrvct.com community designs' },
+        { src: 'constrvct_community_designs1.jpg', caption: 'Constrvct.com community designs' },
         { src: 'felicia-constrvct-dress.png', caption: 'Felicia Day Constrvct dress' },
         { src: 'nervous-print-pattern.jpg', caption: 'Nervous System print pattern' },
         'Screencap_6_2015.mp4',
       ] },
-      { slug: 'ddress', name: 'D.dress', year: 2011, cats: ['fashion'], caption: 'Computational couture', link: 'projects/ddress/ddress.html', media: ['dress1.jpg','Ddress-selected1.jpg','Ddress-selected2.jpg','Ddress-selected3.jpg'] },
-      { slug: 'modakit', name: 'ModaKit', year: 2014, cats: ['fashion','interactive','hardware'], caption: 'Modular prototyping system for wearable tech', link: 'projects/modakit/modakit.html', media: ['MODA_slides.jpg','MODA_slides2.jpg','ModaKit.png'] },
-      { slug: 'dandelion', name: 'Dandelion', year: 2011, cats: ['fashion','hardware','craft'], caption: 'Wind power generating wearable sculpture', link: null, media: ['Dandelion.mp4','dandelion1.jpg','dandelion2a.jpg','dandelion4.jpg'] },
-  /*
-      { slug: 'rose', name: 'Google Rose', year: 2015, cats: ['fashion','interactive'], caption: 'Generative fashion design', link: 'projects/rose/rose.html', media: ['rose-sketch.png','Rose_Step4.m4v','rose_step2_poster.png','rose-main.png'] },
-      { slug: 'shapeways', name: 'Shapeways', year: 2013, cats: ['digital-fabrication','interactive'], link: 'projects/shapeways/shapeways.html', media: [
+      { slug: 'ddress', name: 'D.dress', year: 2011, cats: ['fashion'], caption: 'Computational couture', link: 'projects/ddress/ddress.html', media: ['Ddress-selected1.jpg','Ddress-selected2.jpg','Ddress-selected3.jpg','dress1.jpg'] },
+      { slug: 'modakit', name: 'ModaKit', year: 2014, cats: ['fashion','interactive'], caption: 'Modular prototyping system for wearable tech', link: 'projects/modakit/modakit.html', media: ['MODA_slides.jpg','MODA_slides1.jpg','MODA_slides2.jpg','MODA_slides4.jpg'] },
+      { slug: 'rose', name: 'Google Rose', year: 2015, cats: ['fashion','interactive'], caption: 'Generative fashion design', link: 'projects/rose/rose.html', media: ['rose-main.png','rose-sketch.png','Rose_Step4.m4v','rose_step2_poster.png'] },
+      { slug: 'shapeways', name: 'Shapeways', year: 2013, cats: ['digital-fabrication'], link: 'projects/shapeways/shapeways.html', media: [
         { src: 'yuniku.m4v', caption: 'Custom 3D printed ceramics' },
-        //{ src: 'sake1.jpg', caption: 'Custom 3D printed ceramics' },
+        { src: 'sake1.jpg', caption: 'Custom 3D printed ceramics' },
         { src: 'sake2.jpg', caption: 'Custom 3D printed ceramics' },
-        //{ src: 'sake3.jpg', caption: 'Custom 3D printed ceramics' },
+        { src: 'sake3.jpg', caption: 'Custom 3D printed ceramics' },
         { src: 'vibe_white.jpg', caption: 'Soundcloud generated phone case' },
         { src: 'vibe_group.jpg', caption: 'Soundcloud generated phone case' },
       ] },
-      */
-      { slug: 'viralnet', name: 'Viralnet', year: 2020, cats: ['data', 'interactive'], caption: '3D visualization of virus genomes', link: 'projects/viralnet/viralnet.html', media: ['Nodes_Gradual_small.gif','render0.png', 'render10.png','render11.png'] },
       { slug: 'westfield', name: 'Westfield', year: 2015, cats: ['sculpture','digital-fabrication'], caption: 'Concept for large scale outdoor sculpture', link: 'projects/westfield/westfield.html', media: ['sculpture_front.jpg','sculpture_2.jpg','sculpture_3.jpg','sculpture_night1.jpg','fabrication1.jpg','fabrication3.jpg'] },
-/*
-      { slug: 'art', name: 'Pablo', year: 2020, cats: ['craft','illustration'], caption: 'Stop motion animation of a lonely cubist romantic.', link: null, media: ['pablo_clip.mp4'] },
-      */
     ];
 
     const VIDEO_RE = /\.(mp4|m4v|mov|webm)(\?|$)/i;

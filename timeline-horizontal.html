@@ -291,6 +291,38 @@
       .selected-grid { grid-template-columns: 1fr; }
     }
 
+    .current-work {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-top: 80px;
+      padding-top: 80px;
+      border-top: 1px solid #e5e5e5;
+    }
+    .current-work-image img {
+      width: 100%;
+      display: block;
+      border-radius: 4px;
+    }
+    .current-work-text h3 {
+      font-size: clamp(2rem, 2.4vw, 2.8rem);
+      font-weight: 700;
+      margin: 0 0 16px;
+      color: #000;
+      letter-spacing: -0.01em;
+    }
+    .current-work-text p {
+      font-size: clamp(1.5rem, 1.6vw, 1.8rem);
+      line-height: 1.6;
+      color: rgba(0,0,0,0.7);
+      margin: 0 0 14px;
+    }
+    .current-work-text p:last-child { margin-bottom: 0; }
+    @media (max-width: 800px) {
+      .current-work { grid-template-columns: 1fr; gap: 28px; margin-top: 48px; }
+    }
+
     /* Year nav */
     .year-nav {
       display: flex;
@@ -601,6 +633,17 @@
 
   <section class="selected-work active" id="selectedWork">
     <div class="selected-grid" id="selectedGrid"></div>
+    <div class="current-work">
+      <div class="current-work-image">
+        <img src="projects/runes/runes.jpg" alt="Runes" loading="lazy">
+      </div>
+      <div class="current-work-text">
+        <h3>Currently working on…</h3>
+        <p>A collection of minimal tools rethinking personal computing.</p>
+        <p>Bridging digital and physical, open source and DIY. AI with intention.</p>
+        <p>More to share soon.</p>
+      </div>
+    </div>
   </section>
 
   <section class="art-research" id="artResearch">
