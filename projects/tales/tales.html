@@ -2,396 +2,248 @@
 <html lang="en">
 <head>
 
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Mary Huang : Portfolio</title>
+  <title>Star Wars: Tales From the Galaxy's Edge — Mary Huang</title>
   <meta name="description" content="">
   <meta name="author" content="">
-
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
-
-  <!-- Video Player
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="../../css/normalize.css">
   <link rel="stylesheet" href="../../css/skeleton.css">
   <link rel="stylesheet" href="../../css/main.css">
-
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="../../css/layout.css">
   <link rel="icon" type="image/png" href="../../images/favicon.png">
 
-<style>
-h5{
-  font-weight: bold;
-}
-#note {
-  position: relative;
-  margin-top: -100px;
-  text-align: center;
-  background: white;
-}
-#note img{
-  max-width: 1000px;
-}
-</style>
-
+  <style>
+    video {
+      border: none;
+      box-shadow: none;
+    }
+    video:hover {
+      box-shadow: none;
+    }
+    .three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .caption {
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.3rem;
+      line-height: 1.6;
+      color: rgba(0,0,0,0.6);
+      margin-top: 12px;
+    }
+    .body-text .section-label {
+      margin-bottom: 16px;
+    }
+    .two-col > .body-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px 48px;
+    }
+    @media (max-width: 900px) {
+      .three-col { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 599px) {
+      .three-col { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 
-
 <body>
-  <script>
-
-  window.addEventListener('load', function () {
-/*
-    const players = Plyr.setup('.js-player', {
-      controls: ['play', 'progress']
-    });
-    */
-  });
-
-
-  </script>
-
   <div class="container project-page">
-
     <div class="row top-nav">
-      <div class="one-half column" >
+      <div class="one-half column">
         <a href="/index.html">
-          <h5 class="name-title">Mary Huang</h5>
+          <h5 class="title">Mary Huang</h5>
         </a>
       </div>
     </div>
+  </div>
 
-    <div class="row">
-      <div class="six columns" >
+  <div style="max-width:1350px; margin: 0 auto; padding: 0 4%;">
 
-        <img src="tales-poster1.jpg" />
-        <img src="tales-poster2.jpg" />
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-image">
+        <img src="tales-poster1.jpg" alt="Star Wars: Tales From the Galaxy's Edge" />
       </div>
-      <div class="six columns padded">
-        <h5 class="large-title">Star Wars: Tales From the Galaxy's Edge</h5>
-        <p>
-          ILMxLAB (Lucasfilm)<br>
-          2020-2021 <br>
-          UI/UX Lead, UI Artist, Technical Implementation
+      <div class="hero-text">
+        <p class="eyebrow">ILMxLAB (Lucasfilm) · 2020–2021</p>
+        <h1>Star Wars:<br>Tales From<br>the Galaxy's Edge</h1>
+        <p class="meta">
+          UI/UX Lead · UI Artist<br>
+          Technical Implementation
         </p>
-        <p>
-          Shipped Nov 2020 and Sept 2021 on Quest. <br>
-          Feb 2023 on PSVR2.
-        <!--
-        <p>
-          "Star Wars: Tales from the Galaxy's Edge is an action-adventure virtual reality experience from ILMxLAB that lets you travel across the galaxy to the planet of Batuu and live out your own unforgettable story."
+        <p class="description">
+          Shipped Nov 2020 and Sept 2021 on Quest. Feb 2023 on PSVR2.
         </p>
-      -->
-        <p>
-          <a href="https://www.ilmxlab.com/tales/" target="blank">ILMxLAB Experience Launch Page</a>
-        </p>
-        <p>
-
-          As the UI Lead, I owned end-to-end design for all in-game UI features. Menus, typography, icons, AR-in-VR hud elements, custom UI shaders, tutorials, localization, settings, motion graphics. I also designed all the mission progression, challenges, journal, and worked with game designers to untangle the spaghetti of nonlinear story progression. Shipped in Unreal Engine.
-          <br><br>
-          I was the first UI/UX designer ever hired at ILM. I shipped all the UI for the first launch in November 2020 in just 5 months, working mostly with the art director, game director, game designers, and engineering leads.
-<!--
-          For our follow-up release 10 months later, I maintained and improved core features and also expanded on augmenting storytelling with more in-world UI.
-          <br><br>
--->
-<!--
-          <ul>
-          <b>Key design pillars:</b>
-          <li>Lo-Fi minimalism: Don’t distract from the story, keep the Star Wars vibe.</li>
-          <li>Practicality:  Legibility, Rendering Perf, Comfort </li>
-          <li>VR comfort and accessibility, spatial navigation.</li>
-          <li>Balance needs for new players as well as experienced VR players.</li>
-          <li>Communicate game features to encourage exploration and replay.</li>
-          </ul>
--->
-        </p>
-
-
-        <p>
+        <p class="description" style="margin-top: 20px;">
+          <a href="https://www.ilmxlab.com/tales/" target="_blank" rel="noopener">ILMxLAB Experience Page →</a>
         </p>
       </div>
     </div>
 
-  <!--
-    <div class="row" id="note">
-        <img src="Tales_note.jpg" />
-    </div>
--->
-      <hr>
-          <div class="row">
-            <div class="six columns">
-              <img src="AllKit.jpg" />
-              <img src="Inventory.jpg" />
-            </div>
-            <div class="five columns padded" >
-              <h5>Achieving "AR in VR"</h5>
-              <p>
-                <!--
-                It took me a few tries to make a scanline shader that the Art Director liked, and then it started to come together.
-              -->
-                With so many different mechanics to represent, I championed a philosophy of 'less is more'.
-                <br><br>
-                I built an in-world spatial UI system using a collection of shaders with different parameters. The primary goal was to keep it minimal and avoid too many elements visible at a time.
-                Being selective with these parameters allowed me to create differentiation between game mechanics.
-                <ol>
-                  <li>Distance culling. Most elements were set to only be visible if the player was within 3 meters.</li>
-                  <li>Overlay. Some elements (like the compass target marker) needed to be visible on top of all geometry.</li>
-                  <li>Stay constant size in viewframe = scale up the element from a distance.</li>
-                  <li>Small animations add a lot: fade in on approach or constant rotation.</li>
-                </ol>
+    <hr class="section-divider" />
 
-              </p>
-            </div>
+    <div class="content-section">
 
-          </div>
-          <div class="row tight-grid">
-          <div class="four columns" >
-            <video class="minimal" playsinline controls muted poster="allkit_poster.jpg"><source src="AllKit_web.mp4"> </video>
-              <p class="caption">All-Kit. 'augmented' tool icons appear just when the player presses the joystick. In-world helper icons for puzzles appear at 3 m. </p>
-          </div>
-          <div class="four columns" >
-            <video class="minimal" playsinline controls muted poster="compass_poster.jpg"><source src="MCT_compass_web.mp4"> </video>
-              <p class="caption">The compass. I removed competing features to make an objective marker that is located in world space at a target point, draws on top of everything, and maintains a minimum size.</p>
-          </div>
-          <div class="four columns" >
-            <video class="minimal" playsinline controls muted poster="shop_poster.jpg"><source src="mubo_shop_web.mp4"> </video>
-              <p class="caption">In-world shop UI. The credits display animates as the player approaches the counter. </p>
-          </div>
-
+      <!-- Overview -->
+      <div class="two-col">
+        <div class="full-bleed">
+          <img src="tales-poster2.jpg" alt="Tales From the Galaxy's Edge poster" />
         </div>
-    <hr>
-<!--
-    <div class="row">
-
-    <div class="six columns" >
-      <div style="padding:100% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/796168115?h=34f99a0a86&color=00fadef&title=0&byline=0&portrait=0" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
-
-    </div>
-
-  <div class="six columns padded" >
-    <h5>IG88: Being a Droid</h5>
-    <p>
-      I created a unique HUD UI system to give a distinctively assassin droid play experience. The monochrome green and geometric elements reference vintage arcade graphics and real-life military HUD displays.
-      <br><br>
-      Working with the script, I created the "scan" feature and corresponding Aurebesh translation animation to punctuate jokes and plot themes.
-      <br><br>
-       Small details like the audio bars, rotating targeting reticles, and hmd-oriented scanlines are subtle special touches to give that "being inside a droid" experience.
-       <br><br>
-       To keep those draw calls performant, I animated all motion graphics with meshes and shaders using timeline nodes in Unreal.
-      <br><br>
-      Play it, it's super fun in VR.
-    </p>
-  </div>
-  </div>
-  <div class="row">
-    <img src="ig88_stills.png" />
-  </div>
--->
-      <div class="row">
-        <div class="six columns" >
-          <img src="Gauntlet_hero.jpg" />
-<!--
-          <video class="minimal" playsinline controls><source src="gauntlet_walkthrough.mp4"> </video>
--->
-        </div>
-
-        <div class="six columns padded" >
-          <h5> The Gauntlet</h5>
-
-          <p>
-            The gauntlet held 3 main play features: Holocalls, Scanning, and Compass. <br><br>
-            The gauntlet was initially really difficult to use, but we weren’t going to re-design it before launch. I improved usability with small adjustments, making it more ergonomic and the buttons more obvious.
-            <br><br>
-          </p>
-        </div>
-      </div>
-      <div class="row">
-        <img src="Gauntlet_features.jpg" />
-      </div>
-
-      <hr>
-
-      <div class="row">
-        <div class="six columns" >
-          <img src="compass.jpg" />
-        </div>
-        <div class="six columns padded" >
-          <h5> Compass Navigation</h5>
-
-            "Where do I go next?" Just hit the compass button. Simple concept, yet this feature proved extra tricky as a diagetic VR element.
-            <br><br>
-            <b>Challenges:</b>
-          <li>A 3D arrow mounted to your wrist is way more complicated than a 2D element on a flat screen.</li>
-          <li>Our levels have a lot of winding paths and ‘doglegs’ due to rendering and level streaming requirements. No long clear sight lines.</li>
-          <li>It had to work across every single mission across multiple different levels, and switch between different missions</li>
-          <br>
-          <b>Shipping It:</b><br>
-          <li>Condensed a wide range of ideas from different game designers. </li>
-          <li>Removed competing features and made an objective marker that is located in world space at a target point.</li>
-          <li>Audited all the missions and set best practices for level designers to get it all working.</li>
-          </p>
-
-          <!--
-          <p>
-             I also improved usability and ergonomics on the 3D gauntlet design, working with our gameplay engineering lead and art director. <br><br>
-             Tldr: The initial version had toggle switches, which were impossible to use. The hand models are giant, especially for short people or kids, so I carefully nudged the position of the gauntlet and buttons to make it work. As a petite female, I'm good at testing for the range of shorter people.
-          </p>
-        -->
+        <div class="body-text">
+          <p>As the UI Lead, I owned end-to-end design for all in-game UI features: menus, typography, icons, AR-in-VR HUD elements, custom UI shaders, tutorials, localization, settings, and motion graphics.</p>
+          <p>I also designed the mission progression, challenges, and journal systems, untangling the complexity of nonlinear story progression. Worked closely with the art director, game design leads, and engineering leads. Shipped in Unreal Engine.</p>
         </div>
       </div>
 
-      <hr>
-      <div class="row">
-        <div class="six columns" >
-          <img src="Pause_Menu_Large.jpg" />
-          <!--
-            <video class="minimal" playsinline controls><source src="pause_menu.mp4"> </video>
-            -->
-        </div>
-
-        <div class="six columns padded" >
-          <h5> Pause Menu</h5>
-
-          <p>
-            The workhorse UI that holds averything together. Art direction was already done. I refined the UX and visual design to have clear legibility for a range of content.
-            <li>I architected the mission progression system, allowing the player to set the active mission, switch between story paths, and unlock special Tales.</li>
-            <li>Conceived the map feature to allow fast travel between levels.</li>
-            <li>Owned the Journals feature, managing content development and edits.</li>
-            <li>Took ownership of the Challenges feature, making recommendations for level designers.</li>
-            <li>Built directly in UMG and managed engineering tasks. Localized to 6 languages.</li>
-          </p>
-        </div>
+      <!-- Pull quote -->
+      <div style="border-top: 1px solid #e0ddd8; border-bottom: 1px solid #e0ddd8; padding: 48px 0;">
+        <p style="font-family: 'futura-pt', sans-serif; font-size: 2.8rem; font-weight: 300; line-height: 1.4; color: #111; max-width: 820px; margin: 0;">I was the first UI/UX designer ever hired at ILM. I shipped all the UI for the first launch in November 2020 in just 5 months.</p>
       </div>
 
-      <div class="row">
-        <img src="Pause_Menu_Screencaps.jpg" />
-      </div>
-
-
-      <div class="row">
-        <div class="six columns" >
-          <img src="Settings_Update_w.jpg" />
-        </div>
-
-        <div class="six columns padded" >
-          <h5> Settings...the most essential menu feature!</h5>
-
-          <p>
-            I made the settings easily accessible from both the main menu and the pause menu.
-            Many settings have states dependent on other setting states, so keeping the design files well-documented saved a lot of engineering headache.
-            <br><br>
-            We shipped some highly requested settings in a patch after launch to appease experience VR players who expect much more detailed control over their play experience.
-          </p>
-        </div>
-      </div>
-
-
-      <hr>
-
-        <div class="row">
-          <div class="six columns" >
-            <video class="minimal" playsinline controls poster="inventory_poster.jpg"><source src="MCT_inventory_web.mp4"> </video>
+      <!-- AR in VR -->
+      <div>
+        <div class="two-col">
+          <div style="display:flex; flex-direction:column; gap: 3px;">
+            <img src="AllKit.jpg" alt="All-Kit UI" style="width:100%; display:block;" />
+            <img src="Inventory.jpg" alt="Inventory UI" style="width:100%; display:block;" />
           </div>
-
-          <div class="six columns padded" >
-            <h5> Inventory Pouch</h5>
-
-            <p>
-              The number of inventory items increased in the second release. Working closely with the gameplay engineer, we designed this expandable inventory that balanced the need for quick access with the need to hold many quest items.
-              <br><br>
-              We gave priority to weapons in the 'mini' slots. Later we also added an 'organize' mode to make those actions more efficient. I also gathered feedback about desired improvements, and worked with our gameplay engineering lead to ship the shoulder holsters feature, allowing an item to be stored on the player's back.
-              <br><br>
-              The inventory pouch was one of the most complicated UI mechanics. The fun idea of turning a conventionally 2D UI element into a 3D object doesn't scale well. Diagetic elements have to follow laws of reality and industrial design, thus inheriting all the problems of real-life objects. If we had more inventory items in a future release, we would have moved most of the feature to the 2D Pause Menu.
-            </p>
+          <div class="body-text">
+            <p class="section-label">Achieving "AR in VR"</p>
+            <p>With so many different mechanics to represent, I championed a philosophy of less is more.</p>
+            <p>I built an in-world spatial UI system using a collection of shaders with different parameters — keeping it minimal and avoiding too many elements visible at a time.</p>
+            <ol style="padding-left: 1.6em; margin: 0;">
+              <li style="margin-bottom: 8px;">Distance culling — most elements visible only within 3 meters.</li>
+              <li style="margin-bottom: 8px;">Overlay — some elements (like the compass marker) render on top of all geometry.</li>
+              <li style="margin-bottom: 8px;">Constant viewport size — elements scale up with distance.</li>
+              <li>Small animations add a lot: fade in on approach, or constant rotation.</li>
+            </ol>
           </div>
         </div>
+        <div class="three-col" style="margin-top: 48px;">
+          <div>
+            <video playsinline controls muted poster="allkit_poster.jpg"><source src="AllKit_web.mp4"></video>
+            <p class="caption">All-Kit. Tool icons appear when the player presses the joystick. In-world helper icons for puzzles appear at 3 m.</p>
+          </div>
+          <div>
+            <video playsinline controls muted poster="compass_poster.jpg"><source src="MCT_compass_web.mp4"></video>
+            <p class="caption">The compass. An objective marker located in world space, rendering on top of all geometry at a maintained minimum size.</p>
+          </div>
+          <div>
+            <video playsinline controls muted poster="shop_poster.jpg"><source src="mubo_shop_web.mp4"></video>
+            <p class="caption">In-world shop UI. The credits display animates as the player approaches the counter.</p>
+          </div>
+        </div>
+      </div>
 
-<hr>
+      <!-- The Gauntlet -->
+      <div>
+        <div class="two-col">
+          <div class="full-bleed">
+            <img src="Gauntlet_hero.jpg" alt="The Gauntlet" />
+          </div>
+          <div class="body-text">
+            <p class="section-label">The Gauntlet</p>
+            <p>The gauntlet held three main play features: Holocalls, Scanning, and Compass.</p>
+            <p>The initial design was difficult to use, but a full redesign wasn't feasible before launch. I improved usability through small, precise adjustments — making it more ergonomic and the buttons more legible.</p>
+          </div>
+        </div>
+        <div class="full-bleed" style="margin-top: 48px;">
+          <img src="Gauntlet_features.jpg" alt="Gauntlet features breakdown" />
+        </div>
+      </div>
 
-  <div class="row">
-    <div class="six columns" >
+      <!-- Compass Navigation -->
+      <div class="two-col">
+        <div class="full-bleed">
+          <img src="compass.jpg" alt="Compass navigation" />
+        </div>
+        <div class="body-text">
+          <p class="section-label">Compass Navigation</p>
+          <p>"Where do I go next?" Just hit the compass button. A simple concept that proved extra tricky as a diegetic VR element.</p>
+          <p><strong>Challenges:</strong> a 3D arrow mounted to your wrist is far more complex than a 2D screen element. Our levels have winding paths with no long sight lines. And it had to work across every single mission across multiple levels.</p>
+          <p><strong>Solution:</strong> I condensed a wide range of ideas, removed competing features, and made an objective marker located in world space that renders above all geometry. Then I audited all missions and set best practices for level designers.</p>
+        </div>
+      </div>
 
-      <video class="minimal" playsinline controls muted><source src="MCT_tutorials_web.mp4"> </video>
+      <!-- Pause Menu -->
+      <div>
+        <div class="two-col">
+          <div class="full-bleed">
+            <img src="Pause_Menu_Large.jpg" alt="Pause menu" />
+          </div>
+          <div class="body-text">
+            <p class="section-label">Pause Menu</p>
+            <p>The workhorse UI that holds everything together. I refined the UX and visual design for clear legibility across a wide range of content.</p>
+            <ul style="padding-left: 1.6em; margin: 0;">
+              <li style="margin-bottom: 8px;">Architected the mission progression system — letting players set active missions, switch story paths, and unlock special Tales.</li>
+              <li style="margin-bottom: 8px;">Conceived the map feature for fast travel between levels.</li>
+              <li style="margin-bottom: 8px;">Owned the Journals feature end-to-end.</li>
+              <li style="margin-bottom: 8px;">Built directly in UMG and managed engineering tasks.</li>
+              <li>Localized to 6 languages.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="full-bleed" style="margin-top: 48px;">
+          <img src="Pause_Menu_Screencaps.jpg" alt="Pause menu screencaps" />
+        </div>
+      </div>
 
-      <p class="caption"></p>
+      <!-- Settings -->
+      <div class="two-col">
+        <div class="full-bleed">
+          <img src="Settings_Update_w.jpg" alt="Settings menu" />
+        </div>
+        <div class="body-text">
+          <p class="section-label">Settings</p>
+          <p>I made settings easily accessible from both the main menu and the pause menu. Many settings have states dependent on other settings, so keeping the design files well-documented saved significant engineering overhead.</p>
+          <p>After launch we shipped highly requested settings in a patch to satisfy experienced VR players who expect detailed control over their play experience.</p>
+        </div>
+      </div>
+
+      <!-- Inventory Pouch -->
+      <div class="two-col">
+        <div class="full-bleed">
+          <video playsinline controls poster="inventory_poster.jpg"><source src="MCT_inventory_web.mp4"></video>
+        </div>
+        <div class="body-text">
+          <p class="section-label">Inventory Pouch</p>
+          <p>As inventory items grew in the second release, I worked closely with the gameplay engineer to design an expandable inventory balancing quick access with capacity.</p>
+          <p>We prioritized weapons in the mini slots, and later added an organize mode. I also gathered feedback to ship the shoulder holsters feature, letting items be stored on the player's back.</p>
+          <p>The inventory pouch was one of the most complex UI mechanics — turning a conventional 2D element into a 3D diegetic object means inheriting all the constraints of real-world industrial design.</p>
+        </div>
+      </div>
+
+      <!-- Tutorials -->
+      <div>
+        <div class="two-col">
+          <div class="full-bleed">
+            <video playsinline controls muted><source src="MCT_tutorials_web.mp4"></video>
+          </div>
+          <div class="body-text">
+            <p class="section-label">Tutorials</p>
+            <p>In VR, many features are attached to the body or mapped to controller buttons you can't see. I recommended letting players attach each object and take a moment to learn it before moving on.</p>
+            <p>I worked with the level designer and gameplay engineer to build the intro sequence and 20+ tutorials spread across the level.</p>
+            <p>The inventory pouch was particularly tricky — it lives on the chest, so we emphasized it early, reinforcing the action of picking up an item and stashing it in the pouch.</p>
+          </div>
+        </div>
+        <div class="full-bleed" style="margin-top: 48px;">
+          <img src="MCT_Tutorial_screencaps.jpg" alt="Tutorial screencaps" />
+        </div>
+      </div>
+
     </div>
 
-    <div class="six columns padded" >
-      <h5>Tutorials</h5>
-      <p>
-        Game mechanics need to be paced out for learning and building your character.
-        <br> <br>
-        In VR, a lot of common features are stuck to your body, or mapped to controller buttons that you can't see. I recommended that we allow the player to attach each object and have a moment to learn how to use it.
-        <br> <br>
-        I worked with the level designer and gameplay engineer to build this intro sequence and the 20+ tutorials spread across this level.
-        <br> <br>
-        The inventory pouch was extra tricky, with a lot of back and forth on where it should be. It's on the chest, so we emphasize it in the beginning, reinforcing the action of picking up an item and stashing it in the pouch.
-      </p>
-    </div>
+    <div class="row spacer"></div>
 
-  <!--
-    <div class="six columns padded" >
-      <h5>New VR players vs. Experienced players.</h5>
-
-      <p>
-      <ul>
-      <b>Things we keep in mind for New Players:</b>
-
-      <li>People get motion sick.</li>
-      <li>People want to play sitting down.</li>
-      <li>People need to learn the controllers.</li>
-      <li>Game mechanics need to be paced out so they can get the VR basics like locomotion.</li>
-      </ul>
-      <br>
-
-      <ul>
-      <b>Experienced Players:</b>
-
-      <li>Are much more vocal online.</li>
-      <li>Have played Half-Life Alyx.</li>
-      <li>Expect much more detailed control over things like locomotion settings.</li>
-      <li>Will progress through levels and gameplay much faster.</li>
-      </li>
-      </ul>
-
-      </p>
-    </div>
-  -->
   </div>
-  <div class="row">
-    <img src="MCT_Tutorial_screencaps.jpg" />
-  </div>
-
-<!--
-      <div class="row">
-        <div class="five columns" >
-          <img src="inventory_icons.jpg" />
-        </div>
-
-        <div class="seven columns" >
-
-        </div>
-
-      </div>
-
--->
-
-
-
-
-
 
 </body>
 </html>
