@@ -282,6 +282,14 @@ h1, h2, h3, h4, h5, h6 { font-family: "futura-pt", sans-serif; margin-top: 0; }
   max-width: 820px;
   margin: 0;
 }
+.pull-quote .quote-label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.4);
+  margin-bottom: 20px;
+}
 
 /* ── Three-column ── */
 .three-col {
@@ -307,9 +315,9 @@ h1, h2, h3, h4, h5, h6 { font-family: "futura-pt", sans-serif; margin-top: 0; }
 /* ── Caption ── */
 .caption {
   font-family: "futura-pt", sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   line-height: 1.6;
-  color: rgba(0,0,0,0.45);
+  color: rgba(0,0,0,0.6);
   margin-top: 12px;
 }
 

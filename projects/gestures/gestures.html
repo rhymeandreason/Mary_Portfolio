@@ -2,253 +2,178 @@
 <html lang="en">
 <head>
 
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Portfolio : Gestures</title>
+  <title>VR Hand Gestures — Mary Huang</title>
   <meta name="description" content="">
   <meta name="author" content="">
-
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
-
-  <!-- Video Player
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="../../css/normalize.css">
-  <link rel="stylesheet" href="../../css/skeleton.css">
-  <link rel="stylesheet" href="../../css/main.css">
-
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="../../css/layout.css">
   <link rel="icon" type="image/png" href="../../images/favicon.png">
-
-  <style>
-  body{
-    background-color: white;
-  }
-  h5{
-    font-weight: bold;
-  }
-  </style>
 </head>
 
-
 <body>
-  <script>
-
-  </script>
-
   <div class="container project-page">
-
     <div class="row top-nav">
-      <div class="one-half column" >
+      <div class="one-half column">
         <a href="/index.html">
           <h5 class="name-title">Mary Huang</h5>
         </a>
       </div>
     </div>
+  </div>
 
-    <div class="row">
-      <div class="seven columns" >
-        <img src="hands_sketch.png" />
+  <div style="max-width:1350px; margin: 0 auto; padding: 0 4%;">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-image">
+        <img src="hands_sketch.png" alt="VR hand gesture sketches" />
       </div>
-      <div class="five columns">
-        <h5 class="large-title">VR Gestures</h5>
-        <p>
-          2020 <br>
-          Design & Code
+      <div class="hero-text">
+        <p class="eyebrow">Independent · 2020</p>
+        <h1>VR Hand<br>Gestures</h1>
+        <p class="meta">
+          Design &amp; Code<br>
+          Unity · Oculus Quest
         </p>
-        <p>
-          Explorations of gesture-based UI. Made in Unity on an Oculus Quest.
-          <br><br>
-          I am not fond of large menu panels or over-relying on the 'menu' button in VR.
-          Gestures offer many opportunities to activate small specific UI tools when you need them at arm reach.
-          <br><br>
-          I made these prototypes with very simple colliders on the fingers, which is very quick for sketching ideas, and can be refined for some light playtesting.
+        <p class="description">
+          Explorations of gesture-based UI, prototyped in Unity with simple finger colliders for quick sketching and light playtesting.
         </p>
-
       </div>
     </div>
 
 
-    <div class="row tight-grid">
-      <div class="four columns" >
-        <img src="Fist_1_small.gif" />
+    <div class="content-section" style="margin-top: 80px;">
+
+      <div class="pull-quote">
+        <p>I am not fond of large menu panels or over-relying on the "menu" button in VR. Gestures offer many opportunities to activate small, specific UI tools when you need them at arm's reach.</p>
+      </div>
+
+      <div class="three-col">
+        <div>
+          <img src="Fist_1_small.gif" alt="Close fist gesture" />
           <p class="caption">Close Fist</p>
-      </div>
-      <div class="four columns" >
-        <img src="Stretch_Palm_1_small.gif" />
+        </div>
+        <div>
+          <img src="Stretch_Palm_1_small.gif" alt="Stretch palm gesture" />
           <p class="caption">Stretch Palm</p>
-      </div>
-      <div class="four columns" >
-        <img src="Pinch_small.gif" />
+        </div>
+        <div>
+          <img src="Pinch_small.gif" alt="Pinch gesture" />
           <p class="caption">Pinch</p>
-      </div>
-    </div>
-<hr>
-    <div class="row tight-grid">
-      <div class="four columns" >
-        <img src="Fist_2_small.gif" />
-      </div>
-      <div class="four columns" >
-        <!--
-        <video class="minimal" playsinline autoplay loop><source src="Stretch_Palm_2.mp4"> </video>
-        -->
-        <img src="Stretch_Palm_2_small.gif" />
-      </div>
-      <div class="four columns padded" >
-        <h5>Orientation Matters</h5>
-        <p >
-        Gestures should be tied to the orientation of the hand.
-        <br><br>
-        The same action has a very different feeling when your palm is facing you, and also affects the positioning of the UI.
-        </p>
-      </div>
-    </div>
-<hr>
-    <div class="row tight-grid">
-      <p>
-        Very specific actions can be created, especially when using both hands.
-        <br>
-        We can also use comfortable hand positions for quick repeated actions, similar to a button press.
-      </p>
-      <div class="four columns" >
-          <img src="Picture_Frame_small.gif" />
-          <p class="caption">Picture Frame. Both hands make an "L", at a distance apart.</p>
-      </div>
-      <div class="four columns" >
-        <img src="Steering_Wheel_small.gif" />
-          <p class="caption">Steering Wheel. Both hands make fist, at a distance apart.</p>
-      </div>
-      <div class="four columns" >
-          <img src="Thumb_Tap_small.gif" />
-          <p class="caption">Thumb tap on knuckle with closed fist. More accurate than expected. Could replace a button press for browsing actions. </p>
-      </div>
-    </div>
-
-<hr>
-
-    <div class="row">
-
-      <div class="six columns" >
-        <!--
-        <video class="minimal" playsinline autoplay loop controls><source src="Gesture-Planets_Viz2.mp4"> </video>
-        -->
-        <img src="Gesture-Planets_small.gif" />
-        <p class="caption">Palm-sized UI elements are great for things that benefit from the slight rotational tilt of the hand.</p>
-      </div>
-      <div class="six columns padded" >
-        <h5>Combining Gestures</h5>
-        <p class="">
-          It's more reliable to use separate, distinct gestures as triggers for opening and closing UI.
-          <br>
-            <img src="Gesture Flow.jpg" />
-        </p>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="six columns" >
-        <img src="Gesture-Spaceship_small.gif" />
+        </div>
       </div>
 
-      <div class="six columns" >
-      <img src="Gesture-Map_small.gif" />
-      <p class="caption">A gesture can also open a large UI that doesn't fit directly on the hand.</p>
+      <div class="three-col">
+        <div>
+          <img src="Fist_2_small.gif" alt="Fist gesture, palm facing" />
+        </div>
+        <div>
+          <img src="Stretch_Palm_2_small.gif" alt="Stretch palm gesture, palm facing" />
+        </div>
+        <div class="body-text">
+          <p class="section-label">Orientation Matters</p>
+          <p>Gestures should be tied to the orientation of the hand.
+            <br><br>
+            The same action has a very different feeling when your palm is facing you, and it also affects the positioning of the UI.</p>
+        </div>
       </div>
 
-
-    </div>
-
-    <hr>
-        <div class="row tight-grid">
-          <h5>Gestures & Feature Heirarchy</h5>
-          <p>
-            We can choose our gestures based on how easily we want to access a feature.
-            <br>
-            A more specific gesture has higher friction to activate. It can also include more detailed secondary features like scaling.
-          </p>
-          <div class="four columns" >
-              <img src="Picture1_small.gif" />
-              <p class="caption">Single hand gesture makes this panel easy to access.</p>
+      <div>
+        <div class="pull-quote" style="margin-bottom:60px;">
+          <p>Very specific actions can be created, especially when using both hands. We can also use comfortable hand positions for quick repeated actions, similar to a button press.</p>
+        </div>
+        <div class="three-col">
+          <div>
+            <img src="Picture_Frame_small.gif" alt="Picture frame gesture" />
+            <p class="caption">Picture Frame. Both hands make an "L", at a distance apart.</p>
           </div>
-          <div class="four columns" >
-            <img src="Picture2_small.gif" />
-              <p class="caption">Two hands, bottom corners. Allows for scaling the panel.</p>
+          <div>
+            <img src="Steering_Wheel_small.gif" alt="Steering wheel gesture" />
+            <p class="caption">Steering Wheel. Both hands make a fist, at a distance apart.</p>
           </div>
-          <div class="four columns" >
-              <img src="Picture3_small.gif" />
-              <p class="caption">Two hands, diagonal corners. Allows for width + height scaling of the panel.</p>
+          <div>
+            <img src="Thumb_Tap_small.gif" alt="Thumb tap gesture" />
+            <p class="caption">Thumb tap on knuckle with closed fist. More accurate than expected. Could replace a button press for browsing actions.</p>
           </div>
         </div>
-
-    <hr>
-    <div class="row">
-      <div class="six columns" >
-        <img src="Picture_zoom_small.gif" />
-        <p class="caption">
-        The second hand can be mapped to a related secondary feature.
-        <br><br>
-        Here I mapped the finger pinch to the zoom (FOV) of the camera.
-        <br><br>
-        Since there is not much distance between the fingers, smoothing the values using Lerp was essential.
-      </p>
       </div>
 
-      <div class="six columns" >
-        <video autoplay=true loop controls class="minimal"><source src="Map_Zoom.mp4"></video>
-        <p class="caption">
-          Secondary gesture features can be aided with corresponding visual UI.
-          <br><br>
-          Here, using the distance of the hand movement creates a push/pull motion mapped to zoom.
-        </p>
+      <div class="two-col">
+        <div class="full-bleed">
+          <img src="Gesture-Planets_small.gif" alt="Palm-sized planets UI" />
+          <p class="caption">Palm-sized UI elements are great for things that benefit from the slight rotational tilt of the hand.</p>
+        </div>
+        <div class="body-text">
+          <p class="section-label">Combining Gestures</p>
+          <p>It's more reliable to use separate, distinct gestures as triggers for opening and closing UI.</p>
+          <img src="Gesture Flow.jpg" alt="Gesture flow diagram" style="mix-blend-mode: multiply;" />
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="full-bleed">
+          <img src="Gesture-Spaceship_small.gif" alt="Spaceship gesture UI" />
+        </div>
+        <div class="full-bleed">
+          <img src="Gesture-Map_small.gif" alt="Map gesture UI" />
+          <p class="caption">A gesture can also open a large UI that doesn't fit directly on the hand.</p>
+        </div>
+      </div>
+
+      <div>
+        <div class="pull-quote" style="margin-bottom: 48px;">
+          <p class="quote-label">Gestures &amp; Feature Hierarchy</p>
+          <p>We can choose our gestures based on how easily we want to access a feature. A more specific gesture has higher friction to activate. It can also include more detailed secondary features like scaling.</p>
+        </div>
+        <div class="three-col">
+          <div>
+            <img src="Picture1_small.gif" alt="Single-hand panel gesture" />
+            <p class="caption">Single hand gesture makes this panel easy to access.</p>
+          </div>
+          <div>
+            <img src="Picture2_small.gif" alt="Two-hand bottom corners gesture" />
+            <p class="caption">Two hands, bottom corners. Allows for scaling the panel.</p>
+          </div>
+          <div>
+            <img src="Picture3_small.gif" alt="Two-hand diagonal corners gesture" />
+            <p class="caption">Two hands, diagonal corners. Allows for width + height scaling of the panel.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="full-bleed">
+          <img src="Picture_zoom_small.gif" alt="Pinch-to-zoom gesture" />
+          <p class="caption">The second hand can be mapped to a related secondary feature. Here I mapped the finger pinch to the zoom (FOV) of the camera. Since there is not much distance between the fingers, smoothing the values using Lerp was essential.</p>
+        </div>
+        <div class="full-bleed">
+          <video autoplay loop controls muted playsinline><source src="Map_Zoom.mp4"></video>
+          <p class="caption">Secondary gesture features can be aided with corresponding visual UI. Here, using the distance of the hand movement creates a push/pull motion mapped to zoom.</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="section-label">When Should We Use a Gesture?</p>
+        <div class="two-col">
+          <div class="full-bleed">
+            <video loop controls muted playsinline><source src="Captions_communicator.mp4"></video>
+            <p class="caption">A wrist UI button has already been proven in a variety of VR apps. It doesn't require fully tracked hands, so it is very flexible. If captions are a primary UI, it makes sense for them to be tied to the primary wrist button.</p>
+          </div>
+          <div class="full-bleed">
+            <video loop controls muted playsinline><source src="Captions_hidden.mp4"></video>
+            <p class="caption">If captions are slightly less important, then the wrist UI can be opened with a gesture. This can also allow fitting in more features, like adjusting the size of text.</p>
+          </div>
+        </div>
       </div>
 
     </div>
-
-    <hr>
-    <h5>When Should We Use a Gesture?</h5>
-    <div class="row">
-
-      <div class="six columns" >
-        <video loop controls class="minimal"><source src="Captions_communicator.mp4"></video>
-        <p class="caption">
-        A wrist UI button has already been proven in a variety of VR apps. It doesn't require fully tracked hands, so it is very flexible.
-        <br><br>
-        If captions are a primary UI, it makes sense for them to be tied to the primary wrist button.
-      </p>
-      </div>
-
-      <div class="six columns" >
-        <video loop controls class="minimal"><source src="Captions_hidden.mp4"></video>
-        <p class="caption">
-          If captions are slightly less important, then the wrist UI can be opened with a gesture.
-          <br><br>
-          This can also allow fitting in more features, like adjusting the size of text.
-        </p>
-      </div>
-
-    </div>
-
-
 
     <div class="row spacer"></div>
 
   </div>
 
-
-
-
-<!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 </body>
 </html>
