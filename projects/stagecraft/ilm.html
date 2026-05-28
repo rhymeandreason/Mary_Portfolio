@@ -2,146 +2,124 @@
 <html lang="en">
 <head>
 
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Mary Huang : Portfolio</title>
+  <title>ILM Stagecraft — Mary Huang</title>
   <meta name="description" content="">
   <meta name="author" content="">
-
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
-
-  <!-- Video Player
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="../../css/normalize.css">
   <link rel="stylesheet" href="../../css/skeleton.css">
   <link rel="stylesheet" href="../../css/main.css">
-
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="../../css/layout.css">
   <link rel="icon" type="image/png" href="../../images/favicon.png">
 
   <style>
-
-  .dark-row {
-    background-color: #2E2E2E;
-    padding-top:100px
-  }
-
-  .darker-row{
-    background-color:#202020;
-    padding-top: 50px;
-    padding-bottom: 100px;
-  }
-
+    /* ── Dark display sections ── */
+    .dark-band {
+      background-color: #2E2E2E;
+      padding: 80px 4%;
+      margin: 100px 0 0;
+    }
+    .darker-band {
+      background-color: #202020;
+      padding: 80px 4%;
+      margin: 0;
+    }
+    .dark-band-inner {
+      max-width: 1350px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 80px;
+    }
+    .dark-band-inner img,
+    .darker-band-inner img {
+      width: 100%;
+      display: block;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .darker-band-inner {
+      max-width: 1350px;
+      margin: 0 auto;
+    }
   </style>
-
 </head>
 
-
 <body>
-  <script>
-
-  window.addEventListener('load', function () {
-/*
-    const players = Plyr.setup('.js-player', {
-      controls: ['play', 'progress']
-    });
-    */
-  });
-
-
-  </script>
-
   <div class="container project-page">
-
     <div class="row top-nav">
-      <div class="one-half column" >
+      <div class="one-half column">
         <a href="/index.html">
           <h5 class="name-title">Mary Huang</h5>
         </a>
       </div>
     </div>
+  </div>
 
-    <div class="row">
-      <div class="six columns" >
+  <div style="max-width:1350px; margin: 0 auto; padding: 0 4%;">
 
-        <img src="../../images/thumbs/stagecraft_c.webp" />
-
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-image">
+        <img src="../../images/thumbs/stagecraft_c.webp" alt="ILM Stagecraft" />
       </div>
-      <div class="six columns">
-        <h5 class="large-title">Stagecraft</h5>
-        <p>
-          Industrial Light & Magic<br>
-          2022 <br>
+      <div class="hero-text">
+        <p class="eyebrow">Industrial Light &amp; Magic · 2022</p>
+        <h1>ILM<br>Stagecraft</h1>
+        <p class="meta">
           UI/UX Design
         </p>
-
-        <p>
-          Popularized by the Mandalorian, ILM Stagecraft enables principal photography on photo-real, virtual sets that are rendered in real-time and indistinguishable from their physical counterparts.
-          <br><br>
-          I worked with two outstanding R&D engineers to create a first design system for their iPad controller app that would improve usability and be scalable for a growing set of features. This project was published at Siggraph 2025.
+        <p class="description">
+          Popularized by The Mandalorian — real-time, photo-real virtual sets indistinguishable from their physical counterparts.
         </p>
-
       </div>
     </div>
 
-    <div class="row">
-        <div class="six columns" >
-          <img src="ilm-volume.jpg" />
-        </div>
+    <hr class="section-divider" />
 
-        <div class="six columns" >
-          <h5 class="title">Domain Context</h5>
-          <p>
-            During shoots, a significant amount of crew spend time physically in the LED volume. The iPad app was developed so that elements could be moved and controlled in real time while standing in the volume. The primary app users are DPs (Director of Photography) and VFX supervisors.
-            <br><br>
-            A lot of the volume is lighting work, so primary features are moving white cards, flags, and bounce cards and change the light’s size, intensity, and softness in real-time. Color correction, garbage mattes, color, and exposure blend can also be done in real-time. Given that these are the top artists in the industry, the users wanted great precision and fine tuning in the controls.
-          </p>
+    <div class="content-section">
+
+      <!-- Overview + Domain Context -->
+      <div class="two-col">
+        <div class="full-bleed">
+          <img src="ilm-volume.jpg" alt="ILM LED volume on set" />
         </div>
+        <div class="body-text">
+          <p class="section-label">Domain Context</p>
+          <p>During shoots, crew spend significant time physically inside the LED volume. The iPad app lets DPs and VFX supervisors move and control elements in real time while standing on set.</p>
+          <p>Primary features include moving white cards, flags, and bounce cards, and adjusting light size, intensity, and softness. Color correction, garbage mattes, and exposure blend can all be controlled live. Top-tier users demand great precision and fine-tuning.</p>
+        </div>
+      </div>
+
+      <!-- Pull quote -->
+      <div style="border-top: 1px solid #e0ddd8; border-bottom: 1px solid #e0ddd8; padding: 48px 0;">
+        <p style="font-family: 'futura-pt', sans-serif; font-size: 2.8rem; font-weight: 300; line-height: 1.4; color: #111; max-width: 820px; margin: 0 0 24px;">I worked with two outstanding R&amp;D engineers to create the first design system for their iPad controller app — improving usability and building a scalable foundation for a growing set of features.</p>
+        <p style="font-family: 'futura-pt', sans-serif; font-size: 1.4rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(0,0,0,0.35); margin: 0;">Published at Siggraph 2025</p>
+      </div>
+
     </div>
-
-</div>
-
-<div class="dark-row">
-  <div class="container project-page">
-      <div class="row">
-        <div class="nine columns centered" style="margin:auto;">
-          <img src="lightcard.png" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="nine columns centered" style="margin:auto;">
-          <img src="colorcorrection.png" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="nine columns centered" style="margin:auto;">
-          <img src="placement.png" />
-        </div>
-      </div>
-
-</div>
-<div class="darker-row" >
-      <div class="row">
-        <div class="nine columns centered" style="margin:auto;">
-          <img src="components.jpg" />
-        </div>
-      </div>
 
   </div>
-</div>
 
+  <!-- Dark UI screenshots -->
+  <div class="dark-band">
+    <div class="dark-band-inner">
+      <img src="lightcard.png" alt="Light card UI" />
+      <img src="colorcorrection.png" alt="Color correction UI" />
+      <img src="placement.png" alt="Placement UI" />
+    </div>
+  </div>
+
+  <div class="darker-band">
+    <div class="darker-band-inner">
+      <img src="components.jpg" alt="Design system components" />
+    </div>
+  </div>
+
+  <div style="height: 150px;"></div>
 
 </body>
 </html>
