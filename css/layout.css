@@ -1,0 +1,209 @@
+/* ============================================================
+   layout.css — shared project-page styles
+   ============================================================ */
+
+body {
+  background-color: #f9f8f6;
+}
+
+/* ── Nav ── */
+.top-nav {
+  margin-bottom: 0;
+  padding: 30px 0 28px;
+}
+
+/* ── Hero ── */
+.hero {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  margin-bottom: 0;
+}
+.hero-image {
+  overflow: hidden;
+}
+.hero-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.hero-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 60px 60px 60px 56px;
+  background-color: #f9f8f6;
+}
+.hero-text .eyebrow {
+  font-family: "futura-pt", sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.4);
+  margin-bottom: 20px;
+}
+.hero-text h1 {
+  font-family: "futura-pt", sans-serif;
+  font-weight: 700;
+  font-size: 5.2rem;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin-bottom: 32px;
+  color: #111;
+}
+.hero-text .meta {
+  font-size: 1.35rem;
+  line-height: 2;
+  color: rgba(0,0,0,0.5);
+  margin-bottom: 32px;
+  font-family: "futura-pt", sans-serif;
+  font-weight: 400;
+}
+.hero-text .description {
+  font-size: 1.7rem;
+  line-height: 1.7;
+  color: #222;
+  max-width: 380px;
+}
+
+/* ── Divider ── */
+.section-divider {
+  border: none;
+  border-top: 1px solid #e0ddd8;
+  margin: 70px 0;
+}
+
+/* ── Section label ── */
+.section-label {
+  font-family: "futura-pt", sans-serif;
+  font-size: 2.6rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: #111;
+  margin-bottom: 40px;
+}
+
+/* ── Content sections ── */
+.content-section {
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
+}
+.full-bleed img,
+.full-bleed video {
+  width: 100%;
+  display: block;
+}
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+.two-col-wide {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+.two-col-narrow-wide {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 48px;
+  align-items: start;
+}
+.body-text {
+  font-family: "futura-pt", sans-serif;
+  font-size: 1.7rem;
+  line-height: 1.75;
+  color: #333;
+}
+.body-text p {
+  margin-bottom: 1.5em;
+}
+.body-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Press / Exhibitions section ── */
+.press-section {
+  padding: 70px 0 60px;
+}
+.press-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.press-list li {
+  border-top: 1px solid #e0ddd8;
+}
+.press-list li:last-child {
+  border-bottom: 1px solid #e0ddd8;
+}
+.press-list a {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding: 22px 0;
+  border-bottom: none !important;
+  color: #111 !important;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.press-list a:hover {
+  opacity: 0.55;
+  color: #111 !important;
+  border-bottom: none !important;
+}
+.press-outlet {
+  font-family: "futura-pt", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(0,0,0,0.38);
+  min-width: 130px;
+  flex-shrink: 0;
+}
+.press-headline {
+  font-family: "futura-pt", sans-serif;
+  font-size: 1.7rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #111;
+}
+.press-arrow {
+  margin-left: auto;
+  font-size: 1.4rem;
+  color: rgba(0,0,0,0.2);
+  flex-shrink: 0;
+  transition: transform 0.2s, color 0.2s;
+}
+.press-list a:hover .press-arrow {
+  transform: translateX(4px);
+  color: rgba(0,0,0,0.5);
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .hero,
+  .two-col,
+  .two-col-wide,
+  .two-col-narrow-wide {
+    grid-template-columns: 1fr;
+  }
+  .hero-text {
+    padding: 40px 24px;
+  }
+  .hero-text h1 {
+    font-size: 3.6rem;
+  }
+}
+@media (max-width: 599px) {
+  .hero-text h1 { font-size: 2.8rem; }
+  .press-list a { flex-wrap: wrap; gap: 6px; }
+  .press-outlet { min-width: auto; width: 100%; }
+}

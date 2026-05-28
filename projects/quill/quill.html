@@ -2,280 +2,207 @@
 <html lang="en">
 <head>
 
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Portfolio : Quill</title>
+  <title>Quill — Mary Huang</title>
   <meta name="description" content="">
   <meta name="author" content="">
-
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
-
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="../../css/normalize.css">
   <link rel="stylesheet" href="../../css/skeleton.css">
   <link rel="stylesheet" href="../../css/main.css">
-
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="../../css/layout.css">
   <link rel="icon" type="image/png" href="../../images/favicon.png">
 
-
+  <style>
+    video {
+      border: none;
+      box-shadow: none;
+    }
+    video:hover {
+      box-shadow: none;
+    }
+    .body-text .section-label {
+      margin-bottom: 16px;
+    }
+  </style>
 </head>
 
-
 <body>
-  <script>
-  /*
-  window.addEventListener('load', function () {
-    const players = Plyr.setup('.video-js', {
-      controls: ['play', 'progress']
-    });
-  });
-  */
-  </script>
-
   <div class="container project-page">
-
     <div class="row top-nav">
-      <div class="one-half column" >
+      <div class="one-half column">
         <a href="/index.html">
-          <h5 class="name-title">Mary Huang</h5>
+          <h5 class="title">Mary Huang</h5>
         </a>
       </div>
     </div>
+  </div>
 
-    <div class="row">
-      <div class="seven columns" >
-        <img src="wesley.jpg" />
+  <div style="max-width:1350px; margin: 0 auto; padding: 0 4%;">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-image">
+        <img src="wesley.jpg" alt="Quill artwork by Wesley Allsbrook" />
       </div>
-      <div class="five columns">
-        <h5 class="large-title">Quill</h5>
-        <p>
-          Oculus Story Studio <br>
-          2016-2017 <br>
-          UX/UI Design & Prototyping
+      <div class="hero-text">
+        <p class="eyebrow">Oculus Story Studio · 2016–2017</p>
+        <h1>Quill</h1>
+        <p class="meta">
+          UX/UI Design &amp; Prototyping
         </p>
-        <p>
-          Quill is a VR drawing tool for professional artists. Create immersive artworks by drawing in 3D space.
-
+        <p class="description">
+          A VR drawing tool for professional artists. Create immersive artworks by drawing in 3D space.
         </p>
       </div>
     </div>
 
-    <div class="row">
-      <div class="seven columns">
-        <img src="angelica.png" />
+    <hr class="section-divider" style="margin-top: 70px;" />
+
+    <div class="content-section">
+
+      <!-- Context -->
+      <div class="two-col-wide">
+        <div class="full-bleed">
+          <img src="angelica.png" alt="Dear Angelica — Quill artwork" />
+        </div>
+        <div class="body-text">
+          <p>Quill was developed in-house at Oculus Story Studio as a production tool, already supporting an entire creative workflow.</p>
+          <p>Unique amongst VR apps, studio artists used Quill for long periods of time — up to 8 hours a day. Ergonomics and usability were primary concerns.</p>
+          <p>Above: artwork by Wesley Allsbrook for the film <em>Dear Angelica</em>. Quill scenes often have thousands of strokes and dozens of layers.</p>
+        </div>
+      </div>
+
+      <!-- Beta -->
+      <div>
+        <div class="two-col-wide">
+          <div class="full-bleed">
+            <video playsinline controls poster="Quill_Beta.jpg"><source src="Quill_Beta.mp4"></video>
+          </div>
+          <div class="body-text">
+            <p class="section-label">The Beta</p>
+            <p>With a short deadline to ship a beta for the Oculus Rift Touch controller launch, I focused on key usability features — the cursor, active states, and menu navigation — essential for a new user to get started.</p>
+            <p>The old UI was built on a rotating cube. User research quickly showed this was confusing. Splitting it into labeled panels was a safe, low-dev-time improvement that also made room for a 5th gallery panel.</p>
+            <p><a href="https://www.oculus.com/blog/the-origin-of-quill-and-what-it-can-dobeta-available-at-touch-launch/" target="_blank" rel="noopener">Oculus Blog Post →</a></p>
+          </div>
+        </div>
         <!--
-        <div style="width:100%;height:0;padding-bottom:56%;position:relative;"><iframe src="https://giphy.com/embed/xUA7aMLgZOgxAmVHNu" width="100%" height="100%" style="position:absolute" frameBorder="0" class="giphy-embed" allowFullScreen></iframe></div>
+        <div style="margin-top: 48px;" class="full-bleed">
+          <img src="Quill-UI-before-after.jpg" alt="UI before and after" />
+        </div>
       -->
       </div>
-      <div class="five columns" >
-        <p>
-        Quill was developed in-house at Oculus Story Studio as a production tool. It already had a lot of features that supported an entire creative workflow.
-        <br><br>
-        Unique amongst VR apps, studio artists used Quill for long periods of time &#8212; up to 8 hours a day!
-        <br><br>
-        Here is a Quill artwork by artist Wesley Allsbrook for the film "Dear Angelica". Quill scenes often have thousands of strokes and dozens of layers.
-      </p>
-      </div>
-    </div>
-<hr>
-    <div class="row">
-      <div class="seven columns" >
-        <img src="Quill-UI-before-after.jpg" />
-      </div>
-      <div class="five columns">
-        <h5 class="title">The Beta</h5>
-        <p>
-          With an initial short deadline to ship a beta for the Oculus Rift Touch controller launch, I focused on key usability features like the cursor, active states, and menu navigation that would be essential for a new user to use the app.
-          <br><br>
-          Read more about the beta launch here: <br>
-          <a href="https://www.oculus.com/blog/the-origin-of-quill-and-what-it-can-dobeta-available-at-touch-launch/" target="blank">Oculus Blog Post</a>
-        </p>
-      </div>
-    </div>
 
-    <div class="row">
-      <div class="seven columns" >
-        <video class="video-js" playsinline controls poster="Quill_Beta.jpg"><source src="Quill_Beta.mp4"> </video>
-      </div>
-      <div class="five columns">
-        <p>
-          The old UI was built on a cube that you rotated.
-          <br><br>
-          Doing some ad hoc user research, I quickly saw that people found this to be confusing. Splitting it into panels with icons to identify each menu was a safe navigation improvement that didn’t take much dev time. Also, now we could add in a 5th panel for the gallery.
-        </p>
-      </div>
-    </div>
-<hr>
-    <div class="row">
-      <div class="eight columns offset-by-two" >
-        <p class="padded">
-          Post-launch, I worked on interface concepts for future features and VR interaction.
-          <br><br>
-          I found that some very rewarding VR design ideas are very grounded in practical constraints. Since artists actually use Quill for hours at a time, ergonomics are a primary concern because your arms get tired.
-          <br><br>
-          VR is so different from flat screen interfaces, thus I spent most of my time making prototypes in Unity to try out interaction ideas in 3D.
-          <br><br>
-          Artists using Quill are deeply passionate and opinionated about the tool, and I worked with the team to collect and organize our large backlog of feature requests. Here are some of the features I worked on...
-        </p>
-      </div>
-    </div>
-<hr>
-    <div class="row">
-      <div class="seven columns" >
-        <video class="video-js" playsinline controls poster="Menus_poster.jpg"><source src="Menus.m4v"> </video>
-      </div>
-      <div class="five columns">
-        <h5 class="title">Moveable Menus</h5>
-        <p>
-        Place a menu anywhere you like, and hide them if desired. This was the immediate logical progression of the menus, based on user feedback.
-        <br><br>
-      Specifically, artists wanted to have the color menu separate from the main menu, and closer to their drawing hand so it would be easier to reach. This design is generally more ergonomic, and now you can use both of your hands. (Before, the menu is attached at a fixed point on the your left hand.)
-        </p>
-      </div>
-    </div>
-<hr>
-    <div class="row">
-      <div class="seven columns" >
-        <img src="controllers_proposed.jpg" />
-      </div>
-      <div class="five columns">
-        <h5 class="title">The "Alt" button</h5>
-        <p>
-        The touch controllers are designed primarily for gaming, and thus only have a few buttons.
-        Artists commonly use many keyboard shortcuts while working.
-        <br><br>
-         To pack in more shortcuts, we came up with the idea of using the left trigger button as an “Alt” button. Combine Alt with any other button, thus doubling the number of shortcuts. This is similar to how keyboard shortcuts are mapped in many desktop tools.
-        </p>
-      </div>
-    </div>
-<hr>
-    <div class="row">
-      <div class="seven columns" >
-        <video class="video-js" playsinline controls poster="Transform_poster.jpg"><source src="Transform_Tool.m4v"> </video>
-      </div>
-      <div class="five columns">
-        <h5 class="title">Transform Tool</h5>
-        <p>
-        It's easy to grab and move things in Quill, but artists wanted axis-constrained translate and rotation.
-        <br><br>
-        I made 4-5 iterations on this one. In this prototype, I packed in a lot of features to try out. Along with moving and rotating on just one axis, it also includes moving the pivot point, navigating up/down in grouping, and duplicating.
-        <br><br>
-        The duplicating feature became a quick favorite for the artists.
-        <br><br>
-        Button mapping: <br>
-        Alt + Grab = Duplicate <br>
-        Right Joystick Right = Repeat Last (can duplicate with same transform) <br>
-        Right Joystick Up/Down = parent/child layer groups
-        </p>
-      </div>
-    </div>
-
-<hr></hr>
-    <div class="row">
-      <div class="seven columns" >
-        <video class="video-js" playsinline controls poster="shortcut_gesture_thumb.jpg"><source src="shortcut_gesture.mp4"> </video>
-        <img src="shortcut_gesture.jpeg" />
-      </div>
-      <div class="five columns">
-        <h5 class="title">Interaction Concept: Shortcut Gesture</h5>
-        <p>
-        You can do a 'point' gesture on the Touch controllers by lifting your index finger.
-        <br><br>
-        I found that this could be used to trigger a shortcut. A bit like a right mouse click, but more minimal.
-        <br><br>
-        I hoped to use it for quick, tool specific actions so you wouldn't have to rely on the large menus for everything.
-
-        </p>
-      </div>
-    </div>
-
-<hr></hr>
-
-    <div class="row">
-      <div class="seven columns" >
-        <video class="video-js" playsinline controls poster="Animation_flip_poster.jpg"><source src="animation_gesture.m4v" ></video>
-      </div>
-      <div class="five columns">
-        <h5 class="title">Interaction Concept: Flip Animation Gesture</h5>
-        <p>
-        Initially Quill was focused on only doing frame animation, where the artist draws each frame separately.
-<br><br>
-        Inspired by how traditional animators would flip paper between their fingers to get a feeling for the motion, I designed this flip gesture, which would be activated by extending the left pointer finger.
-<br><br>
-        A simple wrist rotation lets you vary the speed between frames much faster than by using a timeline.
-
-        </p>
-      </div>
-    </div>
-
-<hr></hr>
-<!--
-    <div class="row">
-      <div class="seven columns" >
-        <video class="video-js" playsinline controls><source src="Quill_Viewer_shorter.mp4"> </video>
-      </div>
-      <div class="five columns">
-        <h5 class="title">Quill Viewer</h5>
-        <p>
-          This is a concept prototype for a separate app to view artworks and stories made in Quill.
-          <br><br>
-  Most VR content apps simply use flat thumbnails, but I felt that really did not capture the artistry of the pieces, brand of the studio, and ethos of showcasing individual artists.
-          <br><br>
-  I exported out selections from Quill artworks to create these shadowboxes that are both a browse-able bookshelf as well as each a portal into their own world.
-        </p>
-      </div>
-    </div>
-
-<hr></hr>
-  -->
-    <div class="row">
-      <div class="seven columns" >
-        <img src="UI_buttons_AO.png" />
-      </div>
-      <div class="five columns">
-        <h5 class="title">Visual UI Concept</h5>
-        <p>
-        Our concept was to reference real physical buttons. Since Quill drawings are all unlit and unshaded, making the UI have tangible materiality would help differentiate it from the rest of the scene.
-        <br><br>
-        I modeled a bunch of different 3D buttons to play around with the idea.
-        <br><br>
-        Found that matcaps a practical solution to doing pre-baked materials + lighting for real-time.
-        </p>
-      </div>
-    </div>
-
-    <div class="row tight-grid">
-      <div class="six columns">
-        <img src="buttons-materials.png" />
-        <p class="caption">
-          Materials tests using matcaps. Adding a soft curve to the button shape greatly impacts the look of the material.
-        </p>
+      <!-- Post-launch context -->
+      <div class="body-text" style="max-width: 680px;">
+        <p>Post-launch, I worked on interface concepts for future features and VR interaction. Since artists use Quill for hours, ergonomics drove every decision. Most of my time went into building Unity prototypes to test interaction ideas in 3D space, where flat-screen assumptions break down.</p>
       </div>
 
-      <div class="six columns">
-        <img src="buttons_keyboard.png" />
+      <!-- Moveable Menus -->
+      <div>
+        <div class="two-col-wide">
+          <div class="full-bleed">
+            <video playsinline controls poster="Menus_poster.jpg"><source src="Menus.m4v"></video>
+          </div>
+          <div class="body-text">
+            <p class="section-label">Moveable Menus</p>
+            <p>Place any menu anywhere you like, and hide them when not needed.</p>
+            <p>Artists wanted the color menu separate from the main menu and closer to the drawing hand. This design is more ergonomic and frees both hands — previously the menu was fixed to a point on the left hand.</p>
+          </div>
+        </div>
       </div>
+
+      <!-- Alt Button -->
+      <div>
+        <div class="two-col-narrow-wide">
+          <div class="body-text">
+            <p class="section-label">The "Alt" Button</p>
+            <p>Touch controllers are designed for gaming and have very few buttons. Artists commonly rely on many keyboard shortcuts.</p>
+            <p>Using the left trigger as an "Alt" modifier doubles the number of available shortcuts — similar to how keyboard shortcuts are mapped in desktop tools.</p>
+          </div>
+          <div class="full-bleed">
+            <img src="controllers_proposed.jpg" alt="Controller button mapping" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Transform Tool -->
+      <div>
+        <div class="two-col-wide">
+          <div class="full-bleed">
+            <video playsinline controls poster="Transform_poster.jpg"><source src="Transform_Tool.m4v"></video>
+          </div>
+          <div class="body-text">
+            <p class="section-label">Transform Tool</p>
+            <p>Artists wanted axis-constrained translate and rotation. I made 4–5 iterations on this prototype, packing in: single-axis move and rotate, pivot point relocation, layer group navigation, and duplicating.</p>
+            <p>Duplicating became an immediate favorite.</p>
+            <p style="opacity:0.5; font-size: 1.4rem; line-height: 1.8;">
+              Alt + Grab = Duplicate<br>
+              Right Joystick Right = Repeat Last<br>
+              Right Joystick Up/Down = Parent/Child layer groups
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shortcut Gesture -->
+      <div>
+        <div class="two-col-wide">
+          <div class="full-bleed">
+            <img src="shortcut_gesture.jpeg" alt="Shortcut gesture diagram" />
+          </div>
+          <div class="body-text">
+            <p class="section-label">Shortcut Gesture</p>
+            <p>The Touch controllers support a "point" gesture by lifting the index finger. I found this could trigger a contextual shortcut — a bit like a right-click, but more minimal.</p>
+            <p>The goal was quick, tool-specific actions so artists wouldn't need to reach the large menus for everything.</p>
+            <video playsinline controls poster="shortcut_gesture_thumb.jpg" style="margin-top: 32px;"><source src="shortcut_gesture.mp4"></video>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flip Animation Gesture -->
+      <div>
+        <div class="two-col-wide">
+          <div class="full-bleed">
+            <video playsinline controls poster="Animation_flip_poster.jpg"><source src="animation_gesture.m4v"></video>
+          </div>
+          <div class="body-text">
+            <p class="section-label">Flip Animation Gesture</p>
+            <p>Inspired by how traditional animators flip paper between their fingers to feel the motion, this gesture activates by extending the left pointer finger.</p>
+            <p>A simple wrist rotation varies the speed between frames — much faster and more intuitive than scrubbing a timeline.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual UI Concept -->
+      <div>
+        <div class="two-col-wide">
+          <div class="full-bleed">
+            <img src="UI_buttons_AO.png" alt="3D UI button concept" />
+          </div>
+          <div class="body-text">
+            <p class="section-label">Visual UI Concept</p>
+            <p>Since Quill drawings are unlit and unshaded, giving the UI tangible materiality would help differentiate it from the scene.</p>
+            <p>I modeled various 3D buttons and found that matcaps are a practical solution for pre-baked materials and lighting in real-time. The soft curve of the button shape dramatically changes the apparent material.</p>
+          </div>
+        </div>
+        <div style="margin-top: 48px;" class="two-col">
+          <div class="full-bleed">
+            <img src="buttons-materials.png" alt="Material tests using matcaps" />
+          </div>
+          <div class="full-bleed">
+            <img src="buttons_keyboard.png" alt="Button keyboard layout" />
+          </div>
+        </div>
+      </div>
+
     </div>
-
-
 
     <div class="row spacer"></div>
 
   </div>
 
-
-
-<!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 </body>
 </html>
