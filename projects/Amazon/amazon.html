@@ -2,227 +2,370 @@
 <html lang="en">
 <head>
 
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Mary Huang : Portfolio</title>
+  <title>Amazon Made For You — Mary Huang</title>
   <meta name="description" content="">
   <meta name="author" content="">
-
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
-
-  <!-- Video Player
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="../../css/normalize.css">
   <link rel="stylesheet" href="../../css/skeleton.css">
   <link rel="stylesheet" href="../../css/main.css">
-
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="icon" type="image/png" href="../../images/favicon.png">
 
   <style>
-  .biome-phone{
-    filter: drop-shadow(-30px 30px 30px rgb(0,0,0,.4));
-  }
-  .iphone-frame-se{
-    background-image: url(SE-outline-smaller.svg);
-    background-position: 0 0;
-    background-repeat: no-repeat;
-    background-size: contain;
-    padding: 68px 19px;
-    margin: auto auto;
-    max-width: 258px;
-  }
-  .iphone-video-se{
-    border-radius: 0px;
-    border: 1px solid #DADADA;
-    box-shadow: none;
-    max-width: 258px;
-  }
-  .iphone-video-se:hover{
-    box-shadow: none;
-  }
+    body {
+      background-color: #f9f8f6;
+    }
 
-  #prototypes{
-    width: 82%;
-    margin: auto auto;
-  }
-  .section-padded{
-    margin-top:100px;
-    margin-bottom: 50px;
-  }
-  .description {
-    padding: 20px 0px 50px 0px;
-  }
+    /* ── Nav ── */
+    .top-nav {
+      margin-bottom: 0;
+      padding: 30px 0 28px;
+    }
 
+    /* ── Hero ── */
+    .hero {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 0;
+    }
+    .hero-image {
+      overflow: hidden;
+    }
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .hero-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 60px 60px 60px 56px;
+      background-color: #f9f8f6;
+    }
+    .hero-text .eyebrow {
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.4);
+      margin-bottom: 20px;
+    }
+    .hero-text h1 {
+      font-family: "futura-pt", sans-serif;
+      font-weight: 700;
+      font-size: 5.2rem;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: 32px;
+      color: #111;
+    }
+    .hero-text .meta {
+      font-size: 1.35rem;
+      line-height: 2;
+      color: rgba(0,0,0,0.5);
+      margin-bottom: 32px;
+      font-family: "futura-pt", sans-serif;
+      font-weight: 400;
+    }
+    .hero-text .description {
+      font-size: 1.7rem;
+      line-height: 1.7;
+      color: #222;
+      max-width: 380px;
+    }
+
+    /* ── Divider ── */
+    .section-divider {
+      border: none;
+      border-top: 1px solid #e0ddd8;
+      margin: 70px 0;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-family: "futura-pt", sans-serif;
+      font-size: 2.6rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      text-transform: none;
+      color: #111;
+      margin-bottom: 40px;
+    }
+
+    /* ── Content sections ── */
+    .content-section {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+    .full-bleed img,
+    .full-bleed video {
+      width: 100%;
+      display: block;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .two-col-wide {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .body-text {
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.7rem;
+      line-height: 1.75;
+      color: #333;
+    }
+    .body-text p {
+      margin-bottom: 1.5em;
+    }
+    .body-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Phone prototypes ── */
+    .phones-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .iphone-frame-se {
+      background-image: url(SE-outline-smaller.svg);
+      background-position: 0 0;
+      background-repeat: no-repeat;
+      background-size: contain;
+      padding: 68px 19px;
+      margin: auto;
+      max-width: 258px;
+    }
+    .iphone-video-se {
+      border-radius: 0px;
+      border: 1px solid #DADADA;
+      box-shadow: none !important;
+      width: 100%;
+      display: block;
+    }
+    .iphone-video-se:hover {
+      box-shadow: none !important;
+    }
+
+    /* ── Press section ── */
+    .press-section {
+      padding: 70px 0 60px;
+    }
+    .press-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .press-list li {
+      border-top: 1px solid #e0ddd8;
+    }
+    .press-list li:last-child {
+      border-bottom: 1px solid #e0ddd8;
+    }
+    .press-list a {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 22px 0;
+      border-bottom: none !important;
+      color: #111 !important;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .press-list a:hover {
+      opacity: 0.55;
+      color: #111 !important;
+      border-bottom: none !important;
+    }
+    .press-outlet {
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.38);
+      min-width: 130px;
+      flex-shrink: 0;
+    }
+    .press-headline {
+      font-family: "futura-pt", sans-serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+      line-height: 1.4;
+      color: #111;
+    }
+    .press-arrow {
+      margin-left: auto;
+      font-size: 1.4rem;
+      color: rgba(0,0,0,0.2);
+      flex-shrink: 0;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .press-list a:hover .press-arrow {
+      transform: translateX(4px);
+      color: rgba(0,0,0,0.5);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .hero, .two-col, .two-col-wide {
+        grid-template-columns: 1fr;
+      }
+      .hero-text {
+        padding: 40px 24px;
+      }
+      .hero-text h1 {
+        font-size: 3.6rem;
+      }
+      .phones-row {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 599px) {
+      .hero-text h1 { font-size: 2.8rem; }
+      .phones-row { grid-template-columns: 1fr; }
+      .press-list a { flex-wrap: wrap; gap: 6px; }
+      .press-outlet { min-width: auto; width: 100%; }
+    }
   </style>
 </head>
 
-
 <body>
-  <script>
-
-  window.addEventListener('load', function () {
-/*
-    const players = Plyr.setup('.js-player', {
-      controls: ['play', 'progress']
-    });
-    */
-  });
-
-
-  </script>
-
   <div class="container project-page">
-
     <div class="row top-nav">
-      <div class="one-half column" >
+      <div class="one-half column">
         <a href="/index.html">
-          <h5 class="name-title">Mary Huang</h5>
+          <h5 class="title">Mary Huang</h5>
         </a>
       </div>
     </div>
+  </div>
 
-    <div class="row">
-      <div class="seven columns" >
-        <img src="../../images/thumbs/Amazon_c2.jpg" />
+  <div style="max-width:1350px; margin: 0 auto; padding: 0 4%;">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-image">
+        <img src="../../images/thumbs/Amazon_c2.jpg" alt="Amazon Made For You" />
       </div>
-      <div class="five columns">
-        <h5 class="large-title">Amazon Made For You</h5>
-        <p>
-          Amazon Fashion<br>
-          2019 <br>
-          UI/UX, technical design lead, core product technology
+      <div class="hero-text">
+        <p class="eyebrow">Amazon Fashion · 2019–2020</p>
+        <h1>Amazon<br>Made For You</h1>
+        <p class="meta">
+          UI/UX · Technical Design Lead<br>
+          Core Product Technology
         </p>
-        <p>
-          <!--
-          It's one of the holy grails of "future fashion" product concepts-- accurately rendering the fit of clothing onto a 3D body double. But data on clothing fit and its relation to manufactured patterns and human bodies is almost non-existant. So, Made For You takes the ground-up approach...manufacture the shirts to fit the bodies.
--->
+        <p class="description">
           Amazon's first custom made-to-measure apparel line.
-          <br><br>
-          Read more on <a href="https://www.fastcompany.com/90586835/amazon-wants-to-scan-your-body-to-make-perfectly-fitting-shirts">Fast Company</a>, <a href="https://techcrunch.com/2020/12/15/amazon-fashion-launches-a-custom-clothing-service-made-for-you/">Tech Crunch</a>, and <a href="https://www.vogue.com/article/amazon-made-for-you-t-shirt">Vogue</a>
-
-          <br><br>
-          I did the early UI and motion design for the consumer mobile app and built the first working version of the custom pattern generation engine. The product had a long private beta, and launched in 2020.
-        <br><br>
-          I synthesized design and engineering requirements from different teams, wrote technical specs, provided domain area expertise, and planned user testing. My work simplified complexity, helped push the technology forward, and improved understanding of user expectations. I worked closely with the machine learning team in NYC (formerly Bodylabs).
-          <br><br>
-          <!--
-          I built the first working version of the custom pattern generation engine for manufacturing t-shirts from body measurements generated by the machine learning algorithms. The system allowed for different 'fit styles' and variations in neckline and sleeve length.
-          <br><br>
-          My system allowed for importing clothing patterns made by an apparel designer, assigning measurement variables, and generating custom patterns with a visual previewer. I worked closely with the machine learning team in NYC (formerly Bodylabs).
-
-          <br><br>
-        -->
         </p>
-<!--
-        <p>
-          <a href="https://www.amazon.com/Made-for-You-Custom-T-shirt/dp/B08N6J8G5M" target="blank">Amazon Product Page</a>
-        </p>
-        <p>
-          "Amazon is offering Made for You as a new, own-brand offering which initially will allow made-to-measure, customizable T-shirts to be manufactured and shipped direct to your door. The Amazon app on iOS or Android is used to determine your body measurements and 'create your virtual body double.' After that, you can customize and purchase T-shirts either on your mobile device or using a desktop browser."
-        </p>
-      -->
       </div>
     </div>
 
-    <div class="row">
-      <h5 class="centered section-padded">Shipped Main Flow</h5>
-      <img src="Amazon_flow.jpg" />
-    </div>
+    <hr class="section-divider" style="margin-top: 70px;" />
 
-    <div class="row">
-      <h5 class="centered">Hi-fi Designs</h5>
-    </div>
+    <!-- Overview -->
+    <div class="content-section">
 
-    <div class="row">
-      <div id="prototypes">
-
-      <div class="four columns">
-        <div class="iphone-frame-se">
-          <video  playsinline controls autoplay muted loop class="iphone-video-se"><source src="Tabs.mp4"> </video>
+      <div class="two-col-wide">
+        <div class="full-bleed">
+          <img src="Amazon_flow.jpg" alt="Shipped main flow" />
         </div>
-          <p class="caption"></>
-      </div>
-      <div class="four columns">
-        <div class="iphone-frame-se">
-          <video  playsinline controls autoplay muted loop class="iphone-video-se"><source src="monogram.mp4"> </video>
+        <div class="body-text" style="padding-top: 8px;">
+          <p>I did the early UI and motion design for the consumer mobile app and built the first working version of the custom pattern generation engine.</p>
+          <p>I synthesized design and engineering requirements across teams, wrote technical specs, provided domain expertise, and planned user testing.</p>
+          <p>I worked closely with the machine learning team in NYC (formerly Bodylabs). The product launched in 2020 after a long private beta.</p>
         </div>
-          <p class="caption"></>
       </div>
-      <div class="four columns">
-        <div class="iphone-frame-se">
-          <video  playsinline controls autoplay muted loop class="iphone-video-se"><source src="Done.mp4"> </video>
+
+      <div>
+        <p class="section-label">Hi-Fi Designs</p>
+        <div class="phones-row">
+          <div>
+            <div class="iphone-frame-se">
+              <video playsinline controls autoplay muted loop class="iphone-video-se"><source src="Tabs.mp4"></video>
+            </div>
+          </div>
+          <div>
+            <div class="iphone-frame-se">
+              <video playsinline controls autoplay muted loop class="iphone-video-se"><source src="monogram.mp4"></video>
+            </div>
+          </div>
+          <div>
+            <div class="iphone-frame-se">
+              <video playsinline controls autoplay muted loop class="iphone-video-se"><source src="Done.mp4"></video>
+            </div>
+          </div>
         </div>
-          <p class="caption"></>
       </div>
-    </div>
-    </div>
 
-    <div class="row">
-      <h5 class="centered section-padded">Measurements Spec</h5>
-      <img src="Amazon_measurements.jpg" />
-    </div>
-
-    <div class="row section-padded">
-      <h5 class="centered ">My Pattern Generation Tool (internal pipeline)</h5>
-      <p class="centered description" >I coded 4 iterations, improving the custom sizing and ML algorithm spec across multiple rounds of user testing. </p>
-      <img src="Amazon_tool.jpg" />
-    </div>
-
-
-
-
-
-<!--
-    <hr></hr>
-    <div class="row">
-      <div class="seven columns" >
-        <video class="js-player" id="video2" playsinline controls><source src="TurtleLink1.mp4"> </video>
+      <div class="full-bleed">
+        <p class="section-label">Measurements Spec</p>
+        <img src="Amazon_measurements.jpg" alt="Measurements spec" />
       </div>
-      <div class="five columns" >
-        <h5 class="title">Process Shots</h5>
-        <p>
-           I made a lot of motion studies for this project using Processing and AfterEffects because there were a lot of things that couldn’t be captured in just 2D mockups. Here are two examples.
-          <br><br>
-          <b>Globe + swimming turtles</b>
-          <br><br>
-          How do we do this while allowing people to turn the globe? We had the idea to faintly ‘pin’ the turtles to the globe, and that the globe could be turned, but would then ease back to its original location.
-        </p>
+
+      <div>
+        <p class="section-label">Pattern Generation Tool <span style="font-weight:400; font-size:1.8rem; color:rgba(0,0,0,0.4);">— internal pipeline</span></p>
+        <div class="two-col">
+          <div class="full-bleed">
+            <img src="Amazon_tool.jpg" alt="Pattern generation tool" />
+          </div>
+          <div class="full-bleed">
+            <img src="Amazon_tool2.jpg" alt="Pattern generation tool detail" />
+          </div>
+        </div>
+        <div class="body-text" style="max-width: 640px; margin-top: 32px;">
+          <p>I coded 4 iterations of the pattern generation engine, improving custom sizing and the ML algorithm spec across multiple rounds of user testing.</p>
+        </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="seven columns" >
-        <video class="js-player" id="video3" playsinline controls ><source src="TurtleLink2.mp4"> </video>
-      </div>
-      <div class="five columns" >
-        <p>
-          <b>3D to 2D motion transition</b>
-          <br><br>
-           When you tap on a turtle, it reveals a video clip showing the turtle. The video doesn’t just appear, but rather the turtle animates into a pose that is similar to the frame in the video.
-        </p>
-      </div>
+
     </div>
 
+    <!-- Press -->
+    <div class="press-section">
+      <p class="section-label">Press</p>
+      <ul class="press-list">
+        <li>
+          <a href="https://www.fastcompany.com/90586835/amazon-wants-to-scan-your-body-to-make-perfectly-fitting-shirts" target="_blank" rel="noopener">
+            <span class="press-outlet">Fast Company</span>
+            <span class="press-headline">Amazon Wants to Scan Your Body to Make Perfectly Fitting Shirts</span>
+            <span class="press-arrow">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://techcrunch.com/2020/12/15/amazon-fashion-launches-a-custom-clothing-service-made-for-you/" target="_blank" rel="noopener">
+            <span class="press-outlet">TechCrunch</span>
+            <span class="press-headline">Amazon Fashion Launches a Custom Clothing Service, Made for You</span>
+            <span class="press-arrow">→</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.vogue.com/article/amazon-made-for-you-t-shirt" target="_blank" rel="noopener">
+            <span class="press-outlet">Vogue</span>
+            <span class="press-headline">Amazon Made for You Is the Custom T-Shirt Service You Didn't Know You Needed</span>
+            <span class="press-arrow">→</span>
+          </a>
+        </li>
+      </ul>
+    </div>
 
     <div class="row spacer"></div>
 
   </div>
-
--->
-
-
 
 </body>
 </html>
