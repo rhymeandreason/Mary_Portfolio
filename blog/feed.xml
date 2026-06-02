@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Mary Huang — Research</title>
+    <link>https://mary-huang.com/blog/</link>
+    <description>Notes &amp; experiments by Mary Huang.</description>
+    <language>en-us</language>
+    <atom:link href="https://mary-huang.com/blog/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Itching for New Interfaces</title>
+      <link>https://mary-huang.com/blog/new-interfaces.html</link>
+      <guid isPermaLink="true">https://mary-huang.com/blog/new-interfaces.html</guid>
+      <pubDate>Mon, 01 Jun 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>Every interface now feels outdated. I notice the effort I put into dragging windows on my screen. Finding the application after it’s minimized. Searching for files. Searching for the right app. Searching for the settings panel to toggle the right setting. Searching the web to find that settings panel. Settings is the junk drawer of any app or OS, and yet it’s the drawer I most frequently open.</p>
+<p>Even for apps I use regularly, there is no interface where I do not have to search to do the thing I want. The apps are always updating. The familiar button I have pressed for years is suddenly somewhere else entirely. There is ever more clutter of new features, on surfaces where I only use 10% of the current features.</p>
+<p>I do not need more screen time. And yet every software experience seems to be designed to demand my time and my eyes.</p>
+<p>I also don’t want to talk to the computer. At times it would be useful…when I’m driving, or cooking…the computer should be able to deliver on straightforward requests. But the car dash doesn’t see the text message for changing the meetup location. The Echo doesn’t know the recipe I’ve loaded on my phone. And they talk too much…paragraphs when I expect 10 words.</p>
+<p>I love taking a walk without my phone. But then I want to take a photo of the clouds overlooking the ridge. I love drawing in my sketchbook. But then I want to undo that stray mark. I love seeing my friends in person. But many of them live thousands of miles away.</p>
+<p>Technology eagerly shouts, “I am here for all of those needs!” Yet the experience is unsatisfying. A meal delivered that is too many empty calories.</p>
+<p>Notifications notifications notifications. I’ve paid thousands of dollars for pieces of aluminum and glass that seem entirely focused on delivering notifications that I don’t care about. I turn all of them off. But then I miss my messages. How do I just get the messages. So many different settings. Yet impossible to achieve this simplest of intents.</p>
+<p>I’m scrolling again. Why? I could be doing anything else. But I want to know what’s going on in the world. What are other people doing? I scroll. This video is so funny. Look at this cute thing! Wow this new product is impressive. This person is upset. No it’s just rage bait. Here’s a useful post. Bookmark. Now where did I save that to? Oh no I’ve been scrolling for 40 minutes.</p>
+<p>I’m logging in to an account for something important. What did I put for these security questions? Mother’s maiden name, high school, pet’s name. But I didn’t put the real answers of course. What imaginary life did I conceive of when creating this account? I made a super secure password for this site. But now I can’t autocomplete it…I have to type it in. So I copy and paste this obscure incantation of characters into Notes, so that I can see it to type in on my device. I shouldn't admit that I do that.</p>
+<p>There’s a storm and the power is out. The internet is out. Why do I sit down at my computer and open the browser? What is it that I need to do? Muscle memory that supersedes utility.</p>]]></description>
+    </item>
+    <item>
+      <title>AI is a Mirror</title>
+      <link>https://mary-huang.com/blog/AI-is-a-mirror.html</link>
+      <guid isPermaLink="true">https://mary-huang.com/blog/AI-is-a-mirror.html</guid>
+      <pubDate>Fri, 15 May 2026 12:00:00 GMT</pubDate>
+      <description><![CDATA[<p>We’ve architected this intelligence very much in our own image. Its eagerness to please and be useful are strong fingerprints of its maker.</p>
+<p>See it not as a tool but as a reflecting pane, and we grapple with ourselves. Do we equate our own identity with work? Do we measure ourselves by others? When do we make intentional choices? How freely do we share information? How do we organize the jumbled thoughts in our head? How do we perceive our own identity?</p>
+<p>Ask an LLM to do a task and it hurriedly looks outward. How could I build a simple blog? "Here are the top 3 frameworks!" But couldn't you just make me a simple static site generator? "Sure. ~150 lines total, zero dependencies." The AI underestimates its own capability, offering the standard expected response instead of trusting its native fluency to craft bits on the fly.</p>
+<p>Don't we do the same? Spending too many cycles on looking to what is out in the world, instead of trusting our own innate abilities to make for ourselves. We've now built this ultimate tool of tools. Now what will we do with it?</p>]]></description>
+    </item>
+  </channel>
+</rss>
