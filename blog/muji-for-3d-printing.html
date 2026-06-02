@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Muji for 3D printing — Mary Huang</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/blog.css">
+  <link rel="icon" type="image/png" href="../images/favicon.png">
+  <link rel="alternate" type="application/rss+xml" title="Mary Huang — Research" href="feed.xml">
+</head>
+<body>
+  <div class="container project-page">
+    <div class="row top-nav">
+      <div class="one-half column">
+        <a href="/index.html"><h5 class="name-title">Mary Huang</h5></a>
+      </div>
+    </div>
+  </div>
+  <article class="post">
+    <header class="post-header">
+      <p class="post-date">June 2, 2026</p>
+      <h1 class="post-title">Muji for 3D printing</h1>
+    </header>
+    <div class="post-body">
+<p>A library of minimal, parametric designs for the home. I've always wanted this to exist.</p>
+<p>Consumer desktop 3D printing has finally become mainstream. I've met a 73-year old woman who owns a 3D printer and dads printing toys with their kids. There are plenty of amazing designs out there. But browsing for them sucks up time and creative energy. I just want that calm sense of organization you feel when walking into a Muji store. There are some things a marketplace will never achieve.</p>
+<p>So I finally built it. First version alpha link: <strong><a href="https://yuniku-gamma.vercel.app">yuniku-gamma.vercel.app</a></strong>.</p>
+<p>I've made 8 designs so far. Pick an object, adjust a few parameters, and download the 3D file. No infinite scroll, no likes, no tags-of-tags.</p>
+<p>I made the whole thing with Claude Code, including all the 3D modeling. I never opened a CAD program. Sometimes Claude would get a design almost right away. Sometimes I would have to guide it step by step.  Each design is 1 page of code, it's amazing how concisely it captures so much variation. The stack is plain functional CAD primitives composed in JavaScript, which turns out to be a beautiful way to think about objects. Each design is around one page of code, and it's amazing how concisely that captures so much variation.</p>
+<p>Physical objects as code has been quietly enlightening on its own. It takes 1-2 hours to make a parametric design. I spend time thinking about when to add more parameters or when to split off a new design. I also wonder if the variation of household objects is more finite than it first seems. How many parametric designs would I need to create to achieve the feeling of a whole catalog?</p>
+<p>A library of a few dozen products seems very doable. Printing, testing, refining takes longer. I built most of this across 3 days. A bit of a giddy sprint because it was so easy to make designs.</p>
+<p>Now the real test is whether I'll use these things myself. I'm hoping a few friends will join in and test prints too — if you have a printer and want to try one, send me a note.</p>
+    </div>
+    <footer class="post-footer">
+      <a href="index.html">← All notes</a>
+    </footer>
+  </article>
+</body>
+</html>
