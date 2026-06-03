@@ -1,6 +1,6 @@
 ---
 title: Itching for New Interfaces
-date: 2026-06-01
+date: 2026-05-20
 ---
 
 Every interface now feels outdated. I notice the effort I put into dragging windows on my screen. Finding the application after it’s minimized. Searching for files. Searching for the right app. Searching for the settings panel to toggle the right setting. Searching the web to find that settings panel. Settings is the junk drawer of any app or OS, and yet it’s the drawer I most frequently open.

@@ -94,6 +94,31 @@ function parsePost(filename, src) {
   return { meta, body };
 }
 
+// ---------- preview ----------
+function extractPreview(body, max = 180) {
+  const paraLines = [];
+  for (const ln of body.split('\n')) {
+    const t = ln.trim();
+    if (!t) { if (paraLines.length) break; continue; }
+    if (/^(#|>|!\[|-\s|\*\s|\d+\.\s|```|<)/.test(t)) continue;
+    paraLines.push(t);
+  }
+  let text = paraLines.join(' ')
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*\n]+)\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/<[^>]+>/g, '')
+    .trim();
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const sentence = cut.match(/^[\s\S]*[.!?](?=\s|$)/);
+  if (sentence && sentence[0].length >= max * 0.5) return sentence[0];
+  const space = cut.lastIndexOf(' ');
+  return (space > 0 ? cut.slice(0, space) : cut) + '…';
+}
+
 // ---------- utilities ----------
 const escapeXml = s => s.replace(/[<>&'"]/g, c => ({ '<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;' })[c]);
 const formatDate = d => new Date(d + 'T12:00:00Z').toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric', timeZone:'UTC' });
@@ -111,13 +136,17 @@ const head = title => `  <meta charset="utf-8">
   <link rel="icon" type="image/png" href="../images/favicon.png">
   <link rel="alternate" type="application/rss+xml" title="${SITE.title}" href="feed.xml">`;
 
-const topNav = `  <div class="container project-page">
-    <div class="row top-nav">
-      <div class="one-half column">
-        <a href="/index.html"><h5 class="name-title">Mary Huang</h5></a>
-      </div>
+const pageHeader = `  <header class="page-header">
+    <a href="/index.html"><h5 class="name-title">Mary Huang</h5></a>
+    <div class="header-links">
+      <a href="https://www.linkedin.com/in/maryhuang1/" target="_blank" rel="noopener" aria-label="LinkedIn">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.28V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+      </a>
+      <a href="mailto:hello@mary-huang.com" aria-label="Email">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+      </a>
     </div>
-  </div>`;
+  </header>`;
 
 function postPage({ meta, html }) {
   return `<!DOCTYPE html>
@@ -126,7 +155,7 @@ function postPage({ meta, html }) {
 ${head(`${meta.title} — ${SITE.author}`)}
 </head>
 <body>
-${topNav}
+${pageHeader}
   <article class="post">
     <header class="post-header">
       <p class="post-date">${formatDate(meta.date)}</p>
@@ -145,27 +174,26 @@ ${html}
 }
 
 function indexPage(posts) {
-  const items = posts.map(p => `        <li>
-          <a href="${p.meta.slug}.html">
-            <span class="post-list-date">${formatDate(p.meta.date)}</span>
-            <span class="post-list-title">${p.meta.title}</span>
-          </a>
-        </li>`).join('\n');
+  const cards = posts.map(p => `      <a class="post-card" href="${p.meta.slug}.html">
+        <span class="post-card-date">${formatDate(p.meta.date)}</span>
+        <h2 class="post-card-title">${escapeXml(p.meta.title)}</h2>
+        <p class="post-card-preview">${escapeXml(p.preview || '')}</p>
+      </a>`).join('\n');
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 ${head(SITE.title)}
 </head>
 <body>
-${topNav}
+${pageHeader}
   <section class="post-list-section">
     <header class="post-list-header">
       <h1>Research</h1>
       <p>Notes &amp; experiments. <a href="feed.xml">RSS</a></p>
     </header>
-    <ul class="post-list">
-${items}
-    </ul>
+    <div class="post-grid">
+${cards}
+    </div>
   </section>
 </body>
 </html>
@@ -202,7 +230,7 @@ function build() {
     .filter(f => f.endsWith('.md'))
     .map(f => {
       const { meta, body } = parsePost(f, fs.readFileSync(path.join(SRC_DIR, f), 'utf8'));
-      return { meta, html: md(body) };
+      return { meta, html: md(body), preview: extractPreview(body) };
     })
     .sort((a, b) => b.meta.date.localeCompare(a.meta.date));
 

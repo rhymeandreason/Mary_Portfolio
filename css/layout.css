@@ -58,6 +58,23 @@ h1, h2, h3, h4, h5, h6 { font-family: "futura-pt", sans-serif; margin-top: 0; }
   clear: both;
 }
 
+/* ── Page header (name + social links) ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 40px 0;
+  max-width: 1400px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+.page-header a { color: #555; text-decoration: none; font-size: 1.4rem; }
+.page-header a:hover { color: #000; }
+.page-header .name-title { margin: 0; }
+.header-links { display: inline-flex; gap: 14px; align-items: center; }
+.header-links a { display: inline-flex; color: #777; }
+.header-links a:hover { color: #000; }
+
 /* ── Top nav + spacer ── */
 .top-nav a {
   color: black;
