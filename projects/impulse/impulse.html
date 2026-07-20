@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
   <meta charset="utf-8">
@@ -20,6 +21,7 @@
       margin-top: 100px;
       color: #F5F5F5;
     }
+
     .dark-band-inner {
       max-width: 1350px;
       margin: 0 auto;
@@ -27,48 +29,146 @@
       flex-direction: column;
       gap: 80px;
     }
+
     .dark-band .six-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 24px;
     }
+
     .dark-band .six-grid img {
       width: 100%;
       display: block;
       border-radius: 6px;
     }
+
     /* ── Product areas list ── */
     .areas-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0;
     }
+
     .areas-grid .area-item {
       font-family: "futura-pt", sans-serif;
       font-size: 1.7rem;
       font-weight: 400;
-      color: rgba(245,245,245,0.75);
+      color: rgba(245, 245, 245, 0.75);
       padding: 18px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
+
     .areas-grid .area-item:nth-last-child(-n+2) {
       border-bottom: none;
     }
+
     .areas-label {
       font-family: "futura-pt", sans-serif;
       font-size: 1.1rem;
       font-weight: 500;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: rgba(245,245,245,0.35);
+      color: rgba(245, 245, 245, 0.35);
       margin-bottom: 32px;
     }
+
     @media (max-width: 700px) {
-      .dark-band .six-grid { grid-template-columns: 1fr 1fr; }
-      .areas-grid { grid-template-columns: 1fr; }
-      .areas-grid .area-item:nth-last-child(-n+2) { border-bottom: 1px solid rgba(255,255,255,0.1); }
-      .areas-grid .area-item:last-child { border-bottom: none; }
+      .dark-band .six-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .areas-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .areas-grid .area-item:nth-last-child(-n+2) {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .areas-grid .area-item:last-child {
+        border-bottom: none;
+      }
     }
+
+    /* ── Mobile app section ── */
+    .mobile-band {
+      display: flex;
+      justify-content: center;
+      //padding: 0 4%;
+    }
+
+    .mobile-band-inner {
+      //max-width: 1350px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0px;
+    }
+
+    .mobile-band .mobile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0px;
+      width: 100%;
+    }
+
+    .mobile-band .stove-top-img {
+      width: 100%;
+      display: block;
+    }
+
+    .mobile-band .mobile-img-wrap {
+      background-color: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 100px 40px;
+    }
+    .mobile-img-wrap .mobile-presets {
+      background-color: #0E0E0F;
+    }
+    .mobile-band .mobile-img-wrap img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* Matches its cell's height to the stove-top-img instead of its own padded content */
+    .mobile-band .mobile-grid {
+      position: relative;
+    }
+
+    .mobile-band .mobile-grid>.mobile-img-wrap--matched {
+      position: absolute;
+      grid-column: 2;
+      grid-row: 1;
+      inset: 0;
+    }
+
+    .mobile-setup-img {
+      max-height: 650px;
+      width: 70%;
+    }
+
+    .mobile-band .mobile-presets-img {
+      max-width: 1200px;
+      width: 60%;
+    }
+
+    @media (max-width: 700px) {
+      .mobile-band .mobile-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mobile-band .mobile-img-wrap {
+        padding: 60px 20px;
+      }
+    .mobile-band .mobile-presets-img {
+      max-width: 1200px;
+      width: 80%;
+    }
+    }
+
   </style>
 </head>
 
@@ -157,7 +257,26 @@
     </div>
   </div>
 
-  <div style="height: 150px;"></div>
+  <!-- Mobile app section -->
+  <div class="mobile-band">
+    <div class="mobile-band-inner">
+
+      <div class="mobile-grid">
+        <img class="stove-top-img" src="impulse_stove_top.jpg" alt="Impulse stove top view" />
+        <div class="mobile-img-wrap mobile-img-wrap--matched">
+          <img class="mobile-setup-img" src="mobile_setup.png" alt="Mobile app setup flow" />
+        </div>
+      </div>
+
+      <div class="mobile-img-wrap mobile-presets" style="width: 100%;">
+        <img class="mobile-presets-img" src="mobile_presets.png" alt="Mobile app cooking presets" />
+      </div>
+
+    </div>
+  </div>
+
+  <div style="height: 150px;background-color: black;"></div>
 
 </body>
+
 </html>
