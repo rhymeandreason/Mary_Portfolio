@@ -444,6 +444,11 @@
       object-fit: contain;
       object-position: left center;
       mix-blend-mode: multiply;
+      isolation: isolate;
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
     }
     .company .role {
       font-size: 1.5rem;

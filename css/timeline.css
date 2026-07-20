@@ -114,6 +114,11 @@ body{
   background-position: right center;
   margin-bottom: 12px;
   mix-blend-mode: multiply;
+  isolation: isolate;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 .company-logo.placeholder {
   background: #ececec;
