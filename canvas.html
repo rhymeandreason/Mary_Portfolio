@@ -65,12 +65,10 @@
     #bar .right { display: flex; gap: 18px; align-items: center; color: var(--ink-2); }
     #bar .right a { text-decoration: none; }
     #bar .right a:hover { color: var(--ink); }
-    #bar .mode-pill {
-      display: inline-flex; align-items: center; gap: 7px;
-      background: var(--ink); color: #fff; border-radius: 999px;
-      padding: 3px 10px 3px 6px; font-size: 12px; cursor: pointer;
-    }
-    #bar .mode-pill i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); display: inline-block; }
+    #bar #battery { display: inline-flex; align-items: center; gap: 5px; font-variant-numeric: tabular-nums; }
+    #bar #battery i { font-size: 19px; line-height: 1; }
+    #bar #battery.low i { color: #c8442c; }
+    #bar #battery.charging i { color: #3d8f5a; }
 
     /* ── Dock ── */
     #dock {
@@ -115,12 +113,15 @@
       cursor: grab; flex: none; font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em;
     }
     .win .titlebar:active { cursor: grabbing; }
+    /* Sidebar apps: chrome overlays the content so the sidebar reaches the top */
+    .win.fullside > .titlebar { position: absolute; top: 0; left: 0; right: 0; z-index: 3; background: none; }
+    .win.fullside > .body { height: 100%; }
+    .win.fullside .app .side { padding-top: 38px; }
     .win .lights { display: flex; gap: 7px; }
     .win .lights b { width: 11px; height: 11px; border-radius: 50%; display: block; background: #ddd7cd; cursor: pointer; }
     .win.active .lights b.c { background: #ff5f57; }
     .win.active .lights b.m { background: #febc2e; }
     .win.active .lights b.z { background: #28c840; }
-    .win .titlebar .t { margin-left: 6px; }
     .win .body { flex: 1; min-height: 0; overflow: auto; }
     .win .body.noscroll { overflow: hidden; }
     .win .body::-webkit-scrollbar { width: 8px; }
@@ -348,7 +349,7 @@
     }
 
     @media (max-width: 700px) {
-      #bar .right a.hide-sm { display: none; }
+      #bar #battery .pct { display: none; }
       .notes .cards { columns: 1; }
     }
   </style>
@@ -358,9 +359,7 @@
 <div id="bar">
   <a class="name" href="index.html">Mary Huang</a>
   <div class="right">
-    <a class="hide-sm" href="timeline.html">Timeline</a>
-    <a href="mailto:rhymeandreason1.0@gmail.com">Email</a>
-    <span class="mode-pill" id="modePill" title="Current mode"><i></i><span>Design</span></span>
+    <span id="battery" title="Battery"><span class="pct">—</span><i class="ph ph-battery-high"></i></span>
     <span id="clock">00:00</span>
   </div>
 </div>
@@ -671,15 +670,14 @@ function focusWin(w) {
   w.classList.add('active');
   w.style.zIndex = ++zTop;
 }
-function createWindow({ id, title, x, y, w, h, content, noscroll, onOpen }) {
+function createWindow({ id, title, x, y, w, h, content, noscroll, fullside, onOpen }) {
   const el = document.createElement('div');
-  el.className = 'win';
+  el.className = 'win' + (fullside ? ' fullside' : '');
   el.id = 'win-' + id;
   el.style.cssText = `left:${x}px; top:${y}px; width:${w}px; height:${h === 'auto' ? 'auto' : h + 'px'}; z-index:${++zTop}`;
   el.innerHTML = `
-    <div class="titlebar">
+    <div class="titlebar" title="${title}">
       <div class="lights"><b class="c" title="Close"></b><b class="m" title="Minimize"></b><b class="z" title="Zoom"></b></div>
-      <span class="t">${title}</span>
     </div>
     <div class="body ${noscroll ? 'noscroll' : ''}"></div>
     <div class="resize"></div>`;
@@ -801,19 +799,13 @@ function dailyContent() {
   root.className = 'daily';
   const now = new Date();
   const dayName = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
-  const KEY = 'canvas-daily-' + now.toDateString();
-  let tasks;
-  try { tasks = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { tasks = null; }
-  // Tasks render as plain text; strip any markup left in storage by an earlier version.
-  if (tasks) tasks.forEach(t => { t.t = String(t.t).replace(/<i class="ph[^"]*"><\/i>/g, '→').replace(/<[^>]*>/g, ''); });
-  if (!tasks) tasks = [
-    { t: 'Look around this canvas', d: false },
-    { t: 'Open the Gallery app to see everything', d: false },
-    { t: 'Build 30 apps for myself', d: true },
+  let tasks = [
+    { t: 'Browse the projects', d: false },
+    { t: 'Ponder what we can now do with AI', d: false },
+    { t: 'Update website', d: true },
     { t: 'Ship a biology lab for the browser', d: true },
     { t: 'Say hi → rhymeandreason1.0@gmail.com', d: false },
   ];
-  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(tasks)); } catch (e) {} };
 
   const check = '<i class="ph-bold ph-check"></i>';
   const list = document.createElement('ul');
@@ -824,7 +816,7 @@ function dailyContent() {
       li.className = task.d ? 'done' : '';
       li.innerHTML = `<div class="box">${check}</div><span></span>`;
       li.querySelector('span').textContent = task.t;
-      li.addEventListener('click', () => { task.d = !task.d; save(); render(); });
+      li.addEventListener('click', () => { task.d = !task.d; render(); });
       list.appendChild(li);
     });
   };
@@ -848,7 +840,7 @@ function dailyContent() {
   add.className = 'add';
   add.innerHTML = `<span style="font-size:18px">+</span><input placeholder="Add a task and press Enter…">`;
   add.querySelector('input').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && e.target.value.trim()) { tasks.push({ t: e.target.value.trim(), d: false }); e.target.value = ''; save(); render(); }
+    if (e.key === 'Enter' && e.target.value.trim()) { tasks.push({ t: e.target.value.trim(), d: false }); e.target.value = ''; render(); }
   });
   root.appendChild(add);
   const cal = document.createElement('div');
@@ -909,7 +901,6 @@ function setMode(i) {
   document.querySelectorAll('.modes .disc span').forEach((s, j) => {
     s.className = j === modeIdx ? 'on' : (Math.abs(j - modeIdx) === 1 ? 'dim' : '');
   });
-  document.querySelector('#modePill span').textContent = name;
   document.documentElement.style.setProperty('--paper', MODE_TINT[name]);
 }
 function modesContent() {
@@ -994,8 +985,6 @@ function galleryContent() {
     { id: 'files', name: 'File Directory', icon: 'ph-folder-open', build: filesPane },
     { id: 'settings', name: 'Settings', icon: 'ph-gear', build: settingsPane },
   ];
-  const cap = document.createElement('div'); cap.className = 'cap'; cap.textContent = 'Gallery';
-  side.appendChild(cap);
   const open = (id, arg) => {
     pane.innerHTML = '';
     pane.scrollTop = 0;
@@ -1312,7 +1301,7 @@ function layout() {
 
   createWindow({ id: 'about', title: 'readme.txt', x: 40, y: 100, w: 420, h: 'auto', content: aboutContent() });
   createWindow({ id: 'daily', title: 'Daily Note', x: 1450, y: 100, w: 360, h: 700, content: dailyContent() });
-  createWindow({ id: 'gallery', title: 'Gallery', x: 500, y: 60, w: 900, h: 700, noscroll: true, content: galleryContent() });
+  createWindow({ id: 'gallery', title: 'Gallery', x: 500, y: 60, w: 900, h: 700, noscroll: true, fullside: true, content: galleryContent() });
   createWindow({ id: 'pulse', title: 'Git Pulse', x: 1120, y: 900, w: 500, h: 'auto', content: pulseContent() });
 
   addLoose(`<b>Personal Personal Computing</b><p>Replacing my daily apps with self-built, minimal versions and living in them. 30 apps so far, in Tauri on Mac. The windows here are a few of them.</p><a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio <i class="ph ph-arrow-up-right"></i></a>`, 40, 800, -2, 'sticky postit');
@@ -1333,7 +1322,32 @@ function layout() {
 buildDock();
 layout();
 setMode(1);
-document.getElementById('modePill').addEventListener('click', () => setMode(modeIdx + 1));
+/* Battery, the way a menu bar shows it. Needs the Battery Status API;
+   where the browser doesn't expose it (Safari, Firefox), show nothing. */
+function initBattery() {
+  const el = document.getElementById('battery');
+  if (!navigator.getBattery) { el.style.display = 'none'; return; }
+  navigator.getBattery().then(b => {
+    const paint = () => {
+      const pct = Math.round(b.level * 100);
+      el.querySelector('.pct').textContent = pct + '%';
+      const icon = b.charging ? 'ph-battery-charging'
+        : pct > 75 ? 'ph-battery-full'
+        : pct > 45 ? 'ph-battery-high'
+        : pct > 20 ? 'ph-battery-medium'
+        : pct > 8 ? 'ph-battery-low'
+        : 'ph-battery-empty';
+      el.querySelector('i').className = 'ph ' + icon;
+      el.classList.toggle('low', pct <= 20 && !b.charging);
+      el.classList.toggle('charging', b.charging);
+      el.title = `Battery ${pct}%${b.charging ? ' · charging' : ''}`;
+    };
+    paint();
+    ['levelchange', 'chargingchange'].forEach(e => b.addEventListener(e, paint));
+  }).catch(() => el.style.display = 'none');
+}
+initBattery();
+
 const tick = () => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); };
 tick(); setInterval(tick, 15000);
 let refitT;
