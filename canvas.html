@@ -46,6 +46,7 @@
       background-position: 0 0;
     }
     #desk.panning { cursor: grabbing; }
+    #desk.nodots { background-image: none; }
     #world { position: absolute; left: 0; top: 0; will-change: transform; }
 
     /* ── Top bar (menu bar) ── */
@@ -207,16 +208,87 @@
     .proj .cap a.go { font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; border-bottom: 1px solid rgba(0,0,0,0.3); }
 
     /* ── Gallery ── */
-    .gal { padding: 0 20px 20px; }
-    .gal .filters { display: flex; gap: 8px; flex-wrap: wrap; padding: 2px 0 14px; }
-    .gal .filters button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink-2); }
-    .gal .filters button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
-    .gal .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px 14px; }
-    .gal .item { text-decoration: none; display: block; }
-    .gal .item img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); display: block; transition: transform 0.2s ease, box-shadow 0.2s ease; background: #eee; }
-    .gal .item:hover img { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-    .gal .item b { display: block; font-size: 13px; margin-top: 7px; }
-    .gal .item small { display: block; font-size: 11px; color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+    /* ── Gallery.app: sidebar + panes ── */
+    .app { display: flex; height: 100%; min-height: 0; }
+    .app .side { width: 148px; flex: none; border-right: 1px solid var(--line); padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; background: rgba(0,0,0,0.015); }
+    .app .side button { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; background: none; font: inherit; font-size: 13px; color: var(--ink-2); padding: 6px 9px; border-radius: 7px; cursor: pointer; text-align: left; }
+    .app .side button:hover { background: rgba(0,0,0,0.05); }
+    .app .side button.on { background: var(--ink); color: #fff; }
+    .app .side button i { width: 14px; height: 14px; flex: none; border-radius: 3px; background: currentColor; opacity: 0.65; }
+    .app .side .cap { font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); padding: 8px 9px 4px; }
+    .app .pane { flex: 1; min-width: 0; min-height: 0; overflow: auto; padding: 14px 18px 20px; }
+    .app .pane.fixed { overflow: hidden; }
+    .app .pane::-webkit-scrollbar { width: 8px; }
+    .app .pane::-webkit-scrollbar-thumb { background: #ddd7cd; border-radius: 4px; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 0 12px; }
+    .filters button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink-2); }
+    .filters button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+    /* Media: a Lightroom-ish contact sheet, with a detail view in the same pane */
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 16px 12px; }
+    .media-grid button { border: 0; background: none; padding: 0; font: inherit; text-align: left; cursor: pointer; display: block; width: 100%; }
+    .media-grid .cell { background: #ecebe6; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+    .media-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; transition: transform 0.25s ease; }
+    .media-grid button:hover .cell { border-color: var(--ink-3); }
+    .media-grid button:hover img { transform: scale(1.05); }
+    .media-grid .fn { display: block; font-size: 10.5px; margin-top: 5px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .media-grid .sz { display: block; font-size: 10px; color: var(--ink-3); letter-spacing: 0.04em; }
+
+    .viewer { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 10px; }
+    .viewer .bar { display: flex; align-items: center; gap: 10px; flex: none; }
+    .viewer .bar button { border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 4px 10px; font: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink-2); }
+    .viewer .bar button:hover { color: var(--ink); }
+    .viewer .bar .count { font-size: 12px; color: var(--ink-3); margin-left: auto; }
+    /* image, flanked by its arrows, on the paper itself */
+    .viewer .frame { flex: 1; min-height: 0; display: flex; align-items: center; gap: 10px; }
+    .viewer .nav { flex: none; width: 34px; height: 34px; border: 1px solid var(--line); background: #fff; border-radius: 50%;
+      font: inherit; font-size: 15px; line-height: 1; color: var(--ink-2); cursor: pointer; display: grid; place-items: center; }
+    .viewer .nav:hover { color: var(--ink); border-color: var(--ink-3); }
+    .viewer .stage { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .viewer .stage img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block;
+      border-radius: 4px; box-shadow: 0 6px 22px rgba(0,0,0,0.14); }
+    .viewer .info { flex: none; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font-size: 12px; color: var(--ink-3); }
+    .viewer .info b { display: block; font-size: 13.5px; color: var(--ink); font-weight: 600; }
+    .viewer .info em { font-style: normal; color: var(--ink-2); }
+    .viewer .info .meta { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .viewer .info a { color: var(--ink-2); }
+
+    /* Notes: a grid of project cards, each with the write-up from the homepage */
+    .workgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(212px, 1fr)); gap: 20px 16px; }
+    .workgrid a { display: flex; flex-direction: column; min-width: 0; text-decoration: none; border-radius: 9px; }
+    .workgrid img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); background: #eee;
+      display: block; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .workgrid a:hover img { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+    .workgrid .txt { min-width: 0; padding: 8px 1px 0; overflow-wrap: anywhere; }
+    .workgrid small { display: block; font-size: 11px; color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+    .workgrid b { display: block; font-size: 14px; margin: 3px 0 5px; line-height: 1.25; }
+    .workgrid p { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--ink-2); }
+
+    /* File directory: a plain list view */
+    .files { font-size: 13px; }
+    .files .hd, .files a { display: grid; grid-template-columns: 1fr 92px 76px; gap: 10px; padding: 5px 8px; align-items: center; }
+    .files .hd { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--line); }
+    .files a { text-decoration: none; border-radius: 6px; }
+    .files a:nth-child(odd) { background: rgba(0,0,0,0.022); }
+    .files a:hover { background: rgba(0,0,0,0.06); }
+    .files a .nm { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .files a .nm span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .files .ic-f { width: 13px; height: 15px; flex: none; border-radius: 2px; background: #cfd6e4; }
+    .files .ic-f.page { background: #e9e3d6; }
+    .files .ic-f.folder { background: #9db4d8; border-radius: 2px 2px 3px 3px; }
+    .files .k, .files .z { color: var(--ink-3); font-size: 12px; }
+    .files .z { text-align: right; }
+
+    /* Settings */
+    .settings { max-width: 460px; font-size: 13px; }
+    .settings .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+    .settings .row:last-child { border-bottom: 0; }
+    .settings .row b { font-weight: 600; display: block; }
+    .settings .row em { font-style: normal; color: var(--ink-3); font-size: 12px; }
+    .settings .seg { display: flex; gap: 4px; flex: none; }
+    .settings .seg button, .settings .row > button { border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 5px 11px; font: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink-2); }
+    .settings .seg button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .settings input[type=range] { width: 150px; }
 
     /* ── Loose items (polaroids, stickers, notes) ── */
     .loose { position: absolute; cursor: grab; transition: transform 0.2s ease, box-shadow 0.2s ease; }
@@ -272,30 +344,138 @@
    Data
    ═══════════════════════════════════════════════════════════════ */
 const PROJECTS = [
-  { href: 'https://rhymeandreason.studio', img: 'projects/ppc/studio-space-2.webp', meta: 'Now · 2026', title: 'Personal Personal Computing', cat: 'now' },
-  { href: 'https://kodolab.org', img: 'projects/kodolab/kodo-hemoglobin.webp', meta: 'Now · 2026', title: 'Kodolab', cat: 'now' },
-  { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.webp', meta: 'Impulse Labs · 2024', title: 'Impulse Stove', cat: 'product' },
-  { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.webp', meta: 'Earthshot Labs · 2022', title: 'Biome', cat: 'product' },
-  { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.webp', meta: 'ILM · 2021', title: 'ILM Stagecraft', cat: 'product' },
-  { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.webp', meta: 'ILM Immersive · 2020', title: "Tales from the Galaxy's Edge", cat: 'xr' },
-  { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.webp', meta: 'Independent · 2020', title: 'VR Hand Gestures', cat: 'xr' },
-  { href: 'projects/viralnet/viralnet.html', img: 'images/thumbs/Viralnet_c.webp', meta: 'UC Berkeley JGI · 2020', title: 'Viralnet', cat: 'product' },
-  { href: 'projects/Amazon/amazon.html', img: 'images/thumbs/Amazon_c2.webp', meta: 'Amazon · 2019', title: 'Made For You', cat: 'product' },
-  { href: 'projects/hack/hack.html', img: 'images/thumbs/Hack_c2.webp', meta: 'Hack Computer · 2019', title: 'Hack', cat: 'product' },
-  { href: 'projects/lore/lore.html', img: 'images/thumbs/Lore.webp', meta: 'Independent · 2019', title: 'Local Lore', cat: 'product' },
-  { href: 'projects/shield/shield.html', img: 'images/thumbs/Shield_c.webp', meta: 'Shield AI · 2018', title: 'Shield.ai', cat: 'product' },
-  { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.webp', meta: 'Oculus Story Studio · 2016', title: 'Oculus Quill', cat: 'xr' },
-  { href: 'projects/quill_gallery/quill_gallery.html', img: 'images/thumbs/Quill_Gallery.webp', meta: 'Oculus · 2017', title: 'Quill Gallery', cat: 'xr' },
-  { href: 'projects/rose/rose.html', img: 'images/thumbs/Rose_c.webp', meta: 'Google · 2015', title: 'Google Rose', cat: 'fashion' },
-  { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.webp', meta: 'Continuum · 2014', title: 'ModaKit', cat: 'fashion' },
-  { href: 'projects/constrvct/constrvct.html', img: 'images/thumbs/Constrvct_c.webp', meta: 'Continuum · 2013', title: 'Constrvct', cat: 'fashion' },
-  { href: 'projects/shoes/shoes.html', img: 'images/thumbs/Shoes.webp', meta: 'Continuum · 2014', title: '3D Printed Shoes', cat: 'fashion' },
-  { href: 'projects/shapeways/shapeways.html', img: 'images/thumbs/Shapeways.webp', meta: 'Shapeways · 2013', title: 'Shapeways', cat: 'product' },
-  { href: 'projects/n12/n12.html', img: 'images/thumbs/N12.webp', meta: 'Continuum · 2011', title: 'N12 Bikini', cat: 'fashion' },
-  { href: 'projects/turtlelink/turtlelink.html', img: 'projects/turtlelink/seaworld1.jpg', meta: 'Local Projects · 2012', title: 'SeaWorld TurtleLink', cat: 'product' },
-  { href: 'projects/ddress/ddress.html', img: 'images/thumbs/Ddress.webp', meta: 'CIID · 2010', title: 'D.dress', cat: 'fashion' },
-  { href: 'projects/typeface/typeface.html', img: 'images/thumbs/Typeface.webp', meta: 'CIID · 2010', title: 'Typeface', cat: 'fashion' },
+  // Mirrors the homepage (index.html): the two "Currently Building" features
+  // followed by Selected Work, in the same order.
+  { href: 'https://rhymeandreason.studio', img: 'projects/ppc/media-gallery-2.webp', meta: 'Now · 2026', title: 'Personal Personal Computing', cat: 'now', desc: "I'm replacing my daily consumer apps with self-built, minimal versions and living in them for months. A research project on what computing looks like when anyone can build their own tools. Currently 30 apps built in Tauri on Mac." },
+  { href: 'https://kodolab.org', img: 'projects/kodolab/kodo-water.webp', meta: 'Now · 2026', title: 'Kodolab', cat: 'now', desc: "A web platform for learning biology in 3D. A built-in AI sandbox enables students and teachers to generate lessons of their own, with seconds between iterations. A library of components ensures scientific accuracy that general AI agents can't achieve alone." },
+  { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.webp', meta: 'Impulse Labs · 2024', title: 'Impulse Stove', cat: 'product', desc: "A 15kW induction stove with a novel knob interface. Solo designer, launched at CES." },
+  { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.webp', meta: 'Earthshot Labs · 2022', title: 'Biome', cat: 'product', desc: "ML and AR mobile platform for measuring rainforests. 10x faster than traditional field surveys." },
+  { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.webp', meta: 'ILM Immersive · 2020', title: "Tales from the Galaxy's Edge", cat: 'xr', desc: "Spatial and 2D UI/UX for the Star Wars VR adventure game, shipped in 5 months." },
+  { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.webp', meta: 'Industrial Light & Magic · 2022', title: 'ILM Stagecraft', cat: 'product', desc: "iPad app for controlling virtual production stages. Nominated for a Technical Emmy." },
+  { href: 'projects/Amazon/amazon.html', img: 'images/thumbs/Amazon_c2.webp', meta: 'Amazon · 2019', title: 'Amazon Made For You', cat: 'product', desc: "Design custom-fit t-shirts in 3D. Consumer mobile app and the pattern generation engine." },
+  { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.webp', meta: 'Independent · 2020', title: 'VR Hand Gestures', cat: 'xr', desc: "Exploration prototypes of hand-gesture-based UI on Quest." },
+  { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.webp', meta: 'Oculus Story Studio · 2016', title: 'Oculus Quill', cat: 'xr', desc: "VR-native illustration and animation tool. Foundational interaction patterns for long work sessions." },
+  { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.webp', meta: 'Continuum Fashion · 2014', title: 'ModaKit', cat: 'fashion', desc: "A modular toolkit for wearable computing." },
+  { href: 'projects/constrvct/constrvct.html', img: 'images/thumbs/Constrvct_c.webp', meta: 'Continuum Fashion · 2013', title: 'Constrvct', cat: 'fashion', desc: "Browser-based 3D design tool and commerce site for custom-printed dresses. Techstars 2013." },
 ];
+const ART = [
+  { t: "images/thumbs/art/colorandcraft-1.webp", s: "images/thumbs/Colorandcraft_c.webp", f: "Colorandcraft_c.webp", n: "Color & Craft", y: 2026, c: "Vibrant DIY plant kits with video tutorials", l: "https://colorandcraft.co", w: 900, h: 506, kb: 40, cats: ["craft"] },
+  { t: "images/thumbs/art/colorandcraft-2.webp", s: "projects/colorandcraft/maranta hero.jpg", f: "maranta hero.jpg", n: "Color & Craft", y: 2026, c: "Vibrant DIY plant kits with video tutorials", l: "https://colorandcraft.co", w: 3002, h: 2250, kb: 5655, cats: ["craft"] },
+  { t: "images/thumbs/art/colorandcraft-3.webp", s: "projects/colorandcraft/brevirimosa close up.jpg", f: "brevirimosa close up.jpg", n: "Color & Craft", y: 2026, c: "Vibrant DIY plant kits with video tutorials", l: "https://colorandcraft.co", w: 4284, h: 4284, kb: 2961, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-1.webp", s: "projects/art/seed.jpg", f: "seed.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 802, kb: 246, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-2.webp", s: "projects/art/spikey.jpg", f: "spikey.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 802, kb: 211, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-3.webp", s: "projects/art/lichen.jpg", f: "lichen.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 801, kb: 216, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-4.webp", s: "projects/art/holding-spikey-cup.jpg", f: "holding-spikey-cup.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 802, kb: 245, cats: ["craft"] },
+  { t: "images/thumbs/art/data-collection-1.webp", s: "projects/data_collection/gallery.jpg", f: "gallery.jpg", n: "Data Collection", y: 2014, c: "Exploring the ubiquity of personal data logging and privacy", l: null, w: 4032, h: 3024, kb: 1018, cats: ["fashion"] },
+  { t: "images/thumbs/art/data-collection-2.webp", s: "projects/data_collection/data-knitting.jpg", f: "data-knitting.jpg", n: "Data Collection", y: 2014, c: "Exploring the ubiquity of personal data logging and privacy", l: null, w: 1000, h: 750, kb: 134, cats: ["fashion"] },
+  { t: "images/thumbs/art/data-collection-3.webp", s: "projects/data_collection/gina-shirt.jpg", f: "gina-shirt.jpg", n: "Data Collection", y: 2014, c: "Exploring the ubiquity of personal data logging and privacy", l: null, w: 1440, h: 1920, kb: 284, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-1.webp", s: "projects/illuminate/illuminate-1.jpg", f: "illuminate-1.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 1200, h: 800, kb: 91, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-2.webp", s: "projects/illuminate/illuminate-2.jpg", f: "illuminate-2.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 783, h: 1200, kb: 160, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-3.webp", s: "projects/illuminate/RR1.022c.jpg", f: "RR1.022c.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 2532, h: 3444, kb: 3086, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-4.webp", s: "projects/illuminate/RR1031.jpg", f: "RR1031.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 787, h: 1200, kb: 174, cats: ["fashion"] },
+  { t: "images/thumbs/art/runes-1.webp", s: "projects/art/RunesOS.png", f: "RunesOS.png", n: "RUNES", y: 2026, c: "a tangible interface for an agentic OS, work in progress concept", l: null, w: 768, h: 1376, kb: 953, cats: ["interactive","craft","hardware"] },
+  { t: "images/thumbs/art/devices-1.webp", s: "projects/art/devices/nokia-porcelain.jpg", f: "nokia-porcelain.jpg", n: "Porcelain Devices", y: 2026, c: "concept sketches of devices made to last a lifetime", l: null, w: 1200, h: 857, kb: 158, cats: ["hardware","craft"] },
+  { t: "images/thumbs/art/devices-2.webp", s: "projects/art/devices/ipod-porcelain.jpg", f: "ipod-porcelain.jpg", n: "Porcelain Devices", y: 2026, c: "concept sketches of devices made to last a lifetime", l: null, w: 1200, h: 857, kb: 178, cats: ["hardware","craft"] },
+  { t: "images/thumbs/art/devices-3.webp", s: "projects/art/devices/gameboy-porcelain.jpg", f: "gameboy-porcelain.jpg", n: "Porcelain Devices", y: 2026, c: "concept sketches of devices made to last a lifetime", l: null, w: 1200, h: 857, kb: 134, cats: ["hardware","craft"] },
+  { t: "images/thumbs/art/vr-gestures-1.webp", s: "projects/gestures/hands_sketch.png", f: "hands_sketch.png", n: "VR Hand Gestures", y: 2020, c: "Exploration prototypes using hand tracking on a Quest", l: "projects/gestures/gestures.html", w: 1500, h: 985, kb: 323, cats: ["interactive"] },
+  { t: "images/thumbs/art/vr-gestures-2.webp", s: "projects/gestures/Picture_zoom_small.gif", f: "Picture_zoom_small.gif", n: "VR Hand Gestures", y: 2020, c: "Exploration prototypes using hand tracking on a Quest", l: "projects/gestures/gestures.html", w: 500, h: 500, kb: 2674, cats: ["interactive"] },
+  { t: "images/thumbs/art/lore-1.webp", s: "projects/lore/SF map.jpg", f: "SF map.jpg", n: "Local Lore", y: 2019, c: "A location-based scavenger hunt game set in San Francisco and Oakland.", l: "projects/lore/lore.html", w: 961, h: 720, kb: 240, cats: ["interactive"] },
+  { t: "images/thumbs/art/lore-2.webp", s: "projects/lore/Lore_main.jpg", f: "Lore_main.jpg", n: "Local Lore", y: 2019, c: "A location-based scavenger hunt game set in San Francisco and Oakland.", l: "projects/lore/lore.html", w: 1660, h: 882, kb: 194, cats: ["interactive"] },
+  { t: "images/thumbs/art/lore-3.webp", s: "projects/lore/mobile sketch 2.jpg", f: "mobile sketch 2.jpg", n: "Local Lore", y: 2019, c: "A location-based scavenger hunt game set in San Francisco and Oakland.", l: "projects/lore/lore.html", w: 1053, h: 984, kb: 292, cats: ["interactive"] },
+  { t: "images/thumbs/art/typeface-1.webp", s: "projects/typeface/typeface-screencap-1.jpg", f: "typeface-screencap-1.jpg", n: "Typeface", y: 2011, c: "Type + Facial Recognition", l: "projects/typeface/typeface.html", w: 1440, h: 900, kb: 63, cats: ["interactive"] },
+  { t: "images/thumbs/art/typeface-2.webp", s: "projects/typeface/typeface-screencap-3.jpg", f: "typeface-screencap-3.jpg", n: "Typeface", y: 2011, c: "Type + Facial Recognition", l: "projects/typeface/typeface.html", w: 1440, h: 900, kb: 63, cats: ["interactive"] },
+  { t: "images/thumbs/art/n12-1.webp", s: "projects/n12/N12-bikini-set-top.jpg", f: "N12-bikini-set-top.jpg", n: "N12 Bikini", y: 2013, c: "3D printed textile", l: "projects/n12/n12.html", w: 945, h: 628, kb: 100, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/n12-2.webp", s: "projects/n12/N12-detail.jpg", f: "N12-detail.jpg", n: "N12 Bikini", y: 2013, c: "3D printed textile", l: "projects/n12/n12.html", w: 945, h: 630, kb: 113, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/n12-3.webp", s: "projects/n12/N12-hallway1.jpg", f: "N12-hallway1.jpg", n: "N12 Bikini", y: 2013, c: "3D printed textile", l: "projects/n12/n12.html", w: 945, h: 630, kb: 66, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/n12-4.webp", s: "projects/n12/N12-white_detail.jpg", f: "N12-white_detail.jpg", n: "N12 Bikini", y: 2013, c: "3D printed textile", l: "projects/n12/n12.html", w: 945, h: 630, kb: 57, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/daphne-1.webp", s: "projects/art/daphne-bracelet.jpg", f: "daphne-bracelet.jpg", n: "Daphne wearable tech jewelry", y: 2014, c: "concept sketches", l: null, w: 1600, h: 1019, kb: 220, cats: ["fashion","hardware"] },
+  { t: "images/thumbs/art/daphne-2.webp", s: "projects/art/daphne-earbuds1.jpg", f: "daphne-earbuds1.jpg", n: "Daphne wearable tech jewelry", y: 2014, c: "concept sketches", l: null, w: 1200, h: 675, kb: 122, cats: ["fashion","hardware"] },
+  { t: "images/thumbs/art/shoes-1.webp", s: "projects/shoes/Daphne-Leaves-1.jpg", f: "Daphne-Leaves-1.jpg", n: "3D Printed Shoes", y: 2014, c: "Daphne shoe", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 37, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-2.webp", s: "projects/shoes/Laurel-pump.jpg", f: "Laurel-pump.jpg", n: "3D Printed Shoes", y: 2014, c: "Laurel pump", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 28, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-3.webp", s: "projects/shoes/Laurel-shoe-on-model.jpg", f: "Laurel-shoe-on-model.jpg", n: "3D Printed Shoes", y: 2014, c: "Laurel on model", l: "projects/shoes/shoes.html", w: 945, h: 630, kb: 52, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-4.webp", s: "projects/shoes/Laurel_timelapse2.gif", f: "Laurel_timelapse2.gif", n: "3D Printed Shoes", y: 2014, c: "Laurel timelapse", l: "projects/shoes/shoes.html", w: 640, h: 360, kb: 3040, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-5.webp", s: "projects/shoes/Strvct-wedge-black.jpg", f: "Strvct-wedge-black.jpg", n: "3D Printed Shoes", y: 2014, c: "Strvct wedge", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 23, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-6.webp", s: "projects/shoes/shoe_butterfly.jpg", f: "shoe_butterfly.jpg", n: "3D Printed Shoes", y: 2014, c: "Butterfly shoe", l: "projects/shoes/shoes.html", w: 945, h: 630, kb: 57, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-7.webp", s: "projects/shoes/shoe_black_main.jpg", f: "shoe_black_main.jpg", n: "3D Printed Shoes", y: 2014, c: "Black shoe", l: "projects/shoes/shoes.html", w: 945, h: 630, kb: 73, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-8.webp", s: "projects/shoes/Laurel-Tree-sandal.jpg", f: "Laurel-Tree-sandal.jpg", n: "3D Printed Shoes", y: 2014, c: "Laurel tree sandal", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 29, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/constrvct-1.webp", s: "projects/constrvct/CONSTRVCT_composite1.jpg", f: "CONSTRVCT_composite1.jpg", n: "CONSTRVCT", y: 2014, c: "Digital to physical dress", l: "projects/constrvct/constrvct.html", w: 1024, h: 768, kb: 672, cats: ["fashion"] },
+  { t: "images/thumbs/art/constrvct-2.webp", s: "projects/constrvct/GeekChic.jpg", f: "GeekChic.jpg", n: "CONSTRVCT", y: 2014, c: "Photoshoot at MIT", l: "projects/constrvct/constrvct.html", w: 800, h: 628, kb: 489, cats: ["fashion"] },
+  { t: "images/thumbs/art/constrvct-3.webp", s: "projects/constrvct/smithsonian_edit.jpg", f: "smithsonian_edit.jpg", n: "CONSTRVCT", y: 2014, c: "Beautiful Users show at Smithsonian Cooper-Hewitt", l: "projects/constrvct/constrvct.html", w: 1189, h: 880, kb: 276, cats: ["fashion"] },
+  { t: "images/thumbs/art/constrvct-4.webp", s: "projects/constrvct/constrvct_community_designs1.jpg", f: "constrvct_community_designs1.jpg", n: "CONSTRVCT", y: 2014, c: "constrvct.com community designs", l: "projects/constrvct/constrvct.html", w: 1300, h: 804, kb: 716, cats: ["fashion"] },
+  { t: "images/thumbs/art/constrvct-5.webp", s: "projects/constrvct/felicia-constrvct-dress.png", f: "felicia-constrvct-dress.png", n: "CONSTRVCT", y: 2014, c: "Felicia Day Constrvct dress", l: "projects/constrvct/constrvct.html", w: 800, h: 800, kb: 831, cats: ["fashion"] },
+  { t: "images/thumbs/art/constrvct-6.webp", s: "projects/constrvct/nervous-print-pattern.jpg", f: "nervous-print-pattern.jpg", n: "CONSTRVCT", y: 2014, c: "Nervous System print pattern", l: "projects/constrvct/constrvct.html", w: 1440, h: 1100, kb: 434, cats: ["fashion"] },
+  { t: "images/thumbs/art/ddress-1.webp", s: "projects/ddress/dress1.jpg", f: "dress1.jpg", n: "D.dress", y: 2011, c: "Computational couture", l: "projects/ddress/ddress.html", w: 945, h: 630, kb: 103, cats: ["fashion"] },
+  { t: "images/thumbs/art/ddress-2.webp", s: "projects/ddress/Ddress-selected1.jpg", f: "Ddress-selected1.jpg", n: "D.dress", y: 2011, c: "Computational couture", l: "projects/ddress/ddress.html", w: 945, h: 532, kb: 81, cats: ["fashion"] },
+  { t: "images/thumbs/art/ddress-3.webp", s: "projects/ddress/Ddress-selected2.jpg", f: "Ddress-selected2.jpg", n: "D.dress", y: 2011, c: "Computational couture", l: "projects/ddress/ddress.html", w: 945, h: 532, kb: 83, cats: ["fashion"] },
+  { t: "images/thumbs/art/ddress-4.webp", s: "projects/ddress/Ddress-selected3.jpg", f: "Ddress-selected3.jpg", n: "D.dress", y: 2011, c: "Computational couture", l: "projects/ddress/ddress.html", w: 945, h: 532, kb: 80, cats: ["fashion"] },
+  { t: "images/thumbs/art/modakit-1.webp", s: "projects/modakit/MODA_slides.jpg", f: "MODA_slides.jpg", n: "ModaKit", y: 2014, c: "Modular prototyping system for wearable tech", l: "projects/modakit/modakit.html", w: 792, h: 612, kb: 84, cats: ["fashion","interactive","hardware"] },
+  { t: "images/thumbs/art/modakit-2.webp", s: "projects/modakit/MODA_slides2.jpg", f: "MODA_slides2.jpg", n: "ModaKit", y: 2014, c: "Modular prototyping system for wearable tech", l: "projects/modakit/modakit.html", w: 792, h: 612, kb: 78, cats: ["fashion","interactive","hardware"] },
+  { t: "images/thumbs/art/modakit-3.webp", s: "projects/modakit/ModaKit.png", f: "ModaKit.png", n: "ModaKit", y: 2014, c: "Modular prototyping system for wearable tech", l: "projects/modakit/modakit.html", w: 600, h: 400, kb: 130, cats: ["fashion","interactive","hardware"] },
+  { t: "images/thumbs/art/dandelion-1.webp", s: "projects/dandelion/dandelion1.jpg", f: "dandelion1.jpg", n: "Dandelion", y: 2011, c: "Wind power generating wearable sculpture", l: null, w: 500, h: 333, kb: 34, cats: ["fashion","hardware","craft"] },
+  { t: "images/thumbs/art/dandelion-2.webp", s: "projects/dandelion/dandelion2a.jpg", f: "dandelion2a.jpg", n: "Dandelion", y: 2011, c: "Wind power generating wearable sculpture", l: null, w: 499, h: 571, kb: 75, cats: ["fashion","hardware","craft"] },
+  { t: "images/thumbs/art/dandelion-3.webp", s: "projects/dandelion/dandelion4.jpg", f: "dandelion4.jpg", n: "Dandelion", y: 2011, c: "Wind power generating wearable sculpture", l: null, w: 500, h: 333, kb: 47, cats: ["fashion","hardware","craft"] },
+  { t: "images/thumbs/art/viralnet-1.webp", s: "projects/viralnet/Nodes_Gradual_small.gif", f: "Nodes_Gradual_small.gif", n: "Viralnet", y: 2020, c: "3D visualization of virus genomes", l: "projects/viralnet/viralnet.html", w: 500, h: 500, kb: 13373, cats: ["data","interactive"] },
+  { t: "images/thumbs/art/viralnet-2.webp", s: "projects/viralnet/render0.png", f: "render0.png", n: "Viralnet", y: 2020, c: "3D visualization of virus genomes", l: "projects/viralnet/viralnet.html", w: 1800, h: 1200, kb: 472, cats: ["data","interactive"] },
+  { t: "images/thumbs/art/viralnet-3.webp", s: "projects/viralnet/render10.png", f: "render10.png", n: "Viralnet", y: 2020, c: "3D visualization of virus genomes", l: "projects/viralnet/viralnet.html", w: 1800, h: 1200, kb: 804, cats: ["data","interactive"] },
+  { t: "images/thumbs/art/viralnet-4.webp", s: "projects/viralnet/render11.png", f: "render11.png", n: "Viralnet", y: 2020, c: "3D visualization of virus genomes", l: "projects/viralnet/viralnet.html", w: 1800, h: 1200, kb: 1349, cats: ["data","interactive"] },
+  { t: "images/thumbs/art/westfield-1.webp", s: "projects/westfield/sculpture_front.jpg", f: "sculpture_front.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 608, kb: 171, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-2.webp", s: "projects/westfield/sculpture_2.jpg", f: "sculpture_2.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 622, kb: 187, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-3.webp", s: "projects/westfield/sculpture_3.jpg", f: "sculpture_3.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 611, kb: 215, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-4.webp", s: "projects/westfield/sculpture_night1.jpg", f: "sculpture_night1.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 655, kb: 804, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-5.webp", s: "projects/westfield/fabrication1.jpg", f: "fabrication1.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 2880, h: 2160, kb: 1053, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-6.webp", s: "projects/westfield/fabrication3.jpg", f: "fabrication3.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 2880, h: 2160, kb: 1065, cats: ["sculpture","digital-fabrication"] },
+];
+
+
+const FILES = [
+  { p: "index.html", n: "Portfolio", k: "Page", s: 14489 },
+  { p: "art.html", n: "Art & Research", k: "Page", s: 23755 },
+  { p: "timeline.html", n: "Timeline", k: "Page", s: 23085 },
+  { p: "archive.html", n: "Archive", k: "Page", s: 29275 },
+  { p: "images.html", n: "Images", k: "Page", s: 29211 },
+  { p: "canvas.html", n: "Canvas", k: "Page", s: 48294 },
+  { p: "projects/Amazon/amazon.html", n: "Amazon Made For You", k: "Project", s: 6149 },
+  { p: "projects/PoeMobile", n: "PoeMobile", k: "Folder", s: 5 },
+  { p: "projects/ar_ideas/ar_ideas.html", n: "AR Tests", k: "Project", s: 2642 },
+  { p: "projects/art", n: "art", k: "Folder", s: 15 },
+  { p: "projects/biome/biome.html", n: "Biome", k: "Project", s: 13297 },
+  { p: "projects/codeland/codeland.html", n: "Portfolio", k: "Project", s: 8033 },
+  { p: "projects/colorandcraft", n: "colorandcraft", k: "Folder", s: 7 },
+  { p: "projects/constrvct/constrvct.html", n: "CONSTRVCT", k: "Project", s: 8838 },
+  { p: "projects/dandelion", n: "dandelion", k: "Folder", s: 14 },
+  { p: "projects/data_collection", n: "data_collection", k: "Folder", s: 14 },
+  { p: "projects/ddress/ddress.html", n: "Portfolio", k: "Project", s: 5116 },
+  { p: "projects/gestures/gestures.html", n: "VR Hand Gestures", k: "Project", s: 7539 },
+  { p: "projects/hack/hack.html", n: "Portfolio : Hack", k: "Project", s: 9883 },
+  { p: "projects/hack/hack_presentation.html", n: "Hack Presentation", k: "Project", s: 4775 },
+  { p: "projects/ig88/ig88.html", n: "Portfolio", k: "Project", s: 6847 },
+  { p: "projects/illuminate", n: "illuminate", k: "Folder", s: 7 },
+  { p: "projects/impulse/impulse.html", n: "Impulse Stove", k: "Project", s: 7644 },
+  { p: "projects/kodolab", n: "kodolab", k: "Folder", s: 6 },
+  { p: "projects/lore/lore.html", n: "Portfolio", k: "Project", s: 2683 },
+  { p: "projects/modakit/modakit.html", n: "ModaKit", k: "Project", s: 3072 },
+  { p: "projects/n12/n12.html", n: "Portfolio", k: "Project", s: 4835 },
+  { p: "projects/ppc", n: "ppc", k: "Folder", s: 8 },
+  { p: "projects/quill/quill.html", n: "Quill", k: "Project", s: 8549 },
+  { p: "projects/quill_gallery/quill_gallery.html", n: "Portfolio", k: "Project", s: 5021 },
+  { p: "projects/rose/rose.html", n: "Portfolio", k: "Project", s: 6864 },
+  { p: "projects/runes", n: "runes", k: "Folder", s: 2 },
+  { p: "projects/shapeways/shapeways.html", n: "Portfolio", k: "Project", s: 6884 },
+  { p: "projects/shield/shield.html", n: "Portfolio", k: "Project", s: 8857 },
+  { p: "projects/shoes/shoes.html", n: "3D Printed Shoes", k: "Project", s: 8618 },
+  { p: "projects/sols/sols.html", n: "Portfolio", k: "Project", s: 3831 },
+  { p: "projects/stagecraft/ilm.html", n: "ILM Stagecraft", k: "Project", s: 3952 },
+  { p: "projects/storyboard/storyboard.html", n: "Portfolio", k: "Project", s: 3484 },
+  { p: "projects/tales/tales.html", n: "Star Wars: Tales From the Galaxy's Edge", k: "Project", s: 10625 },
+  { p: "projects/test/index.html", n: "Color & Craft Tutorial", k: "Project", s: 6185 },
+  { p: "projects/turtlelink/turtlelink.html", n: "Portfolio", k: "Project", s: 5482 },
+  { p: "projects/typeface/typeface.html", n: "Portfolio", k: "Project", s: 3744 },
+  { p: "projects/viralnet/viralnet.html", n: "Portfolio", k: "Project", s: 4481 },
+  { p: "projects/westfield/westfield.html", n: "Portfolio", k: "Project", s: 4836 },
+  { p: "projects/yuniku", n: "yuniku", k: "Folder", s: 3 },
+  { p: "projects/zines", n: "zines", k: "Folder", s: 1 },
+];
+
 const CATS = { all: 'All', now: 'Now', product: 'Product', xr: 'XR', fashion: 'Fashion + Fab' };
 
 /* ═══════════════════════════════════════════════════════════════
@@ -715,29 +895,205 @@ function projContent({ meta, title, desc, href, media, external }) {
    ═══════════════════════════════════════════════════════════════ */
 function galleryContent() {
   const root = document.createElement('div');
-  root.className = 'gal';
-  const filters = document.createElement('div'); filters.className = 'filters';
-  const grid = document.createElement('div'); grid.className = 'grid';
+  root.className = 'app';
+  const side = document.createElement('div'); side.className = 'side';
+  const pane = document.createElement('div'); pane.className = 'pane';
+  const SECTIONS = [
+    { id: 'media', name: 'Media', build: mediaPane },
+    { id: 'notes', name: 'Notes', build: notesPane },
+    { id: 'files', name: 'File Directory', build: filesPane },
+    { id: 'settings', name: 'Settings', build: settingsPane },
+  ];
+  const cap = document.createElement('div'); cap.className = 'cap'; cap.textContent = 'Gallery';
+  side.appendChild(cap);
+  const open = id => {
+    pane.innerHTML = '';
+    pane.scrollTop = 0;
+    pane.classList.toggle('fixed', id === 'media'); // the media pane scrolls its own sheet
+    pane.appendChild(SECTIONS.find(x => x.id === id).build());
+    side.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.s === id));
+  };
+  SECTIONS.forEach(sec => {
+    const b = document.createElement('button');
+    b.dataset.s = sec.id;
+    b.innerHTML = `<i></i>${sec.name}`;
+    b.addEventListener('click', () => open(sec.id));
+    side.appendChild(b);
+  });
+  root.appendChild(side); root.appendChild(pane);
+  open('media');
+  return root;
+}
+
+/* Filter pills shared by the Media and Notes panes. */
+function filterBar(cats, cur, onPick) {
+  const el = document.createElement('div'); el.className = 'filters';
+  Object.entries(cats).forEach(([c, n]) => {
+    const b = document.createElement('button'); b.dataset.c = c; b.textContent = n;
+    b.classList.toggle('on', c === cur());
+    b.addEventListener('click', () => {
+      onPick(c);
+      el.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.c === cur()));
+    });
+    el.appendChild(b);
+  });
+  return el;
+}
+
+/* Media — every still from the Art & Research page, browsed like a light table. */
+const ART_CATS = { all: 'All', craft: 'Craft', fashion: 'Fashion', interactive: 'Interactive', 'digital-fabrication': 'Fabrication', hardware: 'Hardware', sculpture: 'Sculpture' };
+const fileSize = kb => kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
+function mediaPane() {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex; flex-direction:column; height:100%; min-height:0';
+  const body = document.createElement('div');
+  body.style.cssText = 'flex:1; min-height:0';
+  let cur = 'all';
+  const shown = () => ART.filter(m => cur === 'all' || m.cats.includes(cur));
+
+  /* Contact sheet: thumbnail, filename, dimensions and weight. */
+  const sheet = () => {
+    body.style.overflow = 'auto';
+    bar.style.display = '';
+    const grid = document.createElement('div'); grid.className = 'media-grid';
+    shown().forEach((m, i) => {
+      const b = document.createElement('button');
+      b.title = `${m.n} · ${m.y}${m.c ? ' — ' + m.c : ''}`;
+      b.innerHTML = `<div class="cell"><img src="${m.t}" alt="${m.c || m.n}" loading="lazy"></div>
+        <span class="fn">${m.f}</span><span class="sz">${m.w}×${m.h} · ${fileSize(m.kb)}</span>`;
+      b.addEventListener('click', () => show(i));
+      grid.appendChild(b);
+    });
+    body.innerHTML = ''; body.appendChild(grid);
+  };
+
+  /* Detail: the full image, larger, without leaving the window. */
+  const show = i => {
+    const list = shown();
+    const m = list[i];
+    body.style.overflow = 'hidden';
+    bar.style.display = 'none';
+    const v = document.createElement('div'); v.className = 'viewer';
+    v.innerHTML = `
+      <div class="bar">
+        <button class="back">‹ All media</button>
+        <span class="count">${i + 1} of ${list.length}</span>
+      </div>
+      <div class="frame">
+        <button class="nav prev" title="Previous">←</button>
+        <div class="stage"><img src="${m.s}" alt="${m.c || m.n}"></div>
+        <button class="nav next" title="Next">→</button>
+      </div>
+      <div class="info">
+        <div><b>${m.n} · ${m.y}</b><em>${m.c || ''}</em></div>
+        <div class="meta">${m.f}<br>${m.w} × ${m.h} · ${fileSize(m.kb)}${m.l ? ` · <a href="${m.l}"${/^https?:/.test(m.l) ? ' target="_blank" rel="noopener"' : ''}>open project →</a>` : ''}</div>
+      </div>`;
+    v.querySelector('.back').addEventListener('click', sheet);
+    v.querySelector('.prev').addEventListener('click', () => show((i - 1 + list.length) % list.length));
+    v.querySelector('.next').addEventListener('click', () => show((i + 1) % list.length));
+    body.innerHTML = ''; body.appendChild(v);
+  };
+
+  const bar = filterBar(ART_CATS, () => cur, c => { cur = c; sheet(); });
+  bar.style.flex = 'none';
+  wrap.appendChild(bar); wrap.appendChild(body);
+  sheet();
+  return wrap;
+}
+
+/* Notes — the portfolio grid, with the write-ups from the homepage. */
+function notesPane() {
+  const wrap = document.createElement('div');
+  const list = document.createElement('div'); list.className = 'workgrid';
   let cur = 'all';
   const render = () => {
-    grid.innerHTML = '';
+    list.innerHTML = '';
     PROJECTS.filter(p => cur === 'all' || p.cat === cur).forEach(p => {
       const a = document.createElement('a');
-      a.className = 'item'; a.href = p.href;
+      a.href = p.href;
       if (p.href.startsWith('http')) { a.target = '_blank'; a.rel = 'noopener'; }
-      a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy"><b>${p.title}</b><small>${p.meta}</small>`;
-      grid.appendChild(a);
+      a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy">
+        <div class="txt"><small>${p.meta}</small><b>${p.title}</b><p>${p.desc || ''}</p></div>`;
+      list.appendChild(a);
     });
-    filters.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.c === cur));
   };
-  Object.entries(CATS).forEach(([c, n]) => {
-    const b = document.createElement('button'); b.dataset.c = c; b.textContent = n;
-    b.addEventListener('click', () => { cur = c; render(); });
-    filters.appendChild(b);
-  });
-  root.appendChild(filters); root.appendChild(grid);
+  wrap.appendChild(filterBar(CATS, () => cur, c => { cur = c; render(); }));
+  wrap.appendChild(list);
   render();
-  return root;
+  return wrap;
+}
+
+/* File Directory — the pages this site is actually made of. */
+function filesPane() {
+  const wrap = document.createElement('div'); wrap.className = 'files';
+  const hd = document.createElement('div'); hd.className = 'hd';
+  hd.innerHTML = '<span>Name</span><span>Kind</span><span class="z">Size</span>';
+  wrap.appendChild(hd);
+  FILES.forEach(f => {
+    const a = document.createElement('a');
+    const folder = f.k === 'Folder';
+    a.href = folder ? f.p + '/' : f.p;
+    const size = folder ? f.s + ' items' : (f.s / 1024).toFixed(0) + ' KB';
+    a.innerHTML = `<span class="nm"><i class="ic-f ${folder ? 'folder' : f.k === 'Page' ? 'page' : ''}"></i><span>${f.n}</span></span>
+      <span class="k">${f.k}</span><span class="z">${size}</span>`;
+    a.title = f.p;
+    wrap.appendChild(a);
+  });
+  return wrap;
+}
+
+/* Settings — the knobs this canvas actually has. */
+function settingsPane() {
+  const wrap = document.createElement('div'); wrap.className = 'settings';
+  const row = (label, hint, control) => {
+    const r = document.createElement('div'); r.className = 'row';
+    const t = document.createElement('div');
+    t.innerHTML = `<b>${label}</b><em>${hint}</em>`;
+    r.appendChild(t); r.appendChild(control);
+    wrap.appendChild(r);
+    return r;
+  };
+
+  const seg = document.createElement('div'); seg.className = 'seg';
+  MODES.forEach((m, i) => {
+    const b = document.createElement('button'); b.textContent = m;
+    b.classList.toggle('on', i === modeIdx);
+    b.addEventListener('click', () => {
+      setMode(i);
+      seg.querySelectorAll('button').forEach((x, j) => x.classList.toggle('on', j === modeIdx));
+    });
+    seg.appendChild(b);
+  });
+  row('Mode', 'Tints the paper behind everything', seg);
+
+  const dots = document.createElement('button');
+  const syncDots = () => dots.textContent = desk.classList.contains('nodots') ? 'Off' : 'On';
+  dots.addEventListener('click', () => { desk.classList.toggle('nodots'); syncDots(); });
+  syncDots();
+  row('Dot grid', 'The paper texture on the desktop', dots);
+
+  const zr = document.createElement('input');
+  zr.type = 'range'; zr.min = ZMIN * 100; zr.max = ZMAX * 100; zr.value = Math.round(zoom * 100);
+  zr.addEventListener('input', () => {
+    const vw = window.innerWidth / 2, vh = window.innerHeight / 2;
+    zoomAt(vw, vh, (zr.value / 100) / zoom);
+  });
+  row('Zoom', 'Or scroll anywhere on the canvas', zr);
+
+  const fit = document.createElement('button');
+  fit.textContent = 'Fit to window';
+  fit.addEventListener('click', () => { touched = false; fitContent(true); });
+  row('Framing', 'Re-frame every window and note', fit);
+
+  const reopen = document.createElement('button');
+  reopen.textContent = 'Reopen all';
+  reopen.addEventListener('click', () => {
+    Object.keys(wins).forEach(id => wins[id].el.classList.remove('hidden'));
+    syncDock(); touched = false; fitContent(true);
+  });
+  row('Windows', 'Bring back anything you closed', reopen);
+
+  return wrap;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -762,7 +1118,7 @@ const APPS = [
   { id: 'daily', name: 'Daily Note', icon: 'daily' },
   { id: 'pulse', name: 'Git Pulse', icon: 'pulse' },
   { sep: true },
-  { id: 'gallery', name: 'Gallery — all projects', icon: 'gallery' },
+  { id: 'gallery', name: 'Gallery', icon: 'gallery' },
 ];
 const ICONS = {
   readme: '<span class="ic" style="background:#1a1917">Hi</span>',
@@ -803,9 +1159,9 @@ function layout() {
   const W = window.innerWidth;
 
   createWindow({ id: 'about', title: 'readme.txt', x: 40, y: 100, w: 420, h: 'auto', content: aboutContent() });
-  createWindow({ id: 'daily', title: 'Daily Note', x: 1630, y: 100, w: 360, h: 700, content: dailyContent() });
-  createWindow({ id: 'gallery', title: 'Gallery — all projects', x: 580, y: 60, w: 980, h: 1040, content: galleryContent() });
-  createWindow({ id: 'pulse', title: 'Git Pulse', x: 1440, y: 900, w: 500, h: 'auto', content: pulseContent() });
+  createWindow({ id: 'daily', title: 'Daily Note', x: 1450, y: 100, w: 360, h: 700, content: dailyContent() });
+  createWindow({ id: 'gallery', title: 'Gallery', x: 580, y: 60, w: 900, h: 660, noscroll: true, content: galleryContent() });
+  createWindow({ id: 'pulse', title: 'Git Pulse', x: 1120, y: 900, w: 500, h: 'auto', content: pulseContent() });
 
   addLoose(`<b>Personal Personal Computing</b><p>Replacing my daily apps with self-built, minimal versions and living in them. 30 apps so far, in Tauri on Mac. The windows here are a few of them.</p><a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio →</a>`, 40, 800, -2, 'sticky postit');
   addLoose(`<b>Kodolab</b><p>A web platform for learning biology in 3D. An AI sandbox lets students and teachers generate lessons of their own, seconds between iterations.</p><a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org →</a>`, 300, 680, 3, 'sticky postit pink');
