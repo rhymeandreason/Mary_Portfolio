@@ -233,9 +233,11 @@
     .filters { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 0 12px; }
     .filters button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink-2); }
     .filters button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .filters button i { font-size: 13px; margin: 0 5px 0 -1px; }
+    .filters button i.ph-x { margin: 0 -2px 0 6px; opacity: 0.7; }
 
     /* Media: a Lightroom-ish contact sheet, with a detail view in the same pane */
-    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(124px, 1fr)); gap: 16px 12px; }
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--media-cell, 124px), 1fr)); gap: 16px 12px; }
     .media-grid button { border: 0; background: none; padding: 0; font: inherit; text-align: left; cursor: pointer; display: block; width: 100%; }
     .media-grid .cell { background: #ecebe6; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
     .media-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; transition: transform 0.25s ease; }
@@ -265,12 +267,16 @@
     .viewer .info a { color: var(--ink-2); }
 
     /* Notes: a grid of project cards, each with the write-up from the homepage */
-    .workgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(212px, 1fr)); gap: 20px 16px; }
-    .workgrid a { display: flex; flex-direction: column; min-width: 0; text-decoration: none; border-radius: 9px; }
-    .workgrid img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 6px; border: 1px solid var(--line); background: #eee;
-      display: block; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .workgrid a:hover img { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-    .workgrid .txt { min-width: 0; padding: 8px 1px 0; overflow-wrap: anywhere; }
+    .workgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(212px, 1fr)); gap: 16px; align-items: stretch; }
+    .workgrid a { display: flex; flex-direction: column; min-width: 0; text-decoration: none;
+      background: #fff; border: 1px solid var(--line); border-radius: 11px; padding: 10px 10px 14px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
+    .workgrid a:hover { transform: translateY(-3px); border-color: #d9d2c6; box-shadow: 0 10px 24px rgba(0,0,0,0.10); }
+    .workgrid img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 6px; background: #eee; display: block; }
+    .workgrid .txt { min-width: 0; padding: 11px 3px 0; overflow-wrap: anywhere; flex: 1; display: flex; flex-direction: column; }
+    .workgrid .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; padding-top: 11px; }
+    .workgrid .tags span { font-size: 10.5px; letter-spacing: 0.04em; color: var(--ink-2); background: rgba(0,0,0,0.045);
+      border-radius: 999px; padding: 3px 8px; line-height: 1.3; }
     .workgrid small { display: block; font-size: 11px; color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
     .workgrid b { display: block; font-size: 14px; margin: 3px 0 5px; line-height: 1.25; }
     .workgrid p { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--ink-2); }
@@ -280,10 +286,10 @@
     .files .hd, .files a { display: grid; grid-template-columns: 1fr 92px 76px; gap: 10px; padding: 5px 8px; align-items: center; }
     .files .hd { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--line); }
     .files a { text-decoration: none; border-radius: 6px; }
-    .files a:nth-child(odd) { background: rgba(0,0,0,0.022); }
+    .files > *:nth-child(odd) { background: rgba(0,0,0,0.022); }
     .files a:hover { background: rgba(0,0,0,0.06); }
-    .files a .nm { display: flex; align-items: center; gap: 8px; min-width: 0; }
-    .files a .nm span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .files .nm { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .files .nm span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .files .ic-f { font-size: 15px; flex: none; color: #8e9bb3; line-height: 1; }
     .files .ic-f.page { color: #b0a58d; }
     .files .ic-f.folder { color: #7f9cc9; }
@@ -299,7 +305,23 @@
     .settings .seg { display: flex; gap: 4px; flex: none; }
     .settings .seg button, .settings .row > button { border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 5px 11px; font: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink-2); }
     .settings .seg button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
-    .settings input[type=range] { width: 150px; }
+    /* Pill switch — beats the generic .settings .row > button rule above it */
+    .settings .row > button.switch {
+      flex: none; width: 46px; height: 26px; padding: 0; border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.10); background: #e3ddd2; position: relative; cursor: pointer;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.07);
+      transition: background 0.2s ease, border-color 0.2s ease;
+      -webkit-appearance: none; appearance: none;
+    }
+    .settings .row > button.switch::after {
+      content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 999px;
+      background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.28);
+      transition: transform 0.2s cubic-bezier(.3,.8,.3,1);
+    }
+    .settings .row > button.switch:hover { border-color: rgba(0,0,0,0.22); }
+    .settings .row > button.switch.on { background: var(--ink); border-color: var(--ink); box-shadow: none; }
+    .settings .row > button.switch.on::after { transform: translateX(20px); }
+    .settings .row > button.switch:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
     /* ── Loose items (polaroids, stickers, notes) ── */
     .loose { position: absolute; cursor: grab; transition: transform 0.2s ease, box-shadow 0.2s ease; }
@@ -337,7 +359,6 @@
   <a class="name" href="index.html">Mary Huang</a>
   <div class="right">
     <a class="hide-sm" href="timeline.html">Timeline</a>
-    <a class="hide-sm" href="art.html">Art &amp; Research</a>
     <a href="mailto:rhymeandreason1.0@gmail.com">Email</a>
     <span class="mode-pill" id="modePill" title="Current mode"><i></i><span>Design</span></span>
     <span id="clock">00:00</span>
@@ -357,17 +378,16 @@
 const PROJECTS = [
   // Mirrors the homepage (index.html): the two "Currently Building" features
   // followed by Selected Work, in the same order.
-  { href: 'https://rhymeandreason.studio', img: 'projects/ppc/media-gallery-2.webp', meta: 'Now · 2026', title: 'Personal Personal Computing', cat: 'now', desc: "I'm replacing my daily consumer apps with self-built, minimal versions and living in them for months. A research project on what computing looks like when anyone can build their own tools. Currently 30 apps built in Tauri on Mac." },
-  { href: 'https://kodolab.org', img: 'projects/kodolab/kodo-water.webp', meta: 'Now · 2026', title: 'Kodolab', cat: 'now', desc: "A web platform for learning biology in 3D. A built-in AI sandbox enables students and teachers to generate lessons of their own, with seconds between iterations. A library of components ensures scientific accuracy that general AI agents can't achieve alone." },
-  { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.webp', meta: 'Impulse Labs · 2024', title: 'Impulse Stove', cat: 'product', desc: "A 15kW induction stove with a novel knob interface. Solo designer, launched at CES." },
-  { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.webp', meta: 'Earthshot Labs · 2022', title: 'Biome', cat: 'product', desc: "ML and AR mobile platform for measuring rainforests. 10x faster than traditional field surveys." },
-  { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.webp', meta: 'ILM Immersive · 2020', title: "Tales from the Galaxy's Edge", cat: 'xr', desc: "Spatial and 2D UI/UX for the Star Wars VR adventure game, shipped in 5 months." },
-  { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.webp', meta: 'Industrial Light & Magic · 2022', title: 'ILM Stagecraft', cat: 'product', desc: "iPad app for controlling virtual production stages. Nominated for a Technical Emmy." },
-  { href: 'projects/Amazon/amazon.html', img: 'images/thumbs/Amazon_c2.webp', meta: 'Amazon · 2019', title: 'Amazon Made For You', cat: 'product', desc: "Design custom-fit t-shirts in 3D. Consumer mobile app and the pattern generation engine." },
-  { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.webp', meta: 'Independent · 2020', title: 'VR Hand Gestures', cat: 'xr', desc: "Exploration prototypes of hand-gesture-based UI on Quest." },
-  { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.webp', meta: 'Oculus Story Studio · 2016', title: 'Oculus Quill', cat: 'xr', desc: "VR-native illustration and animation tool. Foundational interaction patterns for long work sessions." },
-  { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.webp', meta: 'Continuum Fashion · 2014', title: 'ModaKit', cat: 'fashion', desc: "A modular toolkit for wearable computing." },
-  { href: 'projects/constrvct/constrvct.html', img: 'images/thumbs/Constrvct_c.webp', meta: 'Continuum Fashion · 2013', title: 'Constrvct', cat: 'fashion', desc: "Browser-based 3D design tool and commerce site for custom-printed dresses. Techstars 2013." },
+  { href: 'https://kodolab.org', img: 'projects/kodolab/kodo-hemoglobin.webp', meta: 'Now · 2026', title: 'Kodolab', tags: ['web', '3d'], desc: "A web platform for learning biology in 3D, with an AI sandbox for generating lessons in seconds." },
+  { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.webp', meta: 'Impulse Labs · 2024', title: 'Impulse Stove', tags: ['hardware'], desc: "A 15kW induction stove with a novel knob interface. Solo designer, launched at CES." },
+  { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.webp', meta: 'Earthshot Labs · 2022', title: 'Biome', tags: ['mobile', '3d'], desc: "ML and AR mobile platform for measuring rainforests. 10x faster than traditional field surveys." },
+  { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.webp', meta: 'ILM Immersive · 2020', title: "Tales from the Galaxy's Edge", tags: ['3d'], desc: "Spatial and 2D UI/UX for the Star Wars VR adventure game, shipped in 5 months." },
+  { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.webp', meta: 'Industrial Light & Magic · 2022', title: 'ILM Stagecraft', tags: ['mobile', '3d'], desc: "iPad app for controlling virtual production stages. Nominated for a Technical Emmy." },
+  { href: 'projects/Amazon/amazon.html', img: 'images/thumbs/Amazon_c2.webp', meta: 'Amazon · 2019', title: 'Amazon Made For You', tags: ['mobile', '3d'], desc: "Design custom-fit t-shirts in 3D. Consumer mobile app and the pattern generation engine." },
+  { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.webp', meta: 'Independent · 2020', title: 'VR Hand Gestures', tags: ['3d'], desc: "Exploration prototypes of hand-gesture-based UI on Quest." },
+  { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.webp', meta: 'Oculus Story Studio · 2016', title: 'Oculus Quill', tags: ['3d'], desc: "VR-native illustration and animation tool. Foundational interaction patterns for long work sessions." },
+  { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.webp', meta: 'Continuum Fashion · 2014', title: 'ModaKit', tags: ['hardware'], desc: "A modular toolkit for wearable computing." },
+  { href: 'projects/constrvct/constrvct.html', img: 'images/thumbs/Constrvct_c.webp', meta: 'Continuum Fashion · 2013', title: 'Constrvct', tags: ['web', '3d'], desc: "Browser-based 3D design tool and commerce site for custom-printed dresses. Techstars 2013." },
 ];
 const ART = [
   { t: "images/thumbs/art/colorandcraft-1.webp", s: "images/thumbs/Colorandcraft_c.webp", f: "Colorandcraft_c.webp", n: "Color & Craft", y: 2026, c: "Vibrant DIY plant kits with video tutorials", l: "https://colorandcraft.co", w: 900, h: 506, kb: 40, cats: ["craft"] },
@@ -440,9 +460,7 @@ const ART = [
 
 const FILES = [
   { p: "index.html", n: "Portfolio", k: "Page", s: 14489 },
-  { p: "art.html", n: "Art & Research", k: "Page", s: 23755 },
   { p: "timeline.html", n: "Timeline", k: "Page", s: 23085 },
-  { p: "archive.html", n: "Archive", k: "Page", s: 29275 },
   { p: "images.html", n: "Images", k: "Page", s: 29211 },
   { p: "canvas.html", n: "Canvas", k: "Page", s: 48294 },
   { p: "projects/Amazon/amazon.html", n: "Amazon Made For You", k: "Project", s: 6149 },
@@ -487,7 +505,7 @@ const FILES = [
   { p: "projects/zines", n: "zines", k: "Folder", s: 1 },
 ];
 
-const CATS = { all: 'All', now: 'Now', product: 'Product', xr: 'XR', fashion: 'Fashion + Fab' };
+const CATS = { all: 'All', '3d': '3D', mobile: 'Mobile', web: 'Web', hardware: 'Hardware' };
 
 /* ═══════════════════════════════════════════════════════════════
    Canvas: pan + zoom-free infinite world
@@ -497,6 +515,7 @@ const world = document.getElementById('world');
 let pan = { x: 0, y: 0 };
 let zoom = 1;
 let touched = false; // set once the user pans or zooms by hand
+let trackpad = false; // Mac trackpad: two-finger scroll pans, pinch zooms
 const ZMIN = 0.3, ZMAX = 2.5;
 let zTop = 10;
 const isSmall = () => window.innerWidth < 700;
@@ -557,7 +576,10 @@ function scrollableUnder(e) {
       return;
     }
     e.preventDefault();
-    const d = (e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY) * (e.ctrlKey || e.metaKey ? 3 : 1);
+    // A Mac trackpad pinch arrives as a wheel event with ctrlKey set.
+    const pinch = e.ctrlKey || e.metaKey;
+    if (trackpad && !pinch) { touched = true; pan.x -= e.deltaX; pan.y -= e.deltaY; applyPan(); return; }
+    const d = (e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY) * (pinch ? 3 : 1);
     zoomAt(e.clientX, e.clientY, Math.exp(-d * 0.0015));
   }, { passive: false });
 })();
@@ -917,13 +939,14 @@ function galleryContent() {
   ];
   const cap = document.createElement('div'); cap.className = 'cap'; cap.textContent = 'Gallery';
   side.appendChild(cap);
-  const open = id => {
+  const open = (id, arg) => {
     pane.innerHTML = '';
     pane.scrollTop = 0;
     pane.classList.toggle('fixed', id === 'media'); // the media pane scrolls its own sheet
-    pane.appendChild(SECTIONS.find(x => x.id === id).build());
+    pane.appendChild(SECTIONS.find(x => x.id === id).build(arg));
     side.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.s === id));
   };
+  openSection = open;
   SECTIONS.forEach(sec => {
     const b = document.createElement('button');
     b.dataset.s = sec.id;
@@ -932,9 +955,12 @@ function galleryContent() {
     side.appendChild(b);
   });
   root.appendChild(side); root.appendChild(pane);
-  open('media');
+  open('notes');
   return root;
 }
+
+/* Set by the app so one pane can hand off to another. */
+let openSection = null;
 
 /* Filter pills shared by the Media and Notes panes. */
 function filterBar(cats, cur, onPick) {
@@ -954,14 +980,15 @@ function filterBar(cats, cur, onPick) {
 /* Media — every still from the Art & Research page, browsed like a light table. */
 const ART_CATS = { all: 'All', craft: 'Craft', fashion: 'Fashion', interactive: 'Interactive', 'digital-fabrication': 'Fabrication', hardware: 'Hardware', sculpture: 'Sculpture' };
 const fileSize = kb => kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
-function mediaPane() {
+function mediaPane(folder) {
   const wrap = document.createElement('div');
   wrap.style.cssText = 'display:flex; flex-direction:column; height:100%; min-height:0';
   const body = document.createElement('div');
   body.className = 'scroller';
   body.style.cssText = 'flex:1; min-height:0';
   let cur = 'all';
-  const shown = () => ART.filter(m => cur === 'all' || m.cats.includes(cur));
+  const inFolder = m => !folder || m.s.startsWith(folder + '/');
+  const shown = () => ART.filter(m => inFolder(m) && (cur === 'all' || m.cats.includes(cur)));
 
   /* Contact sheet: thumbnail, filename, dimensions and weight. */
   const sheet = () => {
@@ -1008,6 +1035,14 @@ function mediaPane() {
 
   const bar = filterBar(ART_CATS, () => cur, c => { cur = c; sheet(); });
   bar.style.flex = 'none';
+  if (folder) {
+    // Arrived from a folder in File Directory: show what that folder holds.
+    const scope = document.createElement('button');
+    scope.className = 'on';
+    scope.innerHTML = `<i class="ph ph-folder"></i>${folder}<i class="ph ph-x"></i>`;
+    scope.addEventListener('click', () => openSection('media'));
+    bar.insertBefore(scope, bar.firstChild);
+  }
   wrap.appendChild(bar); wrap.appendChild(body);
   sheet();
   return wrap;
@@ -1020,12 +1055,15 @@ function notesPane() {
   let cur = 'all';
   const render = () => {
     list.innerHTML = '';
-    PROJECTS.filter(p => cur === 'all' || p.cat === cur).forEach(p => {
+    PROJECTS.filter(p => cur === 'all' || p.tags.includes(cur)).forEach(p => {
       const a = document.createElement('a');
       a.href = p.href;
       if (p.href.startsWith('http')) { a.target = '_blank'; a.rel = 'noopener'; }
       a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy">
-        <div class="txt"><small>${p.meta}</small><b>${p.title}</b><p>${p.desc || ''}</p></div>`;
+        <div class="txt">
+          <small>${p.meta}</small><b>${p.title}</b><p>${p.desc || ''}</p>
+          <div class="tags">${p.tags.map(t => `<span>${CATS[t]}</span>`).join('')}</div>
+        </div>`;
       list.appendChild(a);
     });
   };
@@ -1036,23 +1074,60 @@ function notesPane() {
 }
 
 /* File Directory — the pages this site is actually made of. */
+/* Folders have no page of their own, so send them to the page that features them:
+   the project card in Notes first, then the Media library, then an explicit home.
+   Nothing here links to archive.html. */
+const FOLDER_FALLBACK = { 'projects/ppc': 'https://rhymeandreason.studio' };
+function folderTarget(dir) {
+  const inside = path => path && path.startsWith(dir + '/');
+  const proj = PROJECTS.find(p => inside(p.href) || inside(p.img));
+  if (proj) return { href: proj.href };
+  if (ART.some(m => inside(m.s))) return { media: dir }; // its pictures live in the Media tab
+  return FOLDER_FALLBACK[dir] ? { href: FOLDER_FALLBACK[dir] } : null;
+}
 function filesPane() {
   const wrap = document.createElement('div'); wrap.className = 'files';
   const hd = document.createElement('div'); hd.className = 'hd';
   hd.innerHTML = '<span>Name</span><span>Kind</span><span class="z">Size</span>';
   wrap.appendChild(hd);
   FILES.forEach(f => {
-    const a = document.createElement('a');
     const folder = f.k === 'Folder';
-    a.href = folder ? f.p + '/' : f.p;
+    const target = folder ? folderTarget(f.p) : { href: f.p };
+    if (!target) return; // nothing to open — don't list a dead row
+    const el = document.createElement('a');
+    if (target.href) {
+      el.href = target.href;
+      if (/^https?:/.test(target.href)) { el.target = '_blank'; el.rel = 'noopener'; }
+    } else {
+      el.href = '#';
+      el.addEventListener('click', e => { e.preventDefault(); openSection('media', target.media); });
+    }
     const size = folder ? f.s + ' items' : (f.s / 1024).toFixed(0) + ' KB';
     const glyph = folder ? 'ph-fill ph-folder' : f.k === 'Page' ? 'ph ph-browser' : 'ph ph-file-html';
-    a.innerHTML = `<span class="nm"><i class="ic-f ${glyph} ${folder ? 'folder' : f.k === 'Page' ? 'page' : ''}"></i><span>${f.n}</span></span>
+    el.innerHTML = `<span class="nm"><i class="ic-f ${glyph} ${folder ? 'folder' : f.k === 'Page' ? 'page' : ''}"></i><span>${f.n}</span></span>
       <span class="k">${f.k}</span><span class="z">${size}</span>`;
-    a.title = f.p;
-    wrap.appendChild(a);
+    el.title = target.href ? `${f.p} → ${target.href}` : `${f.p} → Media`;
+    wrap.appendChild(el);
   });
   return wrap;
+}
+
+/* A little on/off switch, the way a settings panel wants one. */
+function toggle(on, onChange) {
+  const b = document.createElement('button');
+  b.className = 'switch';
+  b.setAttribute('role', 'switch');
+  const sync = () => { b.classList.toggle('on', on); b.setAttribute('aria-checked', on); };
+  b.addEventListener('click', () => { on = !on; sync(); onChange(on); });
+  sync();
+  return b;
+}
+
+/* Media thumbnail size, shared by the settings panel and the grid. */
+let mediaCell = 124;
+function setMediaCell(px) {
+  mediaCell = px;
+  document.documentElement.style.setProperty('--media-cell', px + 'px');
 }
 
 /* Settings — the knobs this canvas actually has. */
@@ -1079,19 +1154,24 @@ function settingsPane() {
   });
   row('Mode', 'Tints the paper behind everything', seg);
 
-  const dots = document.createElement('button');
-  const syncDots = () => dots.textContent = desk.classList.contains('nodots') ? 'Off' : 'On';
-  dots.addEventListener('click', () => { desk.classList.toggle('nodots'); syncDots(); });
-  syncDots();
+  const dots = toggle(!desk.classList.contains('nodots'), on => desk.classList.toggle('nodots', !on));
   row('Dot grid', 'The paper texture on the desktop', dots);
 
-  const zr = document.createElement('input');
-  zr.type = 'range'; zr.min = ZMIN * 100; zr.max = ZMAX * 100; zr.value = Math.round(zoom * 100);
-  zr.addEventListener('input', () => {
-    const vw = window.innerWidth / 2, vh = window.innerHeight / 2;
-    zoomAt(vw, vh, (zr.value / 100) / zoom);
+  const SIZES = [[96, 'Small'], [124, 'Medium'], [168, 'Large']];
+  const gridSeg = document.createElement('div'); gridSeg.className = 'seg';
+  SIZES.forEach(([px, name]) => {
+    const b = document.createElement('button'); b.textContent = name;
+    b.classList.toggle('on', px === mediaCell);
+    b.addEventListener('click', () => {
+      setMediaCell(px);
+      gridSeg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.textContent === name));
+    });
+    gridSeg.appendChild(b);
   });
-  row('Zoom', 'Or scroll anywhere on the canvas', zr);
+  row('Media grid', 'Thumbnail size in the Media library', gridSeg);
+
+  const tp = toggle(trackpad, on => { trackpad = on; hintText(); });
+  row('Trackpad controls', 'Two-finger scroll pans, pinch zooms', tp);
 
   const fit = document.createElement('button');
   fit.textContent = 'Fit to window';
@@ -1174,7 +1254,7 @@ function layout() {
 
   createWindow({ id: 'about', title: 'readme.txt', x: 40, y: 100, w: 420, h: 'auto', content: aboutContent() });
   createWindow({ id: 'daily', title: 'Daily Note', x: 1450, y: 100, w: 360, h: 700, content: dailyContent() });
-  createWindow({ id: 'gallery', title: 'Gallery', x: 580, y: 60, w: 900, h: 660, noscroll: true, content: galleryContent() });
+  createWindow({ id: 'gallery', title: 'Gallery', x: 500, y: 60, w: 900, h: 700, noscroll: true, content: galleryContent() });
   createWindow({ id: 'pulse', title: 'Git Pulse', x: 1120, y: 900, w: 500, h: 'auto', content: pulseContent() });
 
   addLoose(`<b>Personal Personal Computing</b><p>Replacing my daily apps with self-built, minimal versions and living in them. 30 apps so far, in Tauri on Mac. The windows here are a few of them.</p><a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio <i class="ph ph-arrow-up-right"></i></a>`, 40, 800, -2, 'sticky postit');
@@ -1206,6 +1286,11 @@ window.addEventListener('resize', () => {
   clearTimeout(refitT);
   refitT = setTimeout(() => fitContent(true), 150);
 });
+function hintText() {
+  document.getElementById('hint').textContent = trackpad
+    ? 'two-finger scroll to pan · pinch to zoom · scroll inside a window to scroll it'
+    : 'drag to pan · scroll to zoom · scroll inside a window to scroll it';
+}
 let hintT = setTimeout(() => document.getElementById('hint').style.opacity = 0, 6000);
 desk.addEventListener('pointerdown', () => { clearTimeout(hintT); document.getElementById('hint').style.opacity = 0; }, { once: true });
 </script>
