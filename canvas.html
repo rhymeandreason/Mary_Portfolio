@@ -45,7 +45,7 @@
       position: fixed; inset: 0;
       cursor: grab;
       background-color: var(--paper);
-      background-image: radial-gradient(var(--dot) 1.1px, transparent 1.2px);
+      background-image: radial-gradient(var(--dot) 0.9px, transparent 1.3px);
       background-size: 24px 24px;
       background-position: 0 0;
     }
@@ -569,8 +569,16 @@ const isSmall = () => window.innerWidth < 700;
 
 function applyPan() {
   world.style.transform = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
-  desk.style.backgroundSize = `${24 * zoom}px ${24 * zoom}px`;
+  drawDots();
   desk.style.backgroundPosition = `${pan.x}px ${pan.y}px`;
+}
+/* The dot grid is part of the paper, so spacing tracks the zoom continuously and
+   the dots scale with it — no jumps, and they never bulk up as you zoom out. */
+function drawDots() {
+  const step = 24 * zoom;
+  const r = Math.min(1.5, Math.max(0.35, 0.9 * zoom));
+  desk.style.backgroundImage = `radial-gradient(var(--dot) ${r.toFixed(2)}px, transparent ${(r + 0.4).toFixed(2)}px)`;
+  desk.style.backgroundSize = `${step}px ${step}px`;
 }
 /* Zoom about a point in screen coordinates. */
 function zoomAt(cx, cy, factor) {
