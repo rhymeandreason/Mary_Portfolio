@@ -802,8 +802,8 @@ function layout() {
   // git pulse under it, the two stickies tucked under the readme.
   const W = window.innerWidth;
 
-  createWindow({ id: 'about', title: 'readme.txt', x: 40, y: 100, w: 460, h: 'auto', content: aboutContent() });
-  createWindow({ id: 'daily', title: 'Daily Note', x: 1630, y: 100, w: 420, h: 'auto', content: dailyContent() });
+  createWindow({ id: 'about', title: 'readme.txt', x: 40, y: 100, w: 420, h: 'auto', content: aboutContent() });
+  createWindow({ id: 'daily', title: 'Daily Note', x: 1630, y: 100, w: 360, h: 700, content: dailyContent() });
   createWindow({ id: 'gallery', title: 'Gallery — all projects', x: 580, y: 60, w: 980, h: 1040, content: galleryContent() });
   createWindow({ id: 'pulse', title: 'Git Pulse', x: 1440, y: 900, w: 500, h: 'auto', content: pulseContent() });
 
