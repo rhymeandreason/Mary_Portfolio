@@ -2,336 +2,1369 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Mary Huang : Portfolio</title>
+  <title>Mary Huang : Canvas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Mary Huang designs and builds 0 → 1 interfaces for new kinds of technology. Currently building Personal Personal Computing and Kodolab.">
-
+  <meta name="description" content="Mary Huang designs and builds 0 → 1 interfaces for new kinds of technology. An interactive canvas of the work.">
+  <script>
+    // Mobile visitors get the classic (scrolling) site; the canvas is a desktop experience.
+    // ?canvas=1 forces the canvas on any device.
+    (function () {
+      try {
+        if (location.search.indexOf('canvas=1') !== -1) return;
+        var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        var narrow = Math.min(window.innerWidth, window.screen.width) < 700;
+        if (coarse && narrow) location.replace('classic.html' + location.hash);
+      } catch (e) {}
+    })();
+  </script>
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
-  <link rel="stylesheet" href="css/site.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
   <style>
-    /* ── Statement ── */
-    .statement {
-      padding: 96px 0 40px;
-      display: grid;
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      gap: 48px 80px;
-      align-items: start;
+    :root {
+      --paper: #f7f5f0;
+      --ink: #1a1917;
+      --ink-2: #6f6a62;
+      --ink-3: #a9a49b;
+      --line: #e4e0d8;
+      --dot: #cfcac1;
+      --accent: #e6407a;
+      --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 12px 32px rgba(30,25,15,0.12);
+      --shadow-hi: 0 2px 4px rgba(0,0,0,0.08), 0 24px 56px rgba(30,25,15,0.2);
     }
-    .statement h1 {
-      font-size: clamp(3.2rem, 4.6vw, 5.6rem);
-      font-weight: 700;
-      line-height: 1.08;
-      letter-spacing: -0.015em;
-      margin: 0;
-      color: #000;
-    }
-    .statement-body {
-      font-size: 1.7rem;
-      line-height: 1.7;
-      color: rgba(0,0,0,0.75);
-      padding-top: 6px;
-    }
-    .statement-body p { margin: 0 0 18px; }
-    .statement-body p:last-child { margin-bottom: 0; }
-
-    /* ── Section heading ── */
-    .section-head {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 24px;
-      padding-top: 96px;
-      margin-bottom: 40px;
-      border-top: 1px solid #e5e5e5;
-    }
-    .section-head h2 {
-      font-size: clamp(2.4rem, 3vw, 3.2rem);
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      margin: 0;
-      color: #000;
-    }
-    .section-head .eyebrow { margin: 0 0 8px; }
-    .section-head .aside {
-      font-size: 1.5rem;
-      color: rgba(0,0,0,0.5);
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    .section-head .aside:hover { color: #000; }
-
-    /* ── Featured (current) projects ── */
-    .feature {
-      display: grid;
-      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-      gap: 32px 64px;
-      align-items: center;
-      margin-bottom: 72px;
-    }
-    .feature-media {
-      display: block;
-      aspect-ratio: 16 / 10;
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "futura-pt", "Futura", "Avenir Next", system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
       overflow: hidden;
-      border-radius: 6px;
-      border: 1px solid #ececec;
-      background: #f2f0ec;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
     }
-    .feature-media img {
-      width: 100%; height: 100%;
-      object-fit: cover; object-position: top;
-      display: block;
-      transition: transform 0.4s ease;
-    }
-    .feature-media:hover img { transform: scale(1.02); }
-    .feature-tri {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 8px;
-      border: none;
-      border-radius: 0;
-      background: none;
-      overflow: visible;
-      aspect-ratio: auto;
-    }
-    .feature-tri img {
-      aspect-ratio: 5 / 9;
-      border-radius: 6px;
-      border: 1px solid #ececec;
-      background: #f2f0ec;
-      object-position: top;
-    }
-    .feature-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      border: none;
-      border-radius: 0;
-      background: none;
-      overflow: visible;
-    }
-    .feature-grid img {
-      aspect-ratio: 16 / 10;
-      border-radius: 6px;
-      border: 1px solid #ececec;
-      background: #f2f0ec;
-      object-position: center;
-    }
-    .feature-text .kicker {
-      font-size: 1.3rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.4);
-      margin: 0 0 10px;
-    }
-    .feature-text h3 {
-      font-size: clamp(2.4rem, 2.8vw, 3.2rem);
-      font-weight: 700;
-      line-height: 1.15;
-      letter-spacing: -0.01em;
-      margin: 0 0 14px;
-      color: #000;
-    }
-    .feature-text p {
-      font-size: 1.65rem;
-      line-height: 1.65;
-      color: rgba(0,0,0,0.72);
-      margin: 0;
-      max-width: 460px;
-    }
-    .feature-text .links { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 8px 22px; }
-    .feature-text .links a {
-      font-size: 1.55rem;
-      font-weight: 600;
-      color: #000;
-      text-decoration: none;
-      border-bottom: 1px solid rgba(0,0,0,0.3);
-      padding-bottom: 1px;
-    }
-    .feature-text .links a:hover { border-bottom-color: #000; }
+    a { color: inherit; }
+    .ph, .ph-fill, .ph-bold { vertical-align: -0.1em; }
+    /* nothing drags a ghost image around while panning windows */
+    img, a { -webkit-user-drag: none; user-drag: none; }
+    input, textarea { user-select: text; -webkit-user-select: text; }
 
-    /* ── Selected work grid ── */
-    .selected-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 48px 36px;
+    /* ── Desktop ── */
+    #desk {
+      position: fixed; inset: 0;
+      cursor: grab;
+      background-color: var(--paper);
+      background-image: radial-gradient(var(--dot) 0.9px, transparent 1.3px);
+      background-size: 24px 24px;
+      background-position: 0 0;
     }
-    .project-card { display: block; text-decoration: none; color: inherit; }
-    .project-card img {
-      width: 100%;
-      display: block;
-      border-radius: 4px;
-      border: 1px solid #ececec;
-      transition: box-shadow 0.3s ease, transform 0.3s ease;
+    #desk.panning { cursor: grabbing; }
+    #desk.nodots { background-image: none; }
+    #world { position: absolute; left: 0; top: 0; will-change: transform; }
+
+    /* ── Top bar (menu bar) ── */
+    #bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 18px; font-size: 13px; letter-spacing: 0.02em;
+      z-index: 10000; pointer-events: none;
     }
-    .project-card:hover img {
-      box-shadow: 0 7px 22px rgba(0,0,0,0.18);
-      transform: translateY(-2px);
+    #bar > * { pointer-events: auto; }
+    #bar .name { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; }
+    #bar .right { display: flex; gap: 18px; align-items: center; color: var(--ink-2); }
+    #bar .right a { text-decoration: none; }
+    #bar .right a:hover { color: var(--ink); }
+    #bar #clock { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    #bar #battery { display: inline-flex; align-items: center; gap: 5px; font-variant-numeric: tabular-nums; }
+    #bar #battery i { font-size: 19px; line-height: 1; }
+    #bar #battery.low i { color: #c8442c; }
+    #bar #battery.charging i { color: #3d8f5a; }
+
+    /* ── Dock ── */
+    #dock {
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; padding: 6px;
+      background: rgba(255,255,255,0.7); backdrop-filter: blur(12px);
+      border: 1px solid var(--line); border-radius: 16px;
+      box-shadow: var(--shadow); z-index: 10000;
     }
-    .project-card .meta {
-      font-size: 1.2rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(0,0,0,0.4);
-      margin: 14px 0 4px;
+    #dock button {
+      width: 44px; height: 44px; border: 0; border-radius: 11px; background: transparent;
+      cursor: pointer; position: relative; display: grid; place-items: center;
+      transition: transform 0.15s ease, background 0.15s ease;
     }
-    .project-card .title {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -0.01em;
-      margin: 0 0 4px;
-      color: #000;
+    #dock button:hover { transform: translateY(-4px); background: rgba(0,0,0,0.05); }
+    #dock button svg { width: 26px; height: 26px; }
+    #dock button .ic i { line-height: 1; }
+    #dock button .ic { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font-size: 11px; font-weight: 700; color: #fff; }
+    #dock button::after {
+      content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+      width: 4px; height: 4px; border-radius: 50%; background: var(--ink); opacity: 0;
     }
-    .project-card .desc {
-      font-size: 1.55rem;
-      line-height: 1.5;
-      color: rgba(0,0,0,0.6);
-      margin: 0;
+    #dock button.open::after { opacity: 0.5; }
+    #dock button[data-tip]:hover::before {
+      content: attr(data-tip); position: absolute; bottom: 54px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: #fff; font-size: 11px; padding: 4px 8px; border-radius: 6px; white-space: nowrap;
+    }
+    #dock .sep { width: 1px; background: var(--line); margin: 6px 3px; }
+
+    /* ── Windows ── */
+    .win {
+      position: absolute;
+      background: #fbfaf7; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px;
+      box-shadow: var(--shadow); overflow: hidden;
+      display: flex; flex-direction: column;
+      transition: box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    }
+    .win.active { box-shadow: var(--shadow-hi); }
+    .win.hidden { opacity: 0; transform: scale(0.96); pointer-events: none; }
+    .win .titlebar {
+      height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 12px;
+      cursor: grab; flex: none; font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em;
+    }
+    .win .titlebar:active { cursor: grabbing; }
+    /* Sidebar apps: chrome overlays the content so the sidebar reaches the top */
+    .win.fullside > .titlebar { position: absolute; top: 0; left: 0; right: 0; z-index: 3; background: none; }
+    .win.fullside > .body { height: 100%; }
+    .win.fullside .app .side { padding-top: 38px; }
+    .win .lights { display: flex; gap: 7px; }
+    .win .lights b { width: 11px; height: 11px; border-radius: 50%; display: block; background: #ddd7cd; cursor: pointer; }
+    .win.active .lights b.c { background: #ff5f57; }
+    .win.active .lights b.m { background: #febc2e; }
+    .win.active .lights b.z { background: #28c840; }
+    .win .body { flex: 1; min-height: 0; overflow: auto; }
+    .win .body.noscroll { overflow: hidden; }
+    .win .body::-webkit-scrollbar { width: 8px; }
+    .win .body::-webkit-scrollbar-thumb { background: #ddd7cd; border-radius: 4px; }
+    .win .resize {
+      position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: nwse-resize;
     }
 
-    .bottom-space { height: 120px; }
+    /* ── Readme / About ── */
+    .about { padding: 24px 36px 36px; }
+    .about h1 { font-size: 30px; line-height: 1.2; margin: 0 0 26px; letter-spacing: -0.015em; font-weight: 700; }
+    .about p { font-size: 15px; line-height: 1.7; color: var(--ink-2); margin: 0 0 20px; }
+    .about .row { display: flex; gap: 18px; align-items: center; margin-bottom: 32px; }
+    .about .row img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+    .about .row small { display: block; font-size: 12px; color: var(--ink-2); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+    .about .links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 22px; font-size: 14px; font-weight: 600; }
+    .about .links a { text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.3); }
 
-    @media (max-width: 1000px) {
-      .statement, .feature { grid-template-columns: 1fr; }
+    /* ── Daily Note ── */
+    .daily { padding: 20px 26px 0; display: flex; flex-direction: column; height: 100%; }
+    .daily h2 { font-size: 26px; margin: 0 0 12px; font-weight: 700; letter-spacing: -0.01em; }
+    .daily ul { list-style: none; margin: 0; padding: 12px 0; border-top: 1px solid var(--line); }
+    .daily li { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; line-height: 1.35; padding: 8px 0; cursor: pointer; }
+    .daily li .box { width: 20px; height: 20px; border: 2px solid var(--ink-2); border-radius: 5px; flex: none; margin-top: 1px; display: grid; place-items: center; }
+    .daily li .box i { font-size: 12px; color: #fff; opacity: 0; line-height: 1; }
+    .daily li.done .box { background: var(--ink-2); border-color: var(--ink-2); }
+    .daily li.done .box i { opacity: 1; }
+    .daily li.done span { text-decoration: line-through; color: var(--ink-3); }
+    .daily .add { display: flex; gap: 12px; align-items: center; padding: 10px 0 18px; color: var(--ink-3); }
+    .daily .add input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 16px; color: var(--ink); outline: 0; }
+    .daily .add input::placeholder { color: var(--ink-3); }
+    .cal { border-top: 1px solid var(--line); padding: 16px 0 18px; text-align: center; margin-top: auto; }
+    .cal h3 { font-size: 15px; margin: 0 0 8px; color: var(--ink-2); }
+    .cal .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; font-size: 13px; color: var(--ink-2); }
+    .cal .grid .h { color: var(--ink-3); font-size: 11px; }
+    .cal .grid .d { padding: 4px 0; }
+    .cal .grid .o { color: #d8d3ca; }
+    .cal .grid .today { background: var(--ink-2); color: #fff; border-radius: 50%; width: 26px; height: 26px; line-height: 26px; padding: 0; margin: 0 auto; font-weight: 700; }
+
+    /* ── Git Pulse ── */
+    .pulse { padding: 14px 24px 22px; }
+    .pulse h2 { font-size: 15px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; font-weight: 700; }
+    .pulse .stats { display: flex; gap: 26px; padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .pulse .stats b { font-size: 26px; display: block; line-height: 1; }
+    .pulse .stats small { font-size: 12px; color: var(--ink-2); }
+    .pulse .rows { padding-top: 10px; }
+    .pulse .row { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; padding: 5px 0; }
+    .pulse .row label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); }
+    .pulse .dots { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pulse .dots i { width: 9px; height: 9px; border-radius: 50%; background: #6b625a; display: block; }
+    .pulse .dots i.n { animation: pop 0.3s ease backwards; }
+    @keyframes pop { from { transform: scale(0); } }
+
+    /* ── Modes ── */
+    .modes { display: grid; place-items: center; height: 100%; padding: 22px; }
+    .modes .disc {
+      width: 230px; height: 230px; border-radius: 50%; background: #0b0b0b; color: #fff;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.25); cursor: pointer; position: relative;
     }
-    @media (max-width: 800px) {
-      .statement { padding: 56px 0 24px; gap: 28px; }
-      .section-head { padding-top: 64px; margin-bottom: 28px; flex-wrap: wrap; }
-      .feature { margin-bottom: 48px; }
-      .selected-grid { grid-template-columns: repeat(2, 1fr); gap: 32px 20px; }
-      .bottom-space { height: 60px; }
+    .modes .disc small { position: absolute; top: 46px; font-size: 12px; font-weight: 700; color: #8a3252; }
+    .modes .disc span { font-size: 30px; font-weight: 700; line-height: 1.1; color: #2c2c2c; transition: color 0.3s ease, transform 0.3s ease; }
+    .modes .disc span.on { color: #fff; }
+    .modes .disc span.dim { color: #4a4a4a; }
+
+    /* ── Studio Notes ── */
+    .notes { padding: 0 20px 20px; }
+    .notes .tabs { display: flex; gap: 22px; font-size: 14px; color: var(--ink-2); padding: 4px 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+    .notes .tabs b { color: var(--ink); border-bottom: 2px solid var(--ink); padding-bottom: 8px; margin-bottom: -11px; }
+    .notes .cards { columns: 2; column-gap: 14px; }
+    .notes .card { break-inside: avoid; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; margin-bottom: 14px; }
+    .notes .card h4 { margin: 0 0 8px; font-size: 16px; font-weight: 600; letter-spacing: -0.005em; }
+    .notes .card p { margin: 0 0 8px; font-size: 13.5px; line-height: 1.5; color: var(--ink-2); }
+    .notes .card .link { display: block; font-size: 12.5px; color: var(--ink-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; text-decoration: none; margin-top: 8px; }
+    .notes .card .link:hover { color: var(--ink); }
+    .notes .card time { display: block; font-size: 11.5px; color: var(--ink-3); margin-top: 8px; }
+    .notes .card img { width: 100%; border-radius: 6px; display: block; margin-bottom: 8px; }
+
+    /* ── Project windows ── */
+    .proj { display: flex; flex-direction: column; height: 100%; }
+    .proj .media { flex: 1; min-height: 0; background: #ecebe6; display: grid; place-items: center; overflow: hidden; }
+    .proj .media img, .proj .media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .proj .media.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; background: var(--paper); }
+    .proj .media.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; background: var(--paper); place-items: stretch; }
+    .proj .media.grid3 img { object-position: top; }
+    .proj .cap { padding: 12px 16px 14px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex: none; }
+    .proj .cap small { display: block; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 2px; }
+    .proj .cap b { font-size: 15px; }
+    .proj .cap p { margin: 2px 0 0; font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+    .proj .cap a.go { font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; border-bottom: 1px solid rgba(0,0,0,0.3); }
+
+    /* ── Gallery ── */
+    /* ── Gallery.app: sidebar + panes ── */
+    .app { display: flex; height: 100%; min-height: 0; }
+    .app .side { width: 148px; flex: none; border-right: 1px solid var(--line); padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; background: rgba(0,0,0,0.015); }
+    .app .side button { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; background: none; font: inherit; font-size: 13px; color: var(--ink-2); padding: 6px 9px; border-radius: 7px; cursor: pointer; text-align: left; }
+    .app .side button:hover { background: rgba(0,0,0,0.05); }
+    .app .side button.on { background: var(--ink); color: #fff; }
+    .app .side button i { font-size: 16px; flex: none; opacity: 0.75; line-height: 1; }
+    .app .side .cap { font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); padding: 8px 9px 4px; }
+    .app .pane { flex: 1; min-width: 0; min-height: 0; overflow: auto; padding: 14px 18px 20px; }
+    /* Media pane: the scroller runs to the window edge, so padding moves inside it */
+    .app .pane.fixed { overflow: hidden; padding: 0; }
+    .app .pane.fixed .filters { padding: 14px 18px 12px; margin: 0; }
+    .app .pane.fixed .media-grid { padding: 0 18px 20px; }
+    .app .pane.fixed .viewer { padding: 0 18px 16px; }
+    .app .pane.fixed .viewer .bar { padding-top: 14px; }
+    .app .pane::-webkit-scrollbar, .app .scroller::-webkit-scrollbar { width: 8px; }
+    .app .pane::-webkit-scrollbar-thumb, .app .scroller::-webkit-scrollbar-thumb { background: #ddd7cd; border-radius: 4px; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 0 12px; }
+    .filters button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink-2); }
+    .filters button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .filters button i { font-size: 13px; margin: 0 5px 0 -1px; }
+    .filters button i.ph-x { margin: 0 -2px 0 6px; opacity: 0.7; }
+
+    /* Media: a Lightroom-ish contact sheet, with a detail view in the same pane */
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--media-cell, 124px), 1fr)); gap: 16px 12px; }
+    .media-grid button { border: 0; background: none; padding: 0; font: inherit; text-align: left; cursor: pointer; display: block; width: 100%; }
+    .media-grid .cell { background: #ecebe6; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+    .media-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; transition: transform 0.25s ease; }
+    .media-grid button:hover .cell { border-color: var(--ink-3); }
+    .media-grid button:hover img { transform: scale(1.05); }
+    .media-grid .fn { display: block; font-size: 10.5px; margin-top: 5px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .media-grid .sz { display: block; font-size: 10px; color: var(--ink-3); letter-spacing: 0.04em; }
+
+    .viewer { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 10px; }
+    .viewer .bar { display: flex; align-items: center; gap: 10px; flex: none; }
+    .viewer .bar button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 4px 10px 4px 8px; font: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink-2); }
+    .viewer .bar button i { font-size: 14px; }
+    .viewer .bar button:hover { color: var(--ink); }
+    .viewer .bar .count { font-size: 12px; color: var(--ink-3); margin-left: auto; }
+    /* image, flanked by its arrows, on the paper itself */
+    .viewer .frame { flex: 1; min-height: 0; display: flex; align-items: center; gap: 10px; }
+    .viewer .nav { flex: none; width: 34px; height: 34px; border: 1px solid var(--line); background: #fff; border-radius: 50%;
+      font-size: 17px; line-height: 1; color: var(--ink-2); cursor: pointer; display: grid; place-items: center; }
+    .viewer .nav:hover { color: var(--ink); border-color: var(--ink-3); }
+    .viewer .stage { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .viewer .stage img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block;
+      border-radius: 4px; box-shadow: 0 6px 22px rgba(0,0,0,0.14); }
+    .viewer .info { flex: none; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font-size: 12px; color: var(--ink-3); }
+    .viewer .info b { display: block; font-size: 13.5px; color: var(--ink); font-weight: 600; }
+    .viewer .info em { font-style: normal; color: var(--ink-2); }
+    .viewer .info .meta { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .viewer .info a { color: var(--ink-2); }
+
+    /* Notes: a grid of project cards, each with the write-up from the homepage */
+    .workgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(212px, 1fr)); gap: 16px; align-items: stretch; }
+    .workgrid a { display: flex; flex-direction: column; min-width: 0; text-decoration: none;
+      background: #fff; border: 1px solid var(--line); border-radius: 11px; padding: 10px 10px 14px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
+    .workgrid a:hover { transform: translateY(-3px); border-color: #d9d2c6; box-shadow: 0 10px 24px rgba(0,0,0,0.10); }
+    .workgrid img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 6px; background: #eee; display: block; }
+    .workgrid .txt { min-width: 0; padding: 11px 3px 0; overflow-wrap: anywhere; flex: 1; display: flex; flex-direction: column; }
+    .workgrid .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; padding-top: 11px; }
+    .workgrid .tags span { font-size: 10.5px; letter-spacing: 0.04em; color: var(--ink-2); background: rgba(0,0,0,0.045);
+      border-radius: 999px; padding: 3px 8px; line-height: 1.3; }
+    .workgrid small { display: block; font-size: 11px; color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+    .workgrid b { display: block; font-size: 14px; margin: 3px 0 5px; line-height: 1.25; }
+    .workgrid p { margin: 0; font-size: 12.5px; line-height: 1.45; color: var(--ink-2); }
+
+    /* File directory: a plain list view */
+    .files { font-size: 13px; }
+    .files .hd, .files a { display: grid; grid-template-columns: 1fr 92px 76px; gap: 10px; padding: 5px 8px; align-items: center; }
+    .files .hd { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--line); }
+    .files a { text-decoration: none; border-radius: 6px; }
+    .files > *:nth-child(odd) { background: rgba(0,0,0,0.022); }
+    .files a:hover { background: rgba(0,0,0,0.06); }
+    .files .nm { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .files .nm span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .files .ic-f { font-size: 15px; flex: none; color: #8e9bb3; line-height: 1; }
+    .files .ic-f.page { color: #b0a58d; }
+    .files .ic-f.folder { color: #7f9cc9; }
+    .files .k, .files .z { color: var(--ink-3); font-size: 12px; }
+    .files .z { text-align: right; }
+
+    /* Settings */
+    .settings { max-width: 460px; font-size: 13px; }
+    .settings .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+    .settings .row:last-child { border-bottom: 0; }
+    .settings .row b { font-weight: 600; display: block; }
+    .settings .row em { font-style: normal; color: var(--ink-3); font-size: 12px; }
+    .settings .seg { display: flex; gap: 4px; flex: none; }
+    .settings .seg button, .settings .row > button { border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 5px 11px; font: inherit; font-size: 12.5px; cursor: pointer; color: var(--ink-2); }
+    .settings .seg button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+    /* Pill switch — beats the generic .settings .row > button rule above it */
+    .settings .row > button.switch {
+      flex: none; width: 46px; height: 26px; padding: 0; border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.10); background: #e3ddd2; position: relative; cursor: pointer;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.07);
+      transition: background 0.2s ease, border-color 0.2s ease;
+      -webkit-appearance: none; appearance: none;
     }
-    @media (max-width: 500px) {
-      .selected-grid { grid-template-columns: 1fr; }
+    .settings .row > button.switch::after {
+      content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 999px;
+      background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.28);
+      transition: transform 0.2s cubic-bezier(.3,.8,.3,1);
+    }
+    .settings .row > button.switch:hover { border-color: rgba(0,0,0,0.22); }
+    .settings .row > button.switch.on { background: var(--ink); border-color: var(--ink); box-shadow: none; }
+    .settings .row > button.switch.on::after { transform: translateX(20px); }
+    .settings .row > button.switch:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+    /* ── Loose items (polaroids, stickers, notes) ── */
+    .loose { position: absolute; cursor: grab; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .loose:active { cursor: grabbing; }
+    .polaroid { background: #fff; padding: 8px 8px 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 10px 24px rgba(0,0,0,0.12); }
+    .polaroid img { display: block; width: 100%; height: auto; pointer-events: none; }
+    .polaroid span { position: absolute; left: 10px; bottom: 6px; font-size: 11px; color: var(--ink-2); letter-spacing: 0.02em; }
+    .sticky { background: #fff4b8; padding: 16px 18px; width: 200px; font-size: 14px; line-height: 1.45; box-shadow: 0 8px 20px rgba(0,0,0,0.12); color: #4b4224; }
+    .sticky.blue { background: #dbe9ff; color: #223052; }
+    .sticky.postit { width: 260px; height: 260px; padding: 22px 24px; display: flex; flex-direction: column; font-size: 14px; line-height: 1.45; }
+    .sticky.postit b { font-size: 18px; line-height: 1.15; margin-bottom: 10px; }
+    .sticky.postit p { margin: 0; flex: 1; }
+    .sticky.postit a { font-weight: 600; text-decoration: none; margin-top: 10px; }
+    .sticky.pink { background: #ffd9e6; color: #4e2233; }
+    .label { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+    .arrow { color: var(--ink-3); }
+    .loose.lift { box-shadow: var(--shadow-hi); z-index: 9999 !important; }
+
+    /* ── Hint ── */
+
+    @media (max-width: 700px) {
+      #bar #battery .pct { display: none; }
+      .notes .cards { columns: 1; }
     }
   </style>
 </head>
 <body>
 
-  <header class="site-header">
-    <a class="site-name" href="index.html">Mary Huang</a>
-    <nav class="site-nav">
-      <a href="#work">Work</a>
-      <a href="art.html">Art &amp; Research</a>
-      <span class="icons">
-        <a href="https://www.linkedin.com/in/maryhuang1/" target="_blank" rel="noopener" aria-label="LinkedIn">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.28V1.72C24 .77 23.2 0 22.22 0z"/></svg>
-        </a>
-        <a href="mailto:rhymeandreason1.0@gmail.com" aria-label="Email">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
-        </a>
-      </span>
-    </nav>
-  </header>
+<div id="bar">
+  <a class="name" href="classic.html">Mary Huang</a>
+  <div class="right">
+    <span id="battery" title="Battery"><span class="pct">—</span><i class="ph ph-battery-high"></i></span>
+    <span id="clock">00:00</span>
+  </div>
+</div>
 
-  <main class="wrap">
+<div id="desk"><div id="world"></div></div>
 
-    <!-- ── Statement ── -->
-    <section class="statement">
-      <h1>I design and build 0&#8239;→&#8239;1 interfaces for new kinds of technology.</h1>
-      <div class="statement-body">
-        <p>Hello!</p>
-        <p>I've worked on frontier technology experiences for 15 years, across over a dozen new launches at startups, big companies, and studios.</p>
-        <p>I architect core interaction principles, distill complexity into elegant systems, and figure out all the messy connecting bits to ship. I've always been a designer who can code, and now agentic coding has become my primary medium.</p>
-        <p>Let's seek the bold visions of what technology could be.</p>
-      </div>
-    </section>
 
-    <!-- ── Now ── -->
-    <section id="now">
-      <div class="section-head">
-        <div>
-          <h2>Currently Building...</h2>
-        </div>
-      </div>
-<!--
-      <article class="feature">
-        <a class="feature-media feature-tri" href="https://rhymeandreason.studio" target="_blank" rel="noopener">
-          <img src="projects/ppc/media-gallery-2.webp" alt="Media Gallery: image organizer for a project folder" loading="lazy">
-          <img src="projects/ppc/daily-note.webp" alt="Daily Note: one list that carries forward each day" loading="lazy">
-          <img src="projects/ppc/git-pulse.webp" alt="Git Pulse: a punchcard of commits" loading="lazy">
-        </a>
-        <div class="feature-text">
-          <h3>Personal Personal Computing</h3>
-          <p>I'm replacing my daily consumer apps with self-built, minimal versions and living in them for months. A research project on what computing looks like when anyone can build their own tools, and a glimmer of what a new operating system might be. Currently 30 apps built in Tauri on Mac.</p>
-          <div class="links">
-            <a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio →</a>
-            <a href="https://rhymeandreason.studio/journal/personal-personal-computing.html" target="_blank" rel="noopener">The essay →</a>
-          </div>
-        </div>
-      </article>
--->
+<div id="dock"></div>
 
-      <article class="feature">
-        <a class="feature-media feature-grid" href="https://kodolab.org" target="_blank" rel="noopener">
-          <img src="projects/kodolab/kodo-water.webp" alt="Structure of water: hydrogen bonds forming and reforming" loading="lazy">
-          <img src="projects/kodolab/kodo-membrane.webp" alt="The membrane: ions and water around a bilayer with channels" loading="lazy">
-          <img src="projects/kodolab/kodo-folding.webp" alt="A peptide chain folding into an alpha helix" loading="lazy">
-          <img src="projects/kodolab/kodo-hemoglobin.webp" alt="Hemoglobin: four folded chains drawn from PDB coordinates" loading="lazy">
-        </a>
-        <div class="feature-text">
-          <h3>Kodolab</h3>
-          <p>A web platform for learning biology in 3D. A built-in AI sandbox enables students and teachers to generate lessons of their own, with seconds between iterations. A library of components ensures scientific accuracy and detail that general AI agents can't achieve alone.</p>
-          <div class="links">
-            <a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org →</a>
-            <a href="https://github.com/rhymeandreason/ScienceSandbox" target="_blank" rel="noopener">GitHub →</a>
-          </div>
-        </div>
-      </article>
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   Data
+   ═══════════════════════════════════════════════════════════════ */
+const PROJECTS = [
+  // Mirrors the homepage (index.html): the two "Currently Building" features
+  // followed by Selected Work, in the same order.
+  { href: 'https://kodolab.org', img: 'projects/kodolab/kodo-hemoglobin.webp', meta: 'Now · 2026', title: 'Kodolab', tags: ['web', '3d'], desc: "A web platform for learning biology in 3D, with an AI sandbox for generating lessons in seconds." },
+  { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.webp', meta: 'Impulse Labs · 2024', title: 'Impulse Stove', tags: ['hardware'], desc: "A 15kW induction stove with a novel knob interface. Solo designer, launched at CES." },
+  { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.webp', meta: 'Earthshot Labs · 2022', title: 'Biome', tags: ['mobile', '3d'], desc: "ML and AR mobile platform for measuring rainforests. 10x faster than traditional field surveys." },
+  { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.webp', meta: 'ILM Immersive · 2020', title: "Tales from the Galaxy's Edge", tags: ['3d'], desc: "Spatial and 2D UI/UX for the Star Wars VR adventure game, shipped in 5 months." },
+  { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.webp', meta: 'Industrial Light & Magic · 2022', title: 'ILM Stagecraft', tags: ['mobile', '3d'], desc: "iPad app for controlling virtual production stages. Nominated for a Technical Emmy." },
+  { href: 'projects/Amazon/amazon.html', img: 'images/thumbs/Amazon_c2.webp', meta: 'Amazon · 2019', title: 'Amazon Made For You', tags: ['mobile', '3d'], desc: "Design custom-fit t-shirts in 3D. Consumer mobile app and the pattern generation engine." },
+  { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.webp', meta: 'Independent · 2020', title: 'VR Hand Gestures', tags: ['3d'], desc: "Exploration prototypes of hand-gesture-based UI on Quest." },
+  { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.webp', meta: 'Oculus Story Studio · 2016', title: 'Oculus Quill', tags: ['3d'], desc: "VR-native illustration and animation tool. Foundational interaction patterns for long work sessions." },
+  { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.webp', meta: 'Continuum Fashion · 2014', title: 'ModaKit', tags: ['hardware'], desc: "A modular toolkit for wearable computing." },
+  { href: 'projects/constrvct/constrvct.html', img: 'images/thumbs/Constrvct_c.webp', meta: 'Continuum Fashion · 2013', title: 'Constrvct', tags: ['web', '3d'], desc: "Browser-based 3D design tool and commerce site for custom-printed dresses. Techstars 2013." },
+];
+const ART = [
+  // From images.html — the featured-project gallery.
+  { t: "images/thumbs/gallery/impulse-1.webp", s: "projects/impulse/stove1.png", f: "stove1.png", n: "Impulse Stove", y: 2024, c: "The Impulse induction stove with magnetic removable knobs and 12\" display.", l: "projects/impulse/impulse.html", w: 1026, h: 521, kb: 342, cats: ["hardware","tools"] },
+  { t: "images/thumbs/gallery/biome-1.webp", s: "projects/biome/Biome_main.jpg", f: "Biome_main.jpg", n: "Biome", y: 2022, c: "Mobile AR app for measuring tropical forests.", l: "projects/biome/biome.html", w: 1200, h: 800, kb: 837, cats: ["web/mobile","spatial","tools"] },
+  { t: "images/thumbs/gallery/quill-1.webp", s: "projects/quill/Quill_Beta.jpg", f: "Quill_Beta.jpg", n: "Oculus Quill", y: 2016, c: "Oculus Quill, a VR-native illustration and animation tool.", l: "projects/quill/quill.html", w: 1280, h: 720, kb: 64, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/tales-1.webp", s: "projects/tales/Gauntlet_hero.jpg", f: "Gauntlet_hero.jpg", n: "Tales from the Galaxy’s Edge", y: 2021, c: "Gauntlet menu — wrist-mounted UI for Tales from the Galaxy’s Edge.", l: "projects/tales/tales.html", w: 800, h: 545, kb: 261, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/shoes-1.webp", s: "projects/shoes/Daphne-Leaves-1.jpg", f: "Daphne-Leaves-1.jpg", n: "3D Printed Shoes", y: 2013, c: "Daphne — a 3D-printed shoe inspired by leaves.", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 37, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/n12-1.webp", s: "projects/n12/N12-bikini-set-top.jpg", f: "N12-bikini-set-top.jpg", n: "N12 Bikini", y: 2012, c: "The N12 — the world’s first ready-to-wear 3D-printed bikini.", l: "projects/n12/n12.html", w: 945, h: 628, kb: 100, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/rose-1.webp", s: "projects/rose/rose_runway_poster.png", f: "rose_runway_poster.png", n: "Google Rose", y: 2014, c: "Google Rose — generative fashion design tool.", l: "projects/rose/rose.html", w: 848, h: 541, kb: 235, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/constrvct-1.webp", s: "projects/constrvct/CONSTRVCT_composite1.jpg", f: "CONSTRVCT_composite1.jpg", n: "Constrvct", y: 2013, c: "Constrvct — browser tool for designing custom-printed dresses.", l: "projects/constrvct/constrvct.html", w: 1024, h: 768, kb: 672, cats: ["fashion","web/mobile","tools","3D"] },
+  { t: "images/thumbs/gallery/stagecraft-1.webp", s: "projects/stagecraft/ilm-volume.jpg", f: "ilm-volume.jpg", n: "ILM Stagecraft", y: 2021, c: "ILM Stagecraft — the LED Volume used for virtual production.", l: "projects/stagecraft/ilm.html", w: 960, h: 477, kb: 146, cats: ["tools","web/mobile"] },
+  { t: "images/thumbs/gallery/quill-gallery-1.webp", s: "projects/quill_gallery/Lean_In.gif", f: "Lean_In.gif", n: "Quill Gallery", y: 2017, c: "Quill Gallery — leaning in to inspect a 3D illustration.", l: "projects/quill_gallery/quill_gallery.html", w: 720, h: 405, kb: 3903, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/quill-2.webp", s: "projects/quill/angelica.gif", f: "angelica.gif", n: "Oculus Quill", y: 2016, c: "Angelica Sotiriou painting in Quill.", l: "projects/quill/quill.html", w: 480, h: 270, kb: 5113, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/tales-2.webp", s: "projects/tales/Inventory.jpg", f: "Inventory.jpg", n: "Tales from the Galaxy’s Edge", y: 2021, c: "Inventory UI in Tales from the Galaxy’s Edge.", l: "projects/tales/tales.html", w: 2000, h: 1000, kb: 308, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/gestures-1.webp", s: "projects/gestures/Gesture-Planets_small.gif", f: "Gesture-Planets_small.gif", n: "VR Hand Gestures", y: 2020, c: "Hand gesture controlling a planetary system in VR.", l: "projects/gestures/gestures.html", w: 500, h: 500, kb: 6181, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/viralnet-1.webp", s: "projects/viralnet/Nodes-All_small.gif", f: "Nodes-All_small.gif", n: "Viralnet", y: 2020, c: "Viralnet — force-directed graph of virus genome relationships.", l: "projects/viralnet/viralnet.html", w: 500, h: 500, kb: 4012, cats: ["tools","web/mobile","3D"] },
+  { t: "images/thumbs/gallery/impulse-2.webp", s: "projects/impulse/chocolate.png", f: "chocolate.png", n: "Impulse Stove", y: 2024, c: "Tempering chocolate using precise low-temperature control.", l: "projects/impulse/impulse.html", w: 1030, h: 521, kb: 452, cats: ["hardware","tools"] },
+  { t: "images/thumbs/gallery/constrvct-2.webp", s: "projects/constrvct/GeekChic.jpg", f: "GeekChic.jpg", n: "Constrvct", y: 2013, c: "Constrvct dress featuring a circuit-board print.", l: "projects/constrvct/constrvct.html", w: 800, h: 628, kb: 489, cats: ["fashion","web/mobile","tools","3D"] },
+  { t: "images/thumbs/gallery/shoes-2.webp", s: "projects/shoes/Laurel-shoe-on-model.jpg", f: "Laurel-shoe-on-model.jpg", n: "3D Printed Shoes", y: 2013, c: "Laurel pump worn on the runway.", l: "projects/shoes/shoes.html", w: 945, h: 630, kb: 52, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/turtlelink-1.webp", s: "projects/turtlelink/seaworld1.jpg", f: "seaworld1.jpg", n: "SeaWorld TurtleLink", y: 2011, c: "SeaWorld TurtleLink — interactive multi-touch wall exhibit.", l: "projects/turtlelink/turtlelink.html", w: 940, h: 528, kb: 296, cats: ["spatial","hardware","3D"] },
+  { t: "images/thumbs/gallery/quill-3.webp", s: "projects/quill/Animation_flip_poster.jpg", f: "Animation_flip_poster.jpg", n: "Oculus Quill", y: 2016, c: "Frame-by-frame VR animation in Quill.", l: "projects/quill/quill.html", w: 1280, h: 720, kb: 73, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/ddress-1.webp", s: "projects/ddress/Ddress-selected1.jpg", f: "Ddress-selected1.jpg", n: "D.dress", y: 2010, c: "D.dress — turning sketches into wearable patterns.", l: "projects/ddress/ddress.html", w: 945, h: 532, kb: 81, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/codeland-1.webp", s: "projects/codeland/Console.gif", f: "Console.gif", n: "Coding Land", y: 2020, c: "Coding Land — interactive console for kids learning to code.", l: "projects/codeland/codeland.html", w: 700, h: 498, kb: 135, cats: ["web/mobile","tools"] },
+  { t: "images/thumbs/gallery/rose-2.webp", s: "projects/rose/rose-main.png", f: "rose-main.png", n: "Google Rose", y: 2014, c: "Hero shot of the Rose generative design system.", l: "projects/rose/rose.html", w: 1321, h: 873, kb: 260, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/shapeways-1.webp", s: "projects/shapeways/sake1.jpg", f: "sake1.jpg", n: "Shapeways", y: 2012, c: "Custom 3D-printed sake set designed at Shapeways.", l: "projects/shapeways/shapeways.html", w: 600, h: 440, kb: 40, cats: ["3D","web/mobile","tools"] },
+  { t: "images/thumbs/gallery/quill-4.webp", s: "projects/quill/Menus_poster.jpg", f: "Menus_poster.jpg", n: "Oculus Quill", y: 2016, c: "Spatial menu system designed for ergonomic two-handed use.", l: "projects/quill/quill.html", w: 778, h: 486, kb: 76, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/modakit-1.webp", s: "projects/modakit/MODA_slides.jpg", f: "MODA_slides.jpg", n: "ModaKit", y: 2014, c: "ModaKit — a modular hardware toolkit for wearable computing.", l: "projects/modakit/modakit.html", w: 792, h: 612, kb: 84, cats: ["hardware","tools"] },
+  { t: "images/thumbs/gallery/tales-3.webp", s: "projects/tales/AllKit.jpg", f: "AllKit.jpg", n: "Tales from the Galaxy’s Edge", y: 2021, c: "The full UI kit for Tales — menus, HUD, tutorials.", l: "projects/tales/tales.html", w: 800, h: 400, kb: 360, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/n12-2.webp", s: "projects/n12/N12-detail.jpg", f: "N12-detail.jpg", n: "N12 Bikini", y: 2012, c: "Detail of the interlocking 3D-printed links.", l: "projects/n12/n12.html", w: 945, h: 630, kb: 113, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/stagecraft-2.webp", s: "projects/stagecraft/lightcard.png", f: "lightcard.png", n: "ILM Stagecraft", y: 2021, c: "Stagecraft iPad app — light card placement on the volume.", l: "projects/stagecraft/ilm.html", w: 1479, h: 1137, kb: 228, cats: ["tools","web/mobile"] },
+  { t: "images/thumbs/gallery/quill-gallery-2.webp", s: "projects/quill_gallery/shadowbox.gif", f: "shadowbox.gif", n: "Quill Gallery", y: 2017, c: "Shadowbox view in Quill Gallery.", l: "projects/quill_gallery/quill_gallery.html", w: 700, h: 394, kb: 1628, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/amazon-1.webp", s: "projects/Amazon/Amazon_tool.jpg", f: "Amazon_tool.jpg", n: "Amazon Made For You", y: 2019, c: "Amazon Made For You — custom t-shirt design tool.", l: "projects/Amazon/amazon.html", w: 1427, h: 645, kb: 268, cats: ["web/mobile","fashion","3D"] },
+  { t: "images/thumbs/gallery/shoes-3.webp", s: "projects/shoes/Laurel_timelapse2.gif", f: "Laurel_timelapse2.gif", n: "3D Printed Shoes", y: 2013, c: "Time-lapse of the Laurel shoe being 3D printed.", l: "projects/shoes/shoes.html", w: 640, h: 360, kb: 3040, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/typeface-1.webp", s: "projects/typeface/typeface-screencap-1.jpg", f: "typeface-screencap-1.jpg", n: "Typeface", y: 2010, c: "Typeface — generating a font from facial features.", l: "projects/typeface/typeface.html", w: 1440, h: 900, kb: 63, cats: ["tools"] },
+  { t: "images/thumbs/gallery/hack-1.webp", s: "projects/hack/Hack Characters.jpg", f: "Hack Characters.jpg", n: "Hack", y: 2019, c: "Hack — characters that guide kids through coding lessons.", l: "projects/hack/hack.html", w: 1024, h: 600, kb: 128, cats: ["web/mobile","tools"] },
+  { t: "images/thumbs/gallery/viralnet-2.webp", s: "projects/viralnet/render0.png", f: "render0.png", n: "Viralnet", y: 2020, c: "Static render from the Viralnet visualization.", l: "projects/viralnet/viralnet.html", w: 1800, h: 1200, kb: 472, cats: ["tools","web/mobile","3D"] },
+  { t: "images/thumbs/gallery/constrvct-3.webp", s: "projects/constrvct/art_story.jpg", f: "art_story.jpg", n: "Constrvct", y: 2013, c: "A community story of designing a Constrvct dress.", l: "projects/constrvct/constrvct.html", w: 4752, h: 3168, kb: 3678, cats: ["fashion","web/mobile","tools","3D"] },
+  { t: "images/thumbs/gallery/codeland-2.webp", s: "projects/codeland/Color Lesson.jpg", f: "Color Lesson.jpg", n: "Coding Land", y: 2020, c: "Coding Land color lesson screen.", l: "projects/codeland/codeland.html", w: 1440, h: 1024, kb: 165, cats: ["web/mobile","tools"] },
+  { t: "images/thumbs/gallery/turtlelink-2.webp", s: "projects/turtlelink/seaworld3.jpg", f: "seaworld3.jpg", n: "SeaWorld TurtleLink", y: 2011, c: "Visitors interacting with the TurtleLink wall.", l: "projects/turtlelink/turtlelink.html", w: 940, h: 528, kb: 320, cats: ["spatial","hardware","3D"] },
+  { t: "images/thumbs/gallery/ddress-2.webp", s: "projects/ddress/dress1.jpg", f: "dress1.jpg", n: "D.dress", y: 2010, c: "A finished D.dress garment.", l: "projects/ddress/ddress.html", w: 945, h: 630, kb: 103, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/quill-5.webp", s: "projects/quill/Transform_poster.jpg", f: "Transform_poster.jpg", n: "Oculus Quill", y: 2016, c: "Transform tool for moving and scaling 3D drawings.", l: "projects/quill/quill.html", w: 733, h: 458, kb: 59, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/impulse-3.webp", s: "projects/impulse/powerboil.png", f: "powerboil.png", n: "Impulse Stove", y: 2024, c: "PowerBoil mode — boils water in under a minute via the 3kW battery.", l: "projects/impulse/impulse.html", w: 1026, h: 520, kb: 357, cats: ["hardware","tools"] },
+  { t: "images/thumbs/gallery/tales-4.webp", s: "projects/tales/compass.jpg", f: "compass.jpg", n: "Tales from the Galaxy’s Edge", y: 2021, c: "In-game compass for navigation in Tales.", l: "projects/tales/tales.html", w: 1440, h: 1440, kb: 308, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/tales-5.webp", s: "projects/tales/inventory_poster.jpg", f: "inventory_poster.jpg", n: "Tales from the Galaxy’s Edge", y: 2021, c: "Tales inventory grid layout.", l: "projects/tales/tales.html", w: 512, h: 512, kb: 233, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/quill-6.webp", s: "projects/quill/wesley.jpg", f: "wesley.jpg", n: "Oculus Quill", y: 2016, c: "Wesley Allsbrook drawing in Quill.", l: "projects/quill/quill.html", w: 950, h: 530, kb: 52, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/biome-2.webp", s: "projects/biome/field_work.jpg", f: "field_work.jpg", n: "Biome", y: 2022, c: "Field testing Biome with foresters in Panama.", l: "projects/biome/biome.html", w: 450, h: 338, kb: 304, cats: ["web/mobile","spatial","tools"] },
+  { t: "images/thumbs/gallery/shoes-4.webp", s: "projects/shoes/shoe_butterfly.jpg", f: "shoe_butterfly.jpg", n: "3D Printed Shoes", y: 2013, c: "Butterfly-inspired generative shoe pattern.", l: "projects/shoes/shoes.html", w: 945, h: 630, kb: 57, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/n12-3.webp", s: "projects/n12/N12-bikini-seamless-detail1.jpg", f: "N12-bikini-seamless-detail1.jpg", n: "N12 Bikini", y: 2012, c: "Macro view of the printed link structure.", l: "projects/n12/n12.html", w: 945, h: 631, kb: 72, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/rose-3.webp", s: "projects/rose/generate-2.jpg", f: "generate-2.jpg", n: "Google Rose", y: 2014, c: "Generated dress variation from the Rose system.", l: "projects/rose/rose.html", w: 1381, h: 668, kb: 340, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/rose-4.webp", s: "projects/rose/rose_step2_poster.png", f: "rose_step2_poster.png", n: "Google Rose", y: 2014, c: "Step 2 of the Rose generation flow.", l: "projects/rose/rose.html", w: 848, h: 541, kb: 198, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/constrvct-4.webp", s: "projects/constrvct/smithsonian.jpg", f: "smithsonian.jpg", n: "Constrvct", y: 2013, c: "Constrvct dress on display at the Cooper-Hewitt Smithsonian.", l: "projects/constrvct/constrvct.html", w: 2062, h: 1527, kb: 977, cats: ["fashion","web/mobile","tools","3D"] },
+  { t: "images/thumbs/gallery/constrvct-5.webp", s: "projects/constrvct/constrvct_community_designs1.jpg", f: "constrvct_community_designs1.jpg", n: "Constrvct", y: 2013, c: "A grid of dresses designed by the Constrvct community.", l: "projects/constrvct/constrvct.html", w: 1300, h: 804, kb: 716, cats: ["fashion","web/mobile","tools","3D"] },
+  { t: "images/thumbs/gallery/shapeways-2.webp", s: "projects/shapeways/vibe_white.jpg", f: "vibe_white.jpg", n: "Shapeways", y: 2012, c: "Vibe — a custom generated Soundcloud phone case.", l: "projects/shapeways/shapeways.html", w: 818, h: 545, kb: 57, cats: ["3D","web/mobile","tools"] },
+  { t: "images/thumbs/gallery/turtlelink-3.webp", s: "projects/turtlelink/seaworld5.jpg", f: "seaworld5.jpg", n: "SeaWorld TurtleLink", y: 2011, c: "TurtleLink wall featuring real sea turtle migration paths.", l: "projects/turtlelink/turtlelink.html", w: 940, h: 528, kb: 262, cats: ["spatial","hardware","3D"] },
+  { t: "images/thumbs/gallery/typeface-2.webp", s: "projects/typeface/typeface_poster.jpg", f: "typeface_poster.jpg", n: "Typeface", y: 2010, c: "Typeface project poster.", l: "projects/typeface/typeface.html", w: 800, h: 451, kb: 46, cats: ["tools"] },
+  { t: "images/thumbs/gallery/gestures-2.webp", s: "projects/gestures/Steering_Wheel_small.gif", f: "Steering_Wheel_small.gif", n: "VR Hand Gestures", y: 2020, c: "Two-handed steering wheel gesture.", l: "projects/gestures/gestures.html", w: 400, h: 400, kb: 2723, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/hack-2.webp", s: "projects/hack/hack_anim.gif", f: "hack_anim.gif", n: "Hack", y: 2019, c: "Animated character intro from the Hack educational platform.", l: "projects/hack/hack.html", w: 900, h: 601, kb: 3194, cats: ["web/mobile","tools"] },
+  { t: "images/thumbs/gallery/stagecraft-3.webp", s: "projects/stagecraft/components.jpg", f: "components.jpg", n: "ILM Stagecraft", y: 2021, c: "Stagecraft iPad app — virtual production component palette.", l: "projects/stagecraft/ilm.html", w: 2206, h: 1277, kb: 307, cats: ["tools","web/mobile"] },
 
-    </section>
+  // From art.html — the art & research pieces.
+  { t: "images/thumbs/art/colorandcraft-1.webp", s: "images/thumbs/Colorandcraft_c.webp", f: "Colorandcraft_c.webp", n: "Color & Craft", y: 2026, c: "Vibrant DIY plant kits with video tutorials", l: "https://colorandcraft.co", w: 900, h: 506, kb: 40, cats: ["craft"] },
+  { t: "images/thumbs/art/colorandcraft-2.webp", s: "projects/colorandcraft/maranta hero.jpg", f: "maranta hero.jpg", n: "Color & Craft", y: 2026, c: "Vibrant DIY plant kits with video tutorials", l: "https://colorandcraft.co", w: 3002, h: 2250, kb: 5655, cats: ["craft"] },
+  { t: "images/thumbs/art/colorandcraft-3.webp", s: "projects/colorandcraft/brevirimosa close up.jpg", f: "brevirimosa close up.jpg", n: "Color & Craft", y: 2026, c: "Vibrant DIY plant kits with video tutorials", l: "https://colorandcraft.co", w: 4284, h: 4284, kb: 2961, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-1.webp", s: "projects/art/seed.jpg", f: "seed.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 802, kb: 246, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-2.webp", s: "projects/art/spikey.jpg", f: "spikey.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 802, kb: 211, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-3.webp", s: "projects/art/lichen.jpg", f: "lichen.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 801, kb: 216, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-4.webp", s: "projects/art/holding-spikey-cup.jpg", f: "holding-spikey-cup.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 802, kb: 245, cats: ["craft"] },
+  { t: "images/thumbs/art/data-collection-1.webp", s: "projects/data_collection/gallery.jpg", f: "gallery.jpg", n: "Data Collection", y: 2014, c: "Exploring the ubiquity of personal data logging and privacy", l: null, w: 4032, h: 3024, kb: 1018, cats: ["fashion"] },
+  { t: "images/thumbs/art/data-collection-2.webp", s: "projects/data_collection/data-knitting.jpg", f: "data-knitting.jpg", n: "Data Collection", y: 2014, c: "Exploring the ubiquity of personal data logging and privacy", l: null, w: 1000, h: 750, kb: 134, cats: ["fashion"] },
+  { t: "images/thumbs/art/data-collection-3.webp", s: "projects/data_collection/gina-shirt.jpg", f: "gina-shirt.jpg", n: "Data Collection", y: 2014, c: "Exploring the ubiquity of personal data logging and privacy", l: null, w: 1440, h: 1920, kb: 284, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-1.webp", s: "projects/illuminate/illuminate-1.jpg", f: "illuminate-1.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 1200, h: 800, kb: 91, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-2.webp", s: "projects/illuminate/illuminate-2.jpg", f: "illuminate-2.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 783, h: 1200, kb: 160, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-3.webp", s: "projects/illuminate/RR1.022c.jpg", f: "RR1.022c.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 2532, h: 3444, kb: 3086, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-4.webp", s: "projects/illuminate/RR1031.jpg", f: "RR1031.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 787, h: 1200, kb: 174, cats: ["fashion"] },
+  { t: "images/thumbs/art/runes-1.webp", s: "projects/art/RunesOS.png", f: "RunesOS.png", n: "RUNES", y: 2026, c: "a tangible interface for an agentic OS, work in progress concept", l: null, w: 768, h: 1376, kb: 953, cats: ["interactive","craft","hardware"] },
+  { t: "images/thumbs/art/devices-1.webp", s: "projects/art/devices/nokia-porcelain.jpg", f: "nokia-porcelain.jpg", n: "Porcelain Devices", y: 2026, c: "concept sketches of devices made to last a lifetime", l: null, w: 1200, h: 857, kb: 158, cats: ["hardware","craft"] },
+  { t: "images/thumbs/art/devices-2.webp", s: "projects/art/devices/ipod-porcelain.jpg", f: "ipod-porcelain.jpg", n: "Porcelain Devices", y: 2026, c: "concept sketches of devices made to last a lifetime", l: null, w: 1200, h: 857, kb: 178, cats: ["hardware","craft"] },
+  { t: "images/thumbs/art/devices-3.webp", s: "projects/art/devices/gameboy-porcelain.jpg", f: "gameboy-porcelain.jpg", n: "Porcelain Devices", y: 2026, c: "concept sketches of devices made to last a lifetime", l: null, w: 1200, h: 857, kb: 134, cats: ["hardware","craft"] },
+  { t: "images/thumbs/art/vr-gestures-1.webp", s: "projects/gestures/hands_sketch.png", f: "hands_sketch.png", n: "VR Hand Gestures", y: 2020, c: "Exploration prototypes using hand tracking on a Quest", l: "projects/gestures/gestures.html", w: 1500, h: 985, kb: 323, cats: ["interactive"] },
+  { t: "images/thumbs/art/vr-gestures-2.webp", s: "projects/gestures/Picture_zoom_small.gif", f: "Picture_zoom_small.gif", n: "VR Hand Gestures", y: 2020, c: "Exploration prototypes using hand tracking on a Quest", l: "projects/gestures/gestures.html", w: 500, h: 500, kb: 2674, cats: ["interactive"] },
+  { t: "images/thumbs/art/lore-1.webp", s: "projects/lore/SF map.jpg", f: "SF map.jpg", n: "Local Lore", y: 2019, c: "A location-based scavenger hunt game set in San Francisco and Oakland.", l: "projects/lore/lore.html", w: 961, h: 720, kb: 240, cats: ["interactive"] },
+  { t: "images/thumbs/art/lore-2.webp", s: "projects/lore/Lore_main.jpg", f: "Lore_main.jpg", n: "Local Lore", y: 2019, c: "A location-based scavenger hunt game set in San Francisco and Oakland.", l: "projects/lore/lore.html", w: 1660, h: 882, kb: 194, cats: ["interactive"] },
+  { t: "images/thumbs/art/lore-3.webp", s: "projects/lore/mobile sketch 2.jpg", f: "mobile sketch 2.jpg", n: "Local Lore", y: 2019, c: "A location-based scavenger hunt game set in San Francisco and Oakland.", l: "projects/lore/lore.html", w: 1053, h: 984, kb: 292, cats: ["interactive"] },
+  { t: "images/thumbs/art/typeface-1.webp", s: "projects/typeface/typeface-screencap-3.jpg", f: "typeface-screencap-3.jpg", n: "Typeface", y: 2011, c: "Type + Facial Recognition", l: "projects/typeface/typeface.html", w: 1440, h: 900, kb: 63, cats: ["interactive"] },
+  { t: "images/thumbs/art/n12-1.webp", s: "projects/n12/N12-hallway1.jpg", f: "N12-hallway1.jpg", n: "N12 Bikini", y: 2013, c: "3D printed textile", l: "projects/n12/n12.html", w: 945, h: 630, kb: 66, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/n12-2.webp", s: "projects/n12/N12-white_detail.jpg", f: "N12-white_detail.jpg", n: "N12 Bikini", y: 2013, c: "3D printed textile", l: "projects/n12/n12.html", w: 945, h: 630, kb: 57, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/daphne-1.webp", s: "projects/art/daphne-bracelet.jpg", f: "daphne-bracelet.jpg", n: "Daphne wearable tech jewelry", y: 2014, c: "concept sketches", l: null, w: 1600, h: 1019, kb: 220, cats: ["fashion","hardware"] },
+  { t: "images/thumbs/art/daphne-2.webp", s: "projects/art/daphne-earbuds1.jpg", f: "daphne-earbuds1.jpg", n: "Daphne wearable tech jewelry", y: 2014, c: "concept sketches", l: null, w: 1200, h: 675, kb: 122, cats: ["fashion","hardware"] },
+  { t: "images/thumbs/art/shoes-1.webp", s: "projects/shoes/Laurel-pump.jpg", f: "Laurel-pump.jpg", n: "3D Printed Shoes", y: 2014, c: "Laurel pump", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 28, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-2.webp", s: "projects/shoes/Strvct-wedge-black.jpg", f: "Strvct-wedge-black.jpg", n: "3D Printed Shoes", y: 2014, c: "Strvct wedge", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 23, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-3.webp", s: "projects/shoes/shoe_black_main.jpg", f: "shoe_black_main.jpg", n: "3D Printed Shoes", y: 2014, c: "Black shoe", l: "projects/shoes/shoes.html", w: 945, h: 630, kb: 73, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-4.webp", s: "projects/shoes/Laurel-Tree-sandal.jpg", f: "Laurel-Tree-sandal.jpg", n: "3D Printed Shoes", y: 2014, c: "Laurel tree sandal", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 29, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/constrvct-1.webp", s: "projects/constrvct/smithsonian_edit.jpg", f: "smithsonian_edit.jpg", n: "CONSTRVCT", y: 2014, c: "Beautiful Users show at Smithsonian Cooper-Hewitt", l: "projects/constrvct/constrvct.html", w: 1189, h: 880, kb: 276, cats: ["fashion"] },
+  { t: "images/thumbs/art/constrvct-2.webp", s: "projects/constrvct/felicia-constrvct-dress.png", f: "felicia-constrvct-dress.png", n: "CONSTRVCT", y: 2014, c: "Felicia Day Constrvct dress", l: "projects/constrvct/constrvct.html", w: 800, h: 800, kb: 831, cats: ["fashion"] },
+  { t: "images/thumbs/art/constrvct-3.webp", s: "projects/constrvct/nervous-print-pattern.jpg", f: "nervous-print-pattern.jpg", n: "CONSTRVCT", y: 2014, c: "Nervous System print pattern", l: "projects/constrvct/constrvct.html", w: 1440, h: 1100, kb: 434, cats: ["fashion"] },
+  { t: "images/thumbs/art/ddress-1.webp", s: "projects/ddress/Ddress-selected2.jpg", f: "Ddress-selected2.jpg", n: "D.dress", y: 2011, c: "Computational couture", l: "projects/ddress/ddress.html", w: 945, h: 532, kb: 83, cats: ["fashion"] },
+  { t: "images/thumbs/art/ddress-2.webp", s: "projects/ddress/Ddress-selected3.jpg", f: "Ddress-selected3.jpg", n: "D.dress", y: 2011, c: "Computational couture", l: "projects/ddress/ddress.html", w: 945, h: 532, kb: 80, cats: ["fashion"] },
+  { t: "images/thumbs/art/modakit-1.webp", s: "projects/modakit/MODA_slides2.jpg", f: "MODA_slides2.jpg", n: "ModaKit", y: 2014, c: "Modular prototyping system for wearable tech", l: "projects/modakit/modakit.html", w: 792, h: 612, kb: 78, cats: ["fashion","interactive","hardware"] },
+  { t: "images/thumbs/art/modakit-2.webp", s: "projects/modakit/ModaKit.png", f: "ModaKit.png", n: "ModaKit", y: 2014, c: "Modular prototyping system for wearable tech", l: "projects/modakit/modakit.html", w: 600, h: 400, kb: 130, cats: ["fashion","interactive","hardware"] },
+  { t: "images/thumbs/art/dandelion-1.webp", s: "projects/dandelion/dandelion1.jpg", f: "dandelion1.jpg", n: "Dandelion", y: 2011, c: "Wind power generating wearable sculpture", l: null, w: 500, h: 333, kb: 34, cats: ["fashion","hardware","craft"] },
+  { t: "images/thumbs/art/dandelion-2.webp", s: "projects/dandelion/dandelion2a.jpg", f: "dandelion2a.jpg", n: "Dandelion", y: 2011, c: "Wind power generating wearable sculpture", l: null, w: 499, h: 571, kb: 75, cats: ["fashion","hardware","craft"] },
+  { t: "images/thumbs/art/dandelion-3.webp", s: "projects/dandelion/dandelion4.jpg", f: "dandelion4.jpg", n: "Dandelion", y: 2011, c: "Wind power generating wearable sculpture", l: null, w: 500, h: 333, kb: 47, cats: ["fashion","hardware","craft"] },
+  { t: "images/thumbs/art/viralnet-1.webp", s: "projects/viralnet/Nodes_Gradual_small.gif", f: "Nodes_Gradual_small.gif", n: "Viralnet", y: 2020, c: "3D visualization of virus genomes", l: "projects/viralnet/viralnet.html", w: 500, h: 500, kb: 13373, cats: ["data","interactive"] },
+  { t: "images/thumbs/art/viralnet-2.webp", s: "projects/viralnet/render10.png", f: "render10.png", n: "Viralnet", y: 2020, c: "3D visualization of virus genomes", l: "projects/viralnet/viralnet.html", w: 1800, h: 1200, kb: 804, cats: ["data","interactive"] },
+  { t: "images/thumbs/art/viralnet-3.webp", s: "projects/viralnet/render11.png", f: "render11.png", n: "Viralnet", y: 2020, c: "3D visualization of virus genomes", l: "projects/viralnet/viralnet.html", w: 1800, h: 1200, kb: 1349, cats: ["data","interactive"] },
+  { t: "images/thumbs/art/westfield-1.webp", s: "projects/westfield/sculpture_front.jpg", f: "sculpture_front.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 608, kb: 171, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-2.webp", s: "projects/westfield/sculpture_2.jpg", f: "sculpture_2.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 622, kb: 187, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-3.webp", s: "projects/westfield/sculpture_3.jpg", f: "sculpture_3.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 611, kb: 215, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-4.webp", s: "projects/westfield/sculpture_night1.jpg", f: "sculpture_night1.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 655, kb: 804, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-5.webp", s: "projects/westfield/fabrication1.jpg", f: "fabrication1.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 2880, h: 2160, kb: 1053, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-6.webp", s: "projects/westfield/fabrication3.jpg", f: "fabrication3.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 2880, h: 2160, kb: 1065, cats: ["sculpture","digital-fabrication"] },
+];
 
-    <!-- ── Selected work ── -->
-    <section id="work">
-      <div class="section-head">
-        <div>
-          <h2>Selected Work</h2>
-        </div>
-      </div>
-      <div class="selected-grid" id="selectedGrid"></div>
-    </section>
 
-    <div class="bottom-space"></div>
-  </main>
 
-  <footer class="site-footer">
-    <div>Mary Huang · San Francisco Bay Area</div>
+
+const FILES = [
+  { p: "classic.html", n: "Portfolio", k: "Page", s: 14489 },
+  { p: "timeline.html", n: "Timeline", k: "Page", s: 23085 },
+  { p: "images.html", n: "Images", k: "Page", s: 29211 },
+  { p: "index.html", n: "Canvas", k: "Page", s: 48294 },
+  { p: "projects/Amazon/amazon.html", n: "Amazon Made For You", k: "Project", s: 6149 },
+  { p: "projects/PoeMobile", n: "PoeMobile", k: "Folder", s: 5 },
+  { p: "projects/ar_ideas/ar_ideas.html", n: "AR Tests", k: "Project", s: 2642 },
+  { p: "projects/art", n: "art", k: "Folder", s: 15 },
+  { p: "projects/biome/biome.html", n: "Biome", k: "Project", s: 13297 },
+  { p: "projects/codeland/codeland.html", n: "Portfolio", k: "Project", s: 8033 },
+  { p: "projects/colorandcraft", n: "colorandcraft", k: "Folder", s: 7 },
+  { p: "projects/constrvct/constrvct.html", n: "CONSTRVCT", k: "Project", s: 8838 },
+  { p: "projects/dandelion", n: "dandelion", k: "Folder", s: 14 },
+  { p: "projects/data_collection", n: "data_collection", k: "Folder", s: 14 },
+  { p: "projects/ddress/ddress.html", n: "Portfolio", k: "Project", s: 5116 },
+  { p: "projects/gestures/gestures.html", n: "VR Hand Gestures", k: "Project", s: 7539 },
+  { p: "projects/hack/hack.html", n: "Portfolio : Hack", k: "Project", s: 9883 },
+  { p: "projects/hack/hack_presentation.html", n: "Hack Presentation", k: "Project", s: 4775 },
+  { p: "projects/ig88/ig88.html", n: "Portfolio", k: "Project", s: 6847 },
+  { p: "projects/illuminate", n: "illuminate", k: "Folder", s: 7 },
+  { p: "projects/impulse/impulse.html", n: "Impulse Stove", k: "Project", s: 7644 },
+  { p: "projects/kodolab", n: "kodolab", k: "Folder", s: 6 },
+  { p: "projects/lore/lore.html", n: "Portfolio", k: "Project", s: 2683 },
+  { p: "projects/modakit/modakit.html", n: "ModaKit", k: "Project", s: 3072 },
+  { p: "projects/n12/n12.html", n: "Portfolio", k: "Project", s: 4835 },
+  { p: "projects/ppc", n: "ppc", k: "Folder", s: 8 },
+  { p: "projects/quill/quill.html", n: "Quill", k: "Project", s: 8549 },
+  { p: "projects/quill_gallery/quill_gallery.html", n: "Portfolio", k: "Project", s: 5021 },
+  { p: "projects/rose/rose.html", n: "Portfolio", k: "Project", s: 6864 },
+  { p: "projects/runes", n: "runes", k: "Folder", s: 2 },
+  { p: "projects/shapeways/shapeways.html", n: "Portfolio", k: "Project", s: 6884 },
+  { p: "projects/shield/shield.html", n: "Portfolio", k: "Project", s: 8857 },
+  { p: "projects/shoes/shoes.html", n: "3D Printed Shoes", k: "Project", s: 8618 },
+  { p: "projects/sols/sols.html", n: "Portfolio", k: "Project", s: 3831 },
+  { p: "projects/stagecraft/ilm.html", n: "ILM Stagecraft", k: "Project", s: 3952 },
+  { p: "projects/storyboard/storyboard.html", n: "Portfolio", k: "Project", s: 3484 },
+  { p: "projects/tales/tales.html", n: "Star Wars: Tales From the Galaxy's Edge", k: "Project", s: 10625 },
+  { p: "projects/test/index.html", n: "Color & Craft Tutorial", k: "Project", s: 6185 },
+  { p: "projects/turtlelink/turtlelink.html", n: "Portfolio", k: "Project", s: 5482 },
+  { p: "projects/typeface/typeface.html", n: "Portfolio", k: "Project", s: 3744 },
+  { p: "projects/viralnet/viralnet.html", n: "Portfolio", k: "Project", s: 4481 },
+  { p: "projects/westfield/westfield.html", n: "Portfolio", k: "Project", s: 4836 },
+  { p: "projects/yuniku", n: "yuniku", k: "Folder", s: 3 },
+  { p: "projects/zines", n: "zines", k: "Folder", s: 1 },
+];
+
+const CATS = { all: 'All', '3d': '3D', mobile: 'Mobile', web: 'Web', hardware: 'Hardware' };
+
+/* ═══════════════════════════════════════════════════════════════
+   Canvas: pan + zoom-free infinite world
+   ═══════════════════════════════════════════════════════════════ */
+const desk = document.getElementById('desk');
+const world = document.getElementById('world');
+let pan = { x: 0, y: 0 };
+let zoom = 1;
+let touched = false; // set once the user pans or zooms by hand
+let trackpad = false; // Mac trackpad: two-finger scroll pans, pinch zooms
+const ZMIN = 0.3, ZMAX = 2.5;
+let zTop = 10;
+const isSmall = () => window.innerWidth < 700;
+
+function applyPan() {
+  world.style.transform = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
+  drawDots();
+  desk.style.backgroundPosition = `${pan.x}px ${pan.y}px`;
+}
+/* The dot grid is part of the paper, so spacing tracks the zoom continuously and
+   the dots scale with it — no jumps, and they never bulk up as you zoom out. */
+function drawDots() {
+  const step = 24 * zoom;
+  const r = Math.min(1.5, Math.max(0.35, 0.9 * zoom));
+  desk.style.backgroundImage = `radial-gradient(var(--dot) ${r.toFixed(2)}px, transparent ${(r + 0.4).toFixed(2)}px)`;
+  desk.style.backgroundSize = `${step}px ${step}px`;
+}
+/* Zoom about a point in screen coordinates. */
+function zoomAt(cx, cy, factor) {
+  touched = true;
+  const next = Math.min(ZMAX, Math.max(ZMIN, zoom * factor));
+  if (next === zoom) return;
+  // keep the world point under the cursor fixed
+  pan.x = cx - (cx - pan.x) * (next / zoom);
+  pan.y = cy - (cy - pan.y) * (next / zoom);
+  zoom = next;
+  applyPan();
+  const z = document.getElementById('zoomPill');
+  if (z) z.textContent = Math.round(zoom * 100) + '%';
+}
+/* The scrollable element under the pointer, if it can actually scroll that way. */
+function scrollableUnder(e) {
+  let n = e.target;
+  while (n && n !== world && n !== desk && n.nodeType === 1) {
+    const st = getComputedStyle(n);
+    const canY = /auto|scroll/.test(st.overflowY) && n.scrollHeight > n.clientHeight + 1;
+    const canX = /auto|scroll/.test(st.overflowX) && n.scrollWidth > n.clientWidth + 1;
+    if (canY || canX) return n;
+    n = n.parentNode;
+  }
+  return null;
+}
+(function initPan() {
+  let start = null;
+  desk.addEventListener('pointerdown', e => {
+    if (e.target !== desk && e.target !== world) return;
+    touched = true;
+    start = { x: e.clientX - pan.x, y: e.clientY - pan.y };
+    desk.classList.add('panning');
+    desk.setPointerCapture(e.pointerId);
+  });
+  desk.addEventListener('pointermove', e => {
+    if (!start) return;
+    pan.x = e.clientX - start.x; pan.y = e.clientY - start.y; applyPan();
+  });
+  const end = () => { start = null; desk.classList.remove('panning'); };
+  desk.addEventListener('pointerup', end);
+  desk.addEventListener('pointercancel', end);
+  desk.addEventListener('wheel', e => {
+    // Hovering a scrollable window body? Scroll that instead of zooming.
+    const sc = scrollableUnder(e);
+    if (sc) {
+      e.preventDefault();
+      sc.scrollTop += e.deltaY / zoom;
+      sc.scrollLeft += e.deltaX / zoom;
+      return;
+    }
+    e.preventDefault();
+    // A Mac trackpad pinch arrives as a wheel event with ctrlKey set.
+    const pinch = e.ctrlKey || e.metaKey;
+    if (trackpad && !pinch) { touched = true; pan.x -= e.deltaX; pan.y -= e.deltaY; applyPan(); return; }
+    const d = (e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY) * (pinch ? 3 : 1);
+    zoomAt(e.clientX, e.clientY, Math.exp(-d * 0.0015));
+  }, { passive: false });
+})();
+
+document.addEventListener('dragstart', e => e.preventDefault());
+
+/* Generic drag for anything with a handle */
+function makeDraggable(el, handle, onStart) {
+  let start = null;
+  handle.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    if (e.target.closest('a, button, input, .lights, .resize')) return;
+    start = { x: e.clientX, y: e.clientY, l: el.offsetLeft, t: el.offsetTop };
+    handle.setPointerCapture(e.pointerId);
+    onStart && onStart();
+    e.stopPropagation();
+  });
+  handle.addEventListener('pointermove', e => {
+    if (!start) return;
+    el.style.left = (start.l + (e.clientX - start.x) / zoom) + 'px';
+    el.style.top = (start.t + (e.clientY - start.y) / zoom) + 'px';
+  });
+  const end = () => { start = null; el.classList.remove('lift'); };
+  handle.addEventListener('pointerup', end);
+  handle.addEventListener('pointercancel', end);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Windows
+   ═══════════════════════════════════════════════════════════════ */
+const wins = {};
+function focusWin(w) {
+  document.querySelectorAll('.win.active').forEach(x => x.classList.remove('active'));
+  w.classList.add('active');
+  w.style.zIndex = ++zTop;
+}
+function createWindow({ id, title, x, y, w, h, content, noscroll, fullside, onOpen }) {
+  const el = document.createElement('div');
+  el.className = 'win' + (fullside ? ' fullside' : '');
+  el.id = 'win-' + id;
+  el.style.cssText = `left:${x}px; top:${y}px; width:${w}px; height:${h === 'auto' ? 'auto' : h + 'px'}; z-index:${++zTop}`;
+  el.innerHTML = `
+    <div class="titlebar" title="${title}">
+      <div class="lights"><b class="c" title="Close"></b><b class="m" title="Minimize"></b><b class="z" title="Zoom"></b></div>
+    </div>
+    <div class="body ${noscroll ? 'noscroll' : ''}"></div>
+    <div class="resize"></div>`;
+  const body = el.querySelector('.body');
+  if (typeof content === 'string') body.innerHTML = content; else body.appendChild(content);
+  world.appendChild(el);
+
+  makeDraggable(el, el.querySelector('.titlebar'), () => focusWin(el));
+  el.addEventListener('pointerdown', () => focusWin(el), true);
+  el.querySelector('.lights .c').addEventListener('click', () => hideWin(id));
+  el.querySelector('.lights .m').addEventListener('click', () => hideWin(id));
+  el.querySelector('.lights .z').addEventListener('click', () => {
+    const big = el.dataset.big === '1';
+    if (big) { el.style.width = el.dataset.w; el.style.height = el.dataset.h; el.dataset.big = '0'; }
+    else { el.dataset.w = el.style.width; el.dataset.h = el.style.height; el.style.width = Math.min(w * 1.5, window.innerWidth - 40) + 'px'; if (h !== 'auto') el.style.height = Math.min(h * 1.5, window.innerHeight - 100) + 'px'; el.dataset.big = '1'; }
+  });
+  // resize
+  const rz = el.querySelector('.resize');
+  let rs = null;
+  rz.addEventListener('pointerdown', e => { rs = { x: e.clientX, y: e.clientY, w: el.offsetWidth, h: el.offsetHeight }; rz.setPointerCapture(e.pointerId); e.stopPropagation(); });
+  rz.addEventListener('pointermove', e => { if (!rs) return; el.style.width = Math.max(240, rs.w + (e.clientX - rs.x) / zoom) + 'px'; el.style.height = Math.max(160, rs.h + (e.clientY - rs.y) / zoom) + 'px'; });
+  rz.addEventListener('pointerup', () => rs = null);
+
+  wins[id] = { el, onOpen, home: { x, y } };
+  onOpen && onOpen(el);
+  return el;
+}
+function hideWin(id) { wins[id].el.classList.add('hidden'); syncDock(); }
+function showWin(id) {
+  const w = wins[id];
+  const el = w.el;
+  if (!el.classList.contains('hidden')) { focusWin(el); centerOn(el); return; }
+  el.classList.remove('hidden');
+  focusWin(el);
+  centerOn(el);
+  syncDock();
+}
+function toggleWin(id) { wins[id].el.classList.contains('hidden') ? showWin(id) : hideWin(id); }
+function centerOn(el) {
+  // Pan so the window is visible on screen (only if off-screen).
+  const r = el.getBoundingClientRect();
+  const vw = window.innerWidth, vh = window.innerHeight;
+  if (r.left > 40 && r.top > 50 && r.right < vw - 40 && r.bottom < vh - 80) return;
+  pan.x = Math.round((vw - el.offsetWidth * zoom) / 2 - el.offsetLeft * zoom);
+  pan.y = Math.round((vh - el.offsetHeight * zoom) / 2 - el.offsetTop * zoom);
+  world.style.transition = 'transform 0.4s cubic-bezier(.2,.7,.2,1)';
+  applyPan();
+  setTimeout(() => world.style.transition = '', 450);
+}
+
+/* Bounding box of everything on the board, in world coordinates. */
+function contentBounds() {
+  const items = world.querySelectorAll('.win:not(.hidden), .loose');
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  items.forEach(el => {
+    const l = el.offsetLeft, t = el.offsetTop;
+    x0 = Math.min(x0, l); y0 = Math.min(y0, t);
+    x1 = Math.max(x1, l + el.offsetWidth); y1 = Math.max(y1, t + el.offsetHeight);
+  });
+  if (!isFinite(x0)) return null;
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}
+/* Pick a zoom + pan that frames the whole board in the current window. */
+function fitContent(animate) {
+  const b = contentBounds();
+  if (!b) return;
+  const padX = 32, top = 56, bottom = 88; // menu bar + dock
+  const vw = window.innerWidth, vh = window.innerHeight;
+  // On phones, framing the whole board would make it unreadable — frame the
+  // widest window instead and let the rest be reached by panning.
+  const wide = isSmall() ? Math.max(...[...world.querySelectorAll('.win:not(.hidden)')].map(el => el.offsetWidth)) : b.w;
+  const fit = isSmall()
+    ? (vw - padX) / wide
+    : Math.min((vw - padX * 2) / b.w, (vh - top - bottom) / b.h);
+  zoom = Math.min(ZMAX, Math.max(ZMIN, Math.min(fit, 1)));
+  if (isSmall()) {
+    const el = wins.about.el;
+    pan.x = Math.round((vw - el.offsetWidth * zoom) / 2 - el.offsetLeft * zoom);
+    pan.y = Math.round(top - el.offsetTop * zoom);
+    if (animate) world.style.transition = 'transform 0.4s cubic-bezier(.2,.7,.2,1)';
+    applyPan();
+    if (animate) setTimeout(() => world.style.transition = '', 450);
+    return;
+  }
+  pan.x = Math.round((vw - b.w * zoom) / 2 - b.x * zoom);
+  pan.y = Math.round(top + (vh - top - bottom - b.h * zoom) / 2 - b.y * zoom);
+  if (animate) world.style.transition = 'transform 0.4s cubic-bezier(.2,.7,.2,1)';
+  applyPan();
+  if (animate) setTimeout(() => world.style.transition = '', 450);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: About (Readme)
+   ═══════════════════════════════════════════════════════════════ */
+function aboutContent() {
+  return `<div class="about">
+    <div class="row">
+      <img src="images/2025_mary.jpg" alt="Mary Huang">
+      <div><b style="font-size:18px">Mary Huang</b><small>San Francisco Bay Area</small></div>
+    </div>
+    <h1>I design and build 0&#8239;→&#8239;1 interfaces for new kinds of technology.</h1>
+    <p>I've worked on frontier technology experiences for 15 years, across over a dozen new launches at startups, big companies, and studios.</p>
+    <p>I architect core interaction principles, distill complexity into elegant systems, and figure out all the messy connecting bits to ship. I've always been a designer who can code, and now agentic coding has become my primary medium.</p>
+    <p>Let's seek the bold visions of what technology could be.</p>
     <div class="links">
-      <a href="mailto:rhymeandreason1.0@gmail.com">rhymeandreason1.0@gmail.com</a>
+      <a href="mailto:rhymeandreason1.0@gmail.com">Email</a>
       <a href="https://www.linkedin.com/in/maryhuang1/" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://github.com/rhymeandreason" target="_blank" rel="noopener">GitHub</a>
+      <a href="classic.html">Classic site</a>
     </div>
-  </footer>
+  </div>`;
+}
 
-  <script>
-    // Selected work. Edit this list to change what appears on the homepage;
-    // the full history lives in timeline.html.
-    const selected = [
-      { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.webp', meta: 'Impulse Labs · 2024', title: 'Impulse Stove', desc: 'A 15kW induction stove with a novel knob interface. Solo designer, launched at CES.' },
-      { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.webp', meta: 'Earthshot Labs · 2022', title: 'Biome', desc: 'ML and AR mobile platform for measuring rainforests. 10x faster than traditional field surveys.' },
-      { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.webp', meta: 'ILM Immersive · 2020', title: "Tales from the Galaxy's Edge", desc: 'Spatial and 2D UI/UX for the Star Wars VR adventure game, shipped in 5 months.' },
-      { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.webp', meta: 'Industrial Light & Magic · 2022', title: 'ILM Stagecraft', desc: 'iPad app for controlling virtual production stages. Nominated for a Technical Emmy.' },
-      { href: 'projects/Amazon/amazon.html', img: 'images/thumbs/Amazon_c2.webp', meta: 'Amazon · 2019', title: 'Amazon Made For You', desc: 'Design custom-fit t-shirts in 3D. Consumer mobile app and the pattern generation engine.' },
-      { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.webp', meta: 'Independent · 2020', title: 'VR Hand Gestures', desc: 'Exploration prototypes of hand-gesture-based UI on Quest.' },
-      { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.webp', meta: 'Oculus Story Studio · 2016', title: 'Oculus Quill', desc: 'VR-native illustration and animation tool. Foundational interaction patterns for long work sessions.' },
-      { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.webp', meta: 'Continuum Fashion · 2014', title: 'ModaKit', desc: 'A modular toolkit for wearable computing.' },
-      { href: 'projects/constrvct/constrvct.html', img: 'images/thumbs/Constrvct_c.webp', meta: 'Continuum Fashion · 2013', title: 'Constrvct', desc: 'Browser-based 3D design tool and commerce site for custom-printed dresses. Techstars 2013.' },
-      // { href: 'projects/hack/hack.html', img: 'images/thumbs/Hack_c2.webp', meta: 'Hack Computer · 2019', title: 'Hack', desc: 'Linux platform and coding IDE for teaching kids ages 8–14 to code.' },
-      // { href: 'projects/shield/shield.html', img: 'images/thumbs/Shield_c.webp', meta: 'Shield AI · 2018', title: 'Shield.ai', desc: 'Mobile and desktop apps for piloting and managing autonomous drones.' },
-      // { href: 'projects/viralnet/viralnet.html', img: 'images/thumbs/Viralnet_c.webp', meta: 'UC Berkeley JGI · 2020', title: 'Viralnet', desc: 'Force-directed 3D visualization of virus genome relationships.' },
-    ];
-    const grid = document.getElementById('selectedGrid');
-    selected.forEach(p => {
-      const a = document.createElement('a');
-      a.className = 'project-card';
-      a.href = p.href;
-      a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy"><p class="meta">${p.meta}</p><h3 class="title">${p.title}</h3><p class="desc">${p.desc}</p>`;
-      grid.appendChild(a);
+/* ═══════════════════════════════════════════════════════════════
+   App: Daily Note (a working recreation)
+   ═══════════════════════════════════════════════════════════════ */
+function dailyContent() {
+  const root = document.createElement('div');
+  root.className = 'daily';
+  const now = new Date();
+  const dayName = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  let tasks = [
+    { t: 'Browse the projects', d: false },
+    { t: 'Ponder what we can now do with AI', d: false },
+    { t: 'Update website', d: true },
+    { t: 'Ship a biology lab for the browser', d: true },
+    { t: 'Say hi → rhymeandreason1.0@gmail.com', d: false },
+  ];
+
+  const check = '<i class="ph-bold ph-check"></i>';
+  const list = document.createElement('ul');
+  const render = () => {
+    list.innerHTML = '';
+    tasks.forEach((task, i) => {
+      const li = document.createElement('li');
+      li.className = task.d ? 'done' : '';
+      li.innerHTML = `<div class="box">${check}</div><span></span>`;
+      li.querySelector('span').textContent = task.t;
+      li.addEventListener('click', () => { task.d = !task.d; render(); });
+      list.appendChild(li);
     });
+  };
+  render();
 
-  </script>
+  // calendar
+  const y = now.getFullYear(), m = now.getMonth();
+  const first = new Date(y, m, 1).getDay();
+  const dim = new Date(y, m + 1, 0).getDate();
+  const prevDim = new Date(y, m, 0).getDate();
+  let cells = '';
+  'SMTWTFS'.split('').forEach(d => cells += `<div class="h">${d}</div>`);
+  for (let i = first - 1; i >= 0; i--) cells += `<div class="d o">${prevDim - i}</div>`;
+  for (let d = 1; d <= dim; d++) cells += `<div class="d ${d === now.getDate() ? 'today' : ''}">${d}</div>`;
+  const rem = (7 - ((first + dim) % 7)) % 7;
+  for (let d = 1; d <= rem; d++) cells += `<div class="d o">${d}</div>`;
 
+  root.innerHTML = `<h2>${dayName}</h2>`;
+  root.appendChild(list);
+  const add = document.createElement('div');
+  add.className = 'add';
+  add.innerHTML = `<span style="font-size:18px">+</span><input placeholder="Add a task and press Enter…">`;
+  add.querySelector('input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.value.trim()) { tasks.push({ t: e.target.value.trim(), d: false }); e.target.value = ''; render(); }
+  });
+  root.appendChild(add);
+  const cal = document.createElement('div');
+  cal.className = 'cal';
+  cal.innerHTML = `<h3>${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</h3><div class="grid">${cells}</div>`;
+  root.appendChild(cal);
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Git Pulse (punchcard of commits; dots keep arriving)
+   ═══════════════════════════════════════════════════════════════ */
+function pulseContent() {
+  const root = document.createElement('div');
+  root.className = 'pulse';
+  const counts = [2, 26, 21, 44, 33, 29, 15];
+  const now = new Date();
+  const label = i => {
+    if (i === 0) return 'Today';
+    if (i === 1) return 'Yesterday';
+    const d = new Date(now); d.setDate(now.getDate() - i);
+    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  };
+  const total = () => counts.reduce((a, b) => a + b, 0);
+  root.innerHTML = `<h2>Git Pulse</h2>
+    <div class="stats">
+      <div><b id="pTotal">${total()}</b><small>commits</small></div>
+      <div><b>${counts.length}</b><small>days active</small></div>
+      <div><b>${counts.length}</b><small>day streak</small></div>
+    </div>
+    <div class="rows"></div>`;
+  const rows = root.querySelector('.rows');
+  counts.forEach((c, i) => {
+    const r = document.createElement('div'); r.className = 'row';
+    r.innerHTML = `<label>${label(i)}</label><div class="dots">${'<i></i>'.repeat(c)}</div>`;
+    rows.appendChild(r);
+  });
+  // a new commit lands every so often
+  setInterval(() => {
+    if (document.hidden) return;
+    counts[0]++;
+    const dots = rows.querySelector('.row .dots');
+    const i = document.createElement('i'); i.className = 'n'; dots.appendChild(i);
+    root.querySelector('#pTotal').textContent = total();
+  }, 9000);
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Modes (click to cycle; recolors the canvas a touch)
+   ═══════════════════════════════════════════════════════════════ */
+const MODES = ['Code', 'Design', 'Brainstorm'];
+const MODE_TINT = { Code: '#f2f4f7', Design: '#f7f5f0', Brainstorm: '#fbf4ea' };
+let modeIdx = 1;
+function setMode(i) {
+  modeIdx = (i + MODES.length) % MODES.length;
+  const name = MODES[modeIdx];
+  document.querySelectorAll('.modes .disc span').forEach((s, j) => {
+    s.className = j === modeIdx ? 'on' : (Math.abs(j - modeIdx) === 1 ? 'dim' : '');
+  });
+  document.documentElement.style.setProperty('--paper', MODE_TINT[name]);
+}
+function modesContent() {
+  const root = document.createElement('div');
+  root.className = 'modes';
+  root.innerHTML = `<div class="disc" title="Click to switch mode"><small>Studio</small>${MODES.map(m => `<span>${m}</span>`).join('')}</div>`;
+  root.querySelector('.disc').addEventListener('click', () => setMode(modeIdx + 1));
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Studio Notes
+   ═══════════════════════════════════════════════════════════════ */
+function notesContent() {
+  return `<div class="notes">
+    <div class="tabs"><span>Media</span><b>Notes</b><span>Artifacts</span></div>
+    <div class="cards">
+      <div class="card">
+        <h4>Personal Personal Computing</h4>
+        <img src="projects/ppc/media-gallery-2.webp" alt="Studio media gallery">
+        <p>I'm replacing my daily consumer apps with self-built, minimal versions and living in them for months. 30 apps so far, built in Tauri on Mac. This canvas borrows a few of them.</p>
+        <a class="link" href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio</a>
+        <a class="link" href="https://rhymeandreason.studio/journal/personal-personal-computing.html" target="_blank" rel="noopener">the essay</a>
+        <time>Jun 2026</time>
+      </div>
+      <div class="card">
+        <h4>How I work</h4>
+        <p>Architect the core interaction principle first. Then distill the complexity into a system. Then do all the messy connecting bits so it actually ships.</p>
+        <time>a note to self</time>
+      </div>
+      <div class="card">
+        <h4>Kodolab</h4>
+        <img src="projects/kodolab/kodo-membrane.webp" alt="Kodolab membrane lesson">
+        <p>A web platform for learning biology in 3D. An AI sandbox lets students and teachers generate lessons of their own, with seconds between iterations.</p>
+        <a class="link" href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org</a>
+        <time>2026</time>
+      </div>
+      <div class="card">
+        <h4>Teaching at USF</h4>
+        <p>UI/UX for a mix of designers and engineers. Three pillars: design fundamentals for native mobile, prototyping with AI, and responsible accessibility and ethics.</p>
+        <time>Jan 2026 – now</time>
+      </div>
+      <div class="card">
+        <h4>The need to stop working</h4>
+        <p>It's diminishing returns after 9pm. I gotta remember this. The work is going at such a satisfying pace that I keep going…oh just one more feature.</p>
+        <time>Jun 2026</time>
+      </div>
+      <div class="card">
+        <h4>Where I've been</h4>
+        <p>Impulse Labs · Earthshot Labs · ILM · Amazon · Shield AI · Oculus Story Studio · Google · Shapeways · Continuum Fashion · CIID</p>
+        <a class="link" href="timeline.html">full timeline</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Project windows
+   ═══════════════════════════════════════════════════════════════ */
+function projContent({ meta, title, desc, href, media, external }) {
+  const target = external ? ' target="_blank" rel="noopener"' : '';
+  return `<div class="proj">
+    <div class="media ${media.cls || ''}">${media.html}</div>
+    <div class="cap">
+      <div><small>${meta}</small><b>${title}</b><p>${desc}</p></div>
+      <a class="go" href="${href}"${target}>Open <i class="ph ph-arrow-up-right"></i></a>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Gallery
+   ═══════════════════════════════════════════════════════════════ */
+function galleryContent() {
+  const root = document.createElement('div');
+  root.className = 'app';
+  const side = document.createElement('div'); side.className = 'side';
+  const pane = document.createElement('div'); pane.className = 'pane';
+  const SECTIONS = [
+    { id: 'media', name: 'Media', icon: 'ph-images-square', build: mediaPane },
+    { id: 'notes', name: 'Notes', icon: 'ph-note', build: notesPane },
+    { id: 'files', name: 'File Directory', icon: 'ph-folder-open', build: filesPane },
+    { id: 'settings', name: 'Settings', icon: 'ph-gear', build: settingsPane },
+  ];
+  const open = (id, arg) => {
+    pane.innerHTML = '';
+    pane.scrollTop = 0;
+    pane.classList.toggle('fixed', id === 'media'); // the media pane scrolls its own sheet
+    pane.appendChild(SECTIONS.find(x => x.id === id).build(arg));
+    side.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.s === id));
+  };
+  openSection = open;
+  SECTIONS.forEach(sec => {
+    const b = document.createElement('button');
+    b.dataset.s = sec.id;
+    b.innerHTML = `<i class="ph ${sec.icon}"></i>${sec.name}`;
+    b.addEventListener('click', () => open(sec.id));
+    side.appendChild(b);
+  });
+  root.appendChild(side); root.appendChild(pane);
+  open('notes');
+  return root;
+}
+
+/* Set by the app so one pane can hand off to another. */
+let openSection = null;
+
+/* Filter pills shared by the Media and Notes panes. */
+function filterBar(cats, cur, onPick) {
+  const el = document.createElement('div'); el.className = 'filters';
+  Object.entries(cats).forEach(([c, n]) => {
+    const b = document.createElement('button'); b.dataset.c = c; b.textContent = n;
+    b.classList.toggle('on', c === cur());
+    b.addEventListener('click', () => {
+      onPick(c);
+      el.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.c === cur()));
+    });
+    el.appendChild(b);
+  });
+  return el;
+}
+
+/* Media — stills from the image gallery (images.html) plus the art & research pieces,
+   browsed like a light table. Edit the ART list above to change what shows up. */
+const ART_CATS = { all: 'All', 'web/mobile': 'Web + Mobile', spatial: 'Spatial', '3D': '3D', hardware: 'Hardware', fashion: 'Fashion', tools: 'Tools', craft: 'Craft', interactive: 'Interactive', 'digital-fabrication': 'Fabrication', sculpture: 'Sculpture', data: 'Data' };
+const fileSize = kb => kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
+function mediaPane(folder) {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex; flex-direction:column; height:100%; min-height:0';
+  const body = document.createElement('div');
+  body.className = 'scroller';
+  body.style.cssText = 'flex:1; min-height:0';
+  let cur = 'all';
+  const inFolder = m => !folder || m.s.startsWith(folder + '/');
+  const shown = () => ART.filter(m => inFolder(m) && (cur === 'all' || m.cats.includes(cur)));
+
+  /* Contact sheet: thumbnail, filename, dimensions and weight. */
+  const sheet = () => {
+    body.style.overflow = 'auto';
+    bar.style.display = '';
+    const grid = document.createElement('div'); grid.className = 'media-grid';
+    shown().forEach((m, i) => {
+      const b = document.createElement('button');
+      b.title = `${m.n} · ${m.y}${m.c ? ' — ' + m.c : ''}`;
+      b.innerHTML = `<div class="cell"><img src="${m.t}" alt="${m.c || m.n}" loading="lazy"></div>
+        <span class="fn">${m.f}</span><span class="sz">${m.w}×${m.h} · ${fileSize(m.kb)}</span>`;
+      b.addEventListener('click', () => show(i));
+      grid.appendChild(b);
+    });
+    body.innerHTML = ''; body.appendChild(grid);
+  };
+
+  /* Detail: the full image, larger, without leaving the window. */
+  const show = i => {
+    const list = shown();
+    const m = list[i];
+    body.style.overflow = 'hidden';
+    bar.style.display = 'none';
+    const v = document.createElement('div'); v.className = 'viewer';
+    v.innerHTML = `
+      <div class="bar">
+        <button class="back"><i class="ph ph-arrow-left"></i>All media</button>
+        <span class="count">${i + 1} of ${list.length}</span>
+      </div>
+      <div class="frame">
+        <button class="nav prev" title="Previous"><i class="ph ph-caret-left"></i></button>
+        <div class="stage"><img src="${m.s}" alt="${m.c || m.n}"></div>
+        <button class="nav next" title="Next"><i class="ph ph-caret-right"></i></button>
+      </div>
+      <div class="info">
+        <div><b>${m.n} · ${m.y}</b><em>${m.c || ''}</em></div>
+        <div class="meta">${m.f}<br>${m.w} × ${m.h} · ${fileSize(m.kb)}${m.l ? ` · <a href="${m.l}"${/^https?:/.test(m.l) ? ' target="_blank" rel="noopener"' : ''}>open project <i class="ph ph-arrow-up-right"></i></a>` : ''}</div>
+      </div>`;
+    v.querySelector('.back').addEventListener('click', sheet);
+    v.querySelector('.prev').addEventListener('click', () => show((i - 1 + list.length) % list.length));
+    v.querySelector('.next').addEventListener('click', () => show((i + 1) % list.length));
+    body.innerHTML = ''; body.appendChild(v);
+  };
+
+  const bar = filterBar(ART_CATS, () => cur, c => { cur = c; sheet(); });
+  bar.style.flex = 'none';
+  if (folder) {
+    // Arrived from a folder in File Directory: show what that folder holds.
+    const scope = document.createElement('button');
+    scope.className = 'on';
+    scope.innerHTML = `<i class="ph ph-folder"></i>${folder}<i class="ph ph-x"></i>`;
+    scope.addEventListener('click', () => openSection('media'));
+    bar.insertBefore(scope, bar.firstChild);
+  }
+  wrap.appendChild(bar); wrap.appendChild(body);
+  sheet();
+  return wrap;
+}
+
+/* Notes — the portfolio grid, with the write-ups from the homepage. */
+function notesPane() {
+  const wrap = document.createElement('div');
+  const list = document.createElement('div'); list.className = 'workgrid';
+  let cur = 'all';
+  const render = () => {
+    list.innerHTML = '';
+    PROJECTS.filter(p => cur === 'all' || p.tags.includes(cur)).forEach(p => {
+      const a = document.createElement('a');
+      a.href = p.href;
+      if (p.href.startsWith('http')) { a.target = '_blank'; a.rel = 'noopener'; }
+      a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy">
+        <div class="txt">
+          <small>${p.meta}</small><b>${p.title}</b><p>${p.desc || ''}</p>
+          <div class="tags">${p.tags.map(t => `<span>${CATS[t]}</span>`).join('')}</div>
+        </div>`;
+      list.appendChild(a);
+    });
+  };
+  wrap.appendChild(filterBar(CATS, () => cur, c => { cur = c; render(); }));
+  wrap.appendChild(list);
+  render();
+  return wrap;
+}
+
+/* File Directory — the pages this site is actually made of. */
+/* Folders have no page of their own, so send them to the page that features them:
+   the project card in Notes first, then the Media library, then an explicit home.
+   Nothing here links to archive.html. */
+const FOLDER_FALLBACK = { 'projects/ppc': 'https://rhymeandreason.studio' };
+function folderTarget(dir) {
+  const inside = path => path && path.startsWith(dir + '/');
+  const proj = PROJECTS.find(p => inside(p.href) || inside(p.img));
+  if (proj) return { href: proj.href };
+  if (ART.some(m => inside(m.s))) return { media: dir }; // its pictures live in the Media tab
+  return FOLDER_FALLBACK[dir] ? { href: FOLDER_FALLBACK[dir] } : null;
+}
+function filesPane() {
+  const wrap = document.createElement('div'); wrap.className = 'files';
+  const hd = document.createElement('div'); hd.className = 'hd';
+  hd.innerHTML = '<span>Name</span><span>Kind</span><span class="z">Size</span>';
+  wrap.appendChild(hd);
+  FILES.forEach(f => {
+    const folder = f.k === 'Folder';
+    const target = folder ? folderTarget(f.p) : { href: f.p };
+    if (!target) return; // nothing to open — don't list a dead row
+    const el = document.createElement('a');
+    if (target.href) {
+      el.href = target.href;
+      if (/^https?:/.test(target.href)) { el.target = '_blank'; el.rel = 'noopener'; }
+    } else {
+      el.href = '#';
+      el.addEventListener('click', e => { e.preventDefault(); openSection('media', target.media); });
+    }
+    const size = folder ? f.s + ' items' : (f.s / 1024).toFixed(0) + ' KB';
+    const glyph = folder ? 'ph-fill ph-folder' : f.k === 'Page' ? 'ph ph-browser' : 'ph ph-file-html';
+    el.innerHTML = `<span class="nm"><i class="ic-f ${glyph} ${folder ? 'folder' : f.k === 'Page' ? 'page' : ''}"></i><span>${f.n}</span></span>
+      <span class="k">${f.k}</span><span class="z">${size}</span>`;
+    el.title = target.href ? `${f.p} → ${target.href}` : `${f.p} → Media`;
+    wrap.appendChild(el);
+  });
+  return wrap;
+}
+
+/* A little on/off switch, the way a settings panel wants one. */
+function toggle(on, onChange) {
+  const b = document.createElement('button');
+  b.className = 'switch';
+  b.setAttribute('role', 'switch');
+  const sync = () => { b.classList.toggle('on', on); b.setAttribute('aria-checked', on); };
+  b.addEventListener('click', () => { on = !on; sync(); onChange(on); });
+  sync();
+  return b;
+}
+
+/* Media thumbnail size, shared by the settings panel and the grid. */
+let mediaCell = 124;
+function setMediaCell(px) {
+  mediaCell = px;
+  document.documentElement.style.setProperty('--media-cell', px + 'px');
+}
+
+/* Settings — the knobs this canvas actually has. */
+function settingsPane() {
+  const wrap = document.createElement('div'); wrap.className = 'settings';
+  const row = (label, hint, control) => {
+    const r = document.createElement('div'); r.className = 'row';
+    const t = document.createElement('div');
+    t.innerHTML = `<b>${label}</b><em>${hint}</em>`;
+    r.appendChild(t); r.appendChild(control);
+    wrap.appendChild(r);
+    return r;
+  };
+
+  const seg = document.createElement('div'); seg.className = 'seg';
+  MODES.forEach((m, i) => {
+    const b = document.createElement('button'); b.textContent = m;
+    b.classList.toggle('on', i === modeIdx);
+    b.addEventListener('click', () => {
+      setMode(i);
+      seg.querySelectorAll('button').forEach((x, j) => x.classList.toggle('on', j === modeIdx));
+    });
+    seg.appendChild(b);
+  });
+  row('Mode', 'Tints the paper behind everything', seg);
+
+  const dots = toggle(!desk.classList.contains('nodots'), on => desk.classList.toggle('nodots', !on));
+  row('Dot grid', 'The paper texture on the desktop', dots);
+
+  const SIZES = [[96, 'Small'], [124, 'Medium'], [168, 'Large']];
+  const gridSeg = document.createElement('div'); gridSeg.className = 'seg';
+  SIZES.forEach(([px, name]) => {
+    const b = document.createElement('button'); b.textContent = name;
+    b.classList.toggle('on', px === mediaCell);
+    b.addEventListener('click', () => {
+      setMediaCell(px);
+      gridSeg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.textContent === name));
+    });
+    gridSeg.appendChild(b);
+  });
+  row('Media grid', 'Thumbnail size in the Media library', gridSeg);
+
+  const tp = toggle(trackpad, on => { trackpad = on; });
+  row('Trackpad controls', 'Two-finger scroll pans, pinch zooms', tp);
+
+  const fit = document.createElement('button');
+  fit.textContent = 'Fit to window';
+  fit.addEventListener('click', () => { touched = false; fitContent(true); });
+  row('Framing', 'Re-frame every window and note', fit);
+
+  const reopen = document.createElement('button');
+  reopen.textContent = 'Reopen all';
+  reopen.addEventListener('click', () => {
+    Object.keys(wins).forEach(id => wins[id].el.classList.remove('hidden'));
+    syncDock(); touched = false; fitContent(true);
+  });
+  row('Windows', 'Bring back anything you closed', reopen);
+
+  return wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Loose items on the board
+   ═══════════════════════════════════════════════════════════════ */
+function addLoose(html, x, y, rot, cls, w) {
+  const el = document.createElement('div');
+  el.className = 'loose ' + (cls || '');
+  el.style.cssText = `left:${x}px; top:${y}px; transform: rotate(${rot || 0}deg); z-index: 5;${w ? ' width:' + w + 'px;' : ''}`;
+  el.innerHTML = html;
+  world.appendChild(el);
+  makeDraggable(el, el, () => { el.classList.add('lift'); el.style.zIndex = ++zTop; });
+  return el;
+}
+const polaroid = (src, cap) => `<img src="${src}" alt="${cap}" loading="lazy"><span>${cap}</span>`;
+
+/* ═══════════════════════════════════════════════════════════════
+   Layout
+   ═══════════════════════════════════════════════════════════════ */
+const APPS = [
+  { id: 'about', name: 'Readme', icon: 'readme' },
+  { id: 'daily', name: 'Daily Note', icon: 'daily' },
+  { id: 'pulse', name: 'Git Pulse', icon: 'pulse' },
+  { sep: true },
+  { id: 'gallery', name: 'Gallery', icon: 'gallery' },
+];
+const ICONS = {
+  readme: '<span class="ic" style="background:#1a1917">Hi</span>',
+  files: '<span class="ic" style="background:#7f9cc9"><i class="ph-fill ph-folder" style="font-size:19px;color:#fff"></i></span>',
+  daily: '<span class="ic" style="background:#f4f1ea;color:#1a1917;border:1px solid #ddd">' + new Date().getDate() + '</span>',
+  pulse: '<span class="ic" style="background:#6b625a"><i class="ph ph-pulse" style="font-size:19px;color:#fff"></i></span>',
+  modes: '<span class="ic" style="background:#0b0b0b;border-radius:50%"><i style="width:9px;height:9px;border-radius:50%;background:#e6407a;display:block"></i></span>',
+  studio: '<span class="ic" style="background:#e6407a">S</span>',
+  ppc: '<span class="ic" style="background:#1a1917;font-size:9px;letter-spacing:.05em">PPC</span>',
+  kodo: '<span class="ic" style="background:#2b4fd8"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="15" r="3"/><path d="M10.5 10.5l3 3"/></svg></span>',
+  impulse: '<span class="ic" style="background:#d1440f"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="7"/><path d="M12 7v5"/></svg></span>',
+  tales: '<span class="ic" style="background:#3a2f5c"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></span>',
+  quill: '<span class="ic" style="background:#3d8f8f"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 20c4-8 10-14 16-16-1 6-6 13-14 15"/><path d="M4 20l6-6"/></svg></span>',
+  gallery: '<span class="ic" style="background:#fff;border:1px solid #ddd"><i class="ph-fill ph-images-square" style="font-size:20px;color:#e6407a"></i></span>',
+};
+
+function buildDock() {
+  const dock = document.getElementById('dock');
+  APPS.forEach(a => {
+    if (a.sep) { const s = document.createElement('div'); s.className = 'sep'; dock.appendChild(s); return; }
+    const b = document.createElement('button');
+    b.dataset.tip = a.name; b.dataset.id = a.id; b.innerHTML = ICONS[a.icon];
+    b.addEventListener('click', () => toggleWin(a.id));
+    dock.appendChild(b);
+  });
+}
+function syncDock() {
+  document.querySelectorAll('#dock button').forEach(b => {
+    const w = wins[b.dataset.id];
+    b.classList.toggle('open', !!w && !w.el.classList.contains('hidden'));
+  });
+}
+
+function layout() {
+  const small = isSmall();
+  // World coordinates, laid out to match the reference composition:
+  // readme far left, gallery tall in the middle, daily note top right,
+  // git pulse under it, the two stickies tucked under the readme.
+  const W = window.innerWidth;
+
+  createWindow({ id: 'about', title: 'readme.txt', x: 40, y: 100, w: 420, h: 'auto', content: aboutContent() });
+  createWindow({ id: 'daily', title: 'Daily Note', x: 1450, y: 100, w: 360, h: 700, content: dailyContent() });
+  createWindow({ id: 'gallery', title: 'Gallery', x: 500, y: 60, w: 900, h: 700, noscroll: true, fullside: true, content: galleryContent() });
+  createWindow({ id: 'pulse', title: 'Git Pulse', x: 1120, y: 900, w: 500, h: 'auto', content: pulseContent() });
+
+  addLoose(`<b>Personal Personal Computing</b><p>Replacing my daily apps with self-built, minimal versions and living in them. 30 apps so far, in Tauri on Mac. The windows here are a few of them.</p><a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio <i class="ph ph-arrow-up-right"></i></a>`, 40, 900, -2, 'sticky postit');
+  addLoose(`<b>Kodolab</b><p>A web platform for learning biology in 3D. An AI sandbox lets students and teachers generate lessons of their own, seconds between iterations.</p><a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org <i class="ph ph-arrow-up-right"></i></a>`, 300, 780, 3, 'sticky postit pink');
+
+  // Frame the whole composition in whatever window we were given.
+  if (small) {
+    Object.values(wins).forEach(w => { w.el.style.width = Math.min(parseInt(w.el.style.width), W - 24) + 'px'; });
+  }
+  fitContent(false);
+  focusWin(wins.about.el);
+  syncDock();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Boot
+   ═══════════════════════════════════════════════════════════════ */
+buildDock();
+layout();
+setMode(1);
+/* Battery, the way a menu bar shows it. Needs the Battery Status API;
+   where the browser doesn't expose it (Safari, Firefox), show nothing. */
+function initBattery() {
+  const el = document.getElementById('battery');
+  if (!navigator.getBattery) { el.style.display = 'none'; return; }
+  navigator.getBattery().then(b => {
+    const paint = () => {
+      const pct = Math.round(b.level * 100);
+      el.querySelector('.pct').textContent = pct + '%';
+      const icon = b.charging ? 'ph-battery-charging'
+        : pct > 75 ? 'ph-battery-full'
+        : pct > 45 ? 'ph-battery-high'
+        : pct > 20 ? 'ph-battery-medium'
+        : pct > 8 ? 'ph-battery-low'
+        : 'ph-battery-empty';
+      el.querySelector('i').className = 'ph ' + icon;
+      el.classList.toggle('low', pct <= 20 && !b.charging);
+      el.classList.toggle('charging', b.charging);
+      el.title = `Battery ${pct}%${b.charging ? ' · charging' : ''}`;
+    };
+    paint();
+    ['levelchange', 'chargingchange'].forEach(e => b.addEventListener(e, paint));
+  }).catch(() => el.style.display = 'none');
+}
+initBattery();
+
+const tick = () => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); };
+tick(); setInterval(tick, 15000);
+let refitT;
+// images settle after boot and change auto heights
+window.addEventListener('load', () => { if (!touched) fitContent(false); });
+window.addEventListener('resize', () => {
+  if (touched) return; // the view is theirs once they've panned or zoomed
+  clearTimeout(refitT);
+  refitT = setTimeout(() => fitContent(true), 150);
+});
+</script>
 </body>
 </html>

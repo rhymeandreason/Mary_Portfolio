@@ -1,11 +1,6 @@
 {
   "version": "0.0.1",
   "configurations": [
-    {
-      "name": "portfolio",
-      "runtimeExecutable": "node",
-      "runtimeArgs": [".claude/server.js"],
-      "port": 8765
-    }
+    { "name": "portfolio", "runtimeExecutable": "python3", "runtimeArgs": ["-m", "http.server", "4321"], "port": 4321 }
   ]
 }
