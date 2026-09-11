@@ -84,6 +84,23 @@
       transition: transform 0.4s ease;
     }
     .feature-media:hover img { transform: scale(1.02); }
+    .feature-tri {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      border: none;
+      border-radius: 0;
+      background: none;
+      overflow: visible;
+      aspect-ratio: auto;
+    }
+    .feature-tri img {
+      aspect-ratio: 5 / 9;
+      border-radius: 6px;
+      border: 1px solid #ececec;
+      background: #f2f0ec;
+      object-position: top;
+    }
     .feature-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -231,8 +248,10 @@
       </div>
 
       <article class="feature">
-        <a class="feature-media" href="https://rhymeandreason.studio" target="_blank" rel="noopener">
-          <img src="projects/ppc/notes.webp" alt="Notes app: a project-first notebook with text, checklist and table blocks" loading="lazy">
+        <a class="feature-media feature-tri" href="https://rhymeandreason.studio" target="_blank" rel="noopener">
+          <img src="projects/ppc/media-gallery-2.webp" alt="Media Gallery: image organizer for a project folder" loading="lazy">
+          <img src="projects/ppc/daily-note.webp" alt="Daily Note: one list that carries forward each day" loading="lazy">
+          <img src="projects/ppc/git-pulse.webp" alt="Git Pulse: a punchcard of commits" loading="lazy">
         </a>
         <div class="feature-text">
           <h3>Personal Personal Computing</h3>
