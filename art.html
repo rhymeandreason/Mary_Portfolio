@@ -2,58 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Mary Huang : Art</title>
+  <title>Mary Huang : Art &amp; Research</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600,700" rel="stylesheet" type="text/css">
-  <link rel="stylesheet" href="css/normalize.css">
-  <link rel="stylesheet" href="css/skeleton.css">
-  <link rel="stylesheet" href="css/main.css">
-
   <link rel="icon" type="image/png" href="images/favicon.png">
-
+  <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
+  <link rel="stylesheet" href="css/site.css">
   <style>
-    .images-page {
+    /* Art & Research gallery */
+    .art-research {
+      display: block;
       max-width: 1400px;
       margin: 0 auto;
-      padding: 0 24px 80px;
+      padding: 0 60px 80px;
+      box-sizing: border-box;
     }
-    .controls {
+    .art-research.active { display: block; }
+    .art-controls {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 24px;
-      margin: 24px 0 32px;
+      gap: 20px;
+      margin-bottom:40px;
       font-size: 1.3rem;
     }
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
+    .art-filters { display: flex; flex-wrap: wrap; gap: 10px; }
     .filter-btn {
+      flex: 0 0 auto;
       background: none;
       border: 1px solid #ddd;
       border-radius: 999px;
-      padding: 6px 14px;
+      padding: 6px 16px 8px;
       font: inherit;
-      color: #555;
+      font-size: 1.5rem;
+      color: #aaa;
       cursor: pointer;
       letter-spacing: 0.02em;
       text-transform: capitalize;
+      transition: color 0.2s ease, background 0.2s ease;
     }
     .filter-btn:hover { border-color: #888; color: #000; }
     .filter-btn.active { background: #000; color: #fff; border-color: #000; }
-    .empty {
-      color: #999;
-      font-size: 1.4rem;
-      padding: 40px 0;
-      text-align: center;
-    }
-    .masonry {
-      column-count: 4;
-      column-gap: 12px;
-    }
+
+@media (max-width: 800px) {
+  .art-controls{ margin-bottom: 24px;}
+  .art-filters{ gap:5px; overflow-x: auto; flex-wrap: nowrap; margin-top:12px;}
+  .filter-btn {padding: 4px 14px 4px; }
+}
+
+    .empty { color: #999; font-size: 1.4rem; padding: 40px 0; text-align: center; }
+    .masonry { column-count: 4; column-gap: 12px; }
     .masonry a {
       display: block;
       margin: 0 0 12px;
@@ -63,466 +60,219 @@
       background: #ececec;
       position: relative;
     }
-    .masonry img,
-    .masonry video {
+    .masonry img, .masonry video {
       display: block;
       width: 100%;
       opacity: 0;
       transition: transform 0.4s ease, opacity 0.25s ease;
     }
-    .masonry a.loaded img,
-    .masonry a.loaded video {
-      opacity: 1;
-    }
-    .masonry a.loaded:hover img,
-    .masonry a.loaded:hover video {
-      transform: scale(1.03);
-      opacity: 0.92;
-    }
+    .masonry a.loaded img, .masonry a.loaded video { opacity: 1; }
+    .masonry a.loaded:hover img, .masonry a.loaded:hover video { transform: scale(1.03); opacity: 0.92; }
     .masonry a video { min-height: 120px; }
 
     #tooltip {
-      position: fixed;
-      pointer-events: none;
-      background: rgba(20, 20, 20, 0.94);
-      color: #fff;
-      font-size: 1.2rem;
-      line-height: 1.4;
-      padding: 8px 12px;
-      border-radius: 4px;
-      max-width: 260px;
-      opacity: 0;
-      transform: translateY(4px);
+      position: fixed; pointer-events: none;
+      background: rgba(20,20,20,0.94); color: #fff;
+      font-size: 1.2rem; line-height: 1.4;
+      padding: 8px 12px; border-radius: 4px; max-width: 260px;
+      opacity: 0; transform: translateY(4px);
       transition: opacity 0.15s ease, transform 0.15s ease;
-      z-index: 1000;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      z-index: 1000; box-shadow: 0 4px 16px rgba(0,0,0,0.18);
     }
     #tooltip.visible { opacity: 1; transform: translateY(0); }
     #tooltip .tt-title { font-weight: 700; display: block; margin-bottom: 2px; }
     #tooltip .tt-desc { color: rgba(255,255,255,0.8); }
 
-    /* Lightbox */
     .lightbox {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: rgba(255,255,255,0.97);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 2000;
-      opacity: 0;
-      transition: opacity 0.2s ease;
+      display: none; align-items: center; justify-content: center;
+      z-index: 2000; opacity: 0; transition: opacity 0.2s ease;
     }
     .lightbox.open { display: flex; opacity: 1; }
-    .lightbox-stage {
-      position: relative;
-      max-width: 90vw;
-      max-height: 88vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 18px;
-    }
-    .lightbox-media {
-      max-width: 90vw;
-      max-height: 76vh;
-      display: block;
-      object-fit: contain;
-      background: transparent;
-    }
-    .lightbox-meta {
-      color: #000;
-      text-align: center;
-      font-size: 1.3rem;
-      max-width: 640px;
-      line-height: 1.5;
-    }
-    .lightbox-meta .lb-title {
-      font-weight: 600;
-      font-size: 1.4rem;
-      letter-spacing: -0.01em;
-      display: block;
-      margin-bottom: 2px;
-      color: #000;
-    }
+    .lightbox-stage { position: relative; max-width: 90vw; max-height: 88vh; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+    .lightbox-media { max-width: 90vw; max-height: 76vh; display: block; object-fit: contain; background: transparent; }
+    .lightbox-meta { color: #000; text-align: center; font-size: 1.3rem; max-width: 640px; line-height: 1.5; }
+    .lightbox-meta .lb-title { font-weight: 600; font-size: 1.4rem; letter-spacing: -0.01em; display: block; margin-bottom: 2px; color: #000; }
     .lightbox-meta .lb-desc { color: rgba(0,0,0,0.55); }
-    .lightbox-meta .lb-more {
-      display: inline-block;
-      margin-top: 8px;
-      margin-left: 12px;
-      color: rgba(0,0,0,0.5);
-      font-weight: 400;
-      font-size: 1.2rem;
-    }
+    .lightbox-meta .lb-more { display: inline-block; margin-top: 8px; margin-left: 12px; color: rgba(0,0,0,0.5); font-weight: 400; font-size: 1.2rem; }
     .lightbox-meta .lb-more:hover { color: #000; }
     .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 60px;
-      height: 60px;
-      border: none;
-      background: transparent;
-      color: rgba(0,0,0,0.4);
-      font-size: 48px;
-      line-height: 1;
-      font-weight: 200;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: color 0.15s ease;
-      font-family: inherit;
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 60px; height: 60px; border: none; background: transparent;
+      color: rgba(0,0,0,0.4); font-size: 48px; line-height: 1; font-weight: 200;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: color 0.15s ease; font-family: inherit;
     }
     .lb-nav:hover { color: #000; }
     .lb-prev { left: 32px; }
     .lb-next { right: 32px; }
     .lb-close {
-      position: absolute;
-      top: 24px;
-      right: 28px;
-      width: 60px;
-      height: 60px;
-      border: none;
-      background: transparent;
-      color: rgba(0,0,0,0.5);
-      font-size: 48px;
-      font-weight: 300;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: absolute; top: 24px; right: 28px;
+      width: 60px; height: 60px; border: none; background: transparent;
+      color: rgba(0,0,0,0.5); font-size: 48px; font-weight: 300;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
       font-family: inherit;
     }
     .lb-close:hover { color: #000; }
-    .lb-counter {
-      position: absolute;
-      top: 28px;
-      left: 32px;
-      color: rgba(0,0,0,0.4);
-      font-size: 1.2rem;
-      letter-spacing: .06em;
-      font-variant-numeric: tabular-nums;
-    }
+    .lb-counter { position: absolute; top: 28px; left: 32px; color: rgba(0,0,0,0.4); font-size: 1.2rem; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
     .lb-nav[disabled] { opacity: 0.2; cursor: default; }
 
-    @media (max-width: 1100px) {
-      .masonry { column-count: 3; }
+    @media (max-width: 1100px) { .masonry { column-count: 3; } }
+    @media (max-width: 800px) { .masonry { column-count: 2; } }
+
+    .view-toggle {
+      display: inline-flex;
+      gap: 4px;
+      background: #f0f0f0;
+      border-radius: 999px;
+      padding: 4px;
     }
-    @media (max-width: 750px) {
-      .masonry { column-count: 2; }
+    .view-toggle button {
+      background: none;
+      border: none;
+      font: inherit;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #777;
+      padding: 6px 16px;
+      cursor: pointer;
+      border-radius: 999px;
+      transition: color 0.2s ease, background 0.2s ease;
+      margin: 0px;
     }
-    @media (max-width: 450px) {
-      .masonry { column-count: 1; }
+    .view-toggle button:hover{
+      color:#111;
     }
+    .view-toggle button.active {
+      color: #fff;
+      background: #000;
+    }
+    .art-research { padding: 0 60px 80px; }
+    @media (max-width: 800px) { .art-research { padding: 0 24px 60px; } }
   </style>
 </head>
 <body>
 
-  <div class="container index">
-    <div class="row top-nav">
-      <div class="one-half column">
-        <h5 class="title null">Mary Huang &mdash; Art</h5>
-      </div>
-      <div class="one-half column nav-right">
-        <p><a href="about.html">about me</a></p>
-      </div>
+  <header class="site-header">
+    <a class="site-name" href="index.html">Mary Huang</a>
+    <nav class="site-nav">
+      <a href="index.html#work">Work</a>
+      <a href="art.html" class="current">Art &amp; Research</a>
+      <span class="icons">
+        <a href="https://www.linkedin.com/in/maryhuang1/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.45-2.13 2.94v5.67H9.37V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45C23.2 24 24 23.23 24 22.28V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+        </a>
+        <a href="mailto:rhymeandreason1.0@gmail.com" aria-label="Email">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        </a>
+      </span>
+    </nav>
+  </header>
+
+  <div class="wrap">
+    <div class="page-intro">
+      <h1>Art &amp; Research</h1>
+      <p>Personal and exploratory work: computational fashion, 3D-printed textiles, wearables, ceramics, interactive prototypes, and concept sketches. Click any image to see the set.</p>
     </div>
   </div>
 
-  <div class="images-page">
-    <div class="controls">
-      <div class="filters" id="filters"></div>
+  <section class="art-research" id="artResearch">
+    <div class="art-controls">
+      <div class="art-filters" id="filters"></div>
     </div>
-
     <div id="gallery"></div>
-  </div>
+  </section>
+
+  <footer class="site-footer">
+    <div>Mary Huang · San Francisco Bay Area</div>
+    <div class="links">
+      <a href="mailto:rhymeandreason1.0@gmail.com">rhymeandreason1.0@gmail.com</a>
+      <a href="https://www.linkedin.com/in/maryhuang1/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/rhymeandreason" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </footer>
 
   <script>
-    /* =============================================================
-       EDIT HERE — projects, media, captions, and filters all live below.
-       Each project has:
-         slug      unique key
-         name      display name
-         year      sort/group year
-         cats      filter categories (must appear in `categories` below)
-         caption   default caption shown in tooltip + lightbox
-         link      "See more" URL in lightbox; null/false = no link
-         base      folder prefix for media (default: projects/<slug>/)
-         media     array of strings or { src, caption } objects.
-                   Strings can be a filename (resolved against base) or
-                   an absolute path starting with images/, projects/, or http.
-                   Videos are auto-detected by .mp4/.m4v/.mov/.webm extension.
-                   Comment a line out with // to hide that media item.
-       Order in this array = display order on the page.
-    ============================================================= */
+    /* ============ Art & Research gallery ============ */
+    const artCategories = ['all', 'fashion', 'digital-fabrication', 'interactive', 'craft', 'hardware'];
+    const artProjects = [
+      { slug: 'colorandcraft', name: 'Color & Craft', year: 2026, cats: ['craft'], caption: 'Vibrant DIY plant kits with video tutorials', link: 'https://colorandcraft.co', media: ['images/thumbs/Colorandcraft_c.webp','PlantWall.mp4','maranta hero.jpg','brevirimosa close up.jpg',
+      //'polka-dot-plant.jpeg'
+    ] },
+    { slug: 'seeds', name: 'Seed & lichen', year: 2026, cats: ['craft'], caption: 'semi-functional ceramics in organic forms', link: null, media: ['projects/art/seed.jpg','projects/art/spikey.jpg','projects/art/lichen.jpg','projects/art/holding-spikey-cup.jpg'] },
+      { slug: 'data_collection', name: 'Data Collection', year: 2014, cats: ['fashion'], caption: 'Exploring the ubiquity of personal data logging and privacy', link: null, media: ['gallery.jpg','data-knitting.jpg', 'gina-shirt.jpg'] },
+      { slug: 'illuminate', name: 'Illuminate', year: 2017, cats: ['fashion'], caption: 'Modern dance performance about the Big Bang, collab with Indelible Dance', link: null, media: ['illuminate-1.jpg','illuminate-2.jpg','RR1.022c.jpg','RR1031.jpg'] },
+      { slug: 'Runes', name: 'RUNES', year: 2026, cats: ['interactive', 'craft','hardware'], caption: 'a tangible interface for an agentic OS, work in progress concept', link: null, media: ['projects/art/RunesOS.png'] },
 
-    const categories = ['all', 'fashion', 'digital-fabrication', 'interactive'];
+      { slug: 'devices', name: 'Porcelain Devices', year: 2026, cats: ['hardware','craft'], caption: 'concept sketches of devices made to last a lifetime', link: null, base: 'projects/art/devices/', media: ['nokia-porcelain.jpg','ipod-porcelain.jpg','gameboy-porcelain.jpg'] },
+    /*
+      { slug: 'earthshot_zine', name: 'The Earthshot', year: 2022, cats: ['craft'], caption: 'A zine about ecological restoration and optimism', link: null, media: ['projects/art/earthshot_zine.jpg'] },
+    */
+      { slug: 'ar_ideas', name: 'AR Board Game Prototype', year: 2019, cats: ['interactive'], link: 'projects/ar_ideas/ar_ideas.html', media: ['Fox_cards.mp4'] },
+      { slug: 'vr_gestures', name: 'VR Hand Gestures', year: 2020, cats: ['interactive'], caption: 'Exploration prototypes using hand tracking on a Quest', link: 'projects/gestures/gestures.html', base: 'projects/gestures/', media: ['hands_sketch.png','Picture_zoom_small.gif','Map_Zoom.mp4'] },
+      { slug: 'lore', name: 'Local Lore', year: 2019, cats: ['interactive'], caption: 'A location-based scavenger hunt game set in San Francisco and Oakland.', link: 'projects/lore/lore.html', base: 'projects/lore/', media: ['SF map.jpg','map-zoom.m4v','Lore_main.jpg','mobile sketch 2.jpg'] },
+      { slug: 'typeface', name: 'Typeface', year: 2011, cats: ['interactive'], caption: 'Type + Facial Recognition', link: 'projects/typeface/typeface.html', media: ['TYPEFACE_alpha.mp4','typeface-screencap-1.jpg','typeface-screencap-3.jpg'] },
+      { slug: 'n12', name: 'N12 Bikini', year: 2013, cats: ['fashion','digital-fabrication'], caption: '3D printed textile', link: 'projects/n12/n12.html', media: ['N12-bikini-set-top.jpg','N12-detail.jpg','N12-hallway1.jpg','N12-white_detail.jpg'] },
+      { slug: 'daphne', name: 'Daphne wearable tech jewelry', year: 2014, cats: ['fashion','hardware'], caption: 'concept sketches', link: null, media: ['projects/art/daphne-bracelet.jpg', 'projects/art/daphne-earbuds1.jpg'] },
 
-    const projects = [
-      {
-        slug: 'colorandcraft', name: 'Color & Craft', year: 2026,
-        cats: ['craft'],
-        caption: 'Vibrant DIY plant kits with video tutorials',
-        link: 'https://colorandcraft.co',
-        media: [
-          'images/thumbs/Colorandcraft_c.webp',
-          'plant-wall.jpg',
-          'maranta hero.jpg',
-          'brevirimosa close up.jpg',
-          'polka-dot-plant.jpeg',
-        ],
-      },
-      {
-        slug: 'earthshot_zine', name: 'The Earthshot', year: 2022,
-        cats: ['craft'],
-        caption: 'A zine about ecological restoration and optimism',
-        link: null,
-        media: [
-          'projects/art/earthshot_zine.jpg',
-        ],
-      },
-      {
-        slug: 'data_collection', name: 'Data Collection', year: 2014,
-        cats: ['fashion'],
-        caption: 'Exploring the ubiquity of personal data logging and privacy',
-        link: null,
-        media: [
-          'gallery.jpg',
-          // 'map-negligee.jpg',
-          // 'map-negligee-closeup2.jpg',
-          // 'mary-card.png',
-          // 'gina-card.png',
-          // 'oscar-card.png',
-          // 'oscar-shirt.jpg',
-          'gina-shirt.jpg',
-          'mary-1export.m4v',
-        ],
-      },
-      {
-        slug: 'art', name: 'Pablo', year: 2020,
-        cats: ['craft', 'illustration'],
-        caption: 'Stop motion animation of a lonely cubist romantic.',
-        link: null,
-        media: ['pablo_clip.mp4'],
-      },
-      {
-        slug: 'illuminate', name: 'Illuminate', year: 2017,
-        cats: ['fashion'],
-        caption: 'Modern dance performance about the Big Bang, collab with Indelible Dance',
-        link: null,
-        media: [
-          'illuminate-1.jpg',
-          'illuminate-2.jpg',
-          'RR1.022c.jpg',
-          'RR1031.jpg',
-          // 'dancers.jpg',
-        ],
-      },
-      {
-        slug: 'ar_ideas', name: 'AR Board Game Prototype', year: 2019,
-        cats: ['interactive'],
-        link: 'projects/ar_ideas/ar_ideas.html',
-        media: ['Fox_cards.mp4'],
-      },
-      {
-        slug: 'vr_gestures', name: 'VR Hand Gestures', year: 2020,
-        cats: ['interactive'],
-        link: 'projects/gestures/gestures.html',
-        base: 'projects/gestures/',
-        media: ['hands_sketch.png','Picture_zoom_small.gif','Map_Zoom.mp4'],
-      },
-      {
-        slug: 'lore', name: 'Local Lore', year: 2019,
-        cats: ['interactive'],
-        caption: 'A location-based scavenger hunt game set in San Francisco and Oakland.',
-        link: 'projects/lore/lore.html',
-        base: 'projects/lore/',
-        media: [
-          'Lore_main.jpg',
-          'map-zoom.m4v',
-          'mobile sketch.jpg',
-          'mobile sketch 2.jpg',
-        ],
-      },
-      {
-        slug: 'lore_illustrations', name: 'Lore Illustrations', year: 2019,
-        cats: ['illustration'],
-        caption: 'Illustrations from the Local Lore project.',
-        link: 'projects/lore/lore.html',
-        base: 'projects/lore/',
-        media: [
-          'SF map.jpg',
-          'SF_places.jpg',
-          // 'SF icons.jpg',
-          // 'oakland_places.jpg',
-          // 'map styles.jpg',
-          // 'clues.jpg',
-        ],
-      },
-      {
-        slug: 'typeface', name: 'Typeface', year: 2011,
-        cats: ['interactive'],
-        caption: 'Type + Facial Recognition',
-        link: 'projects/typeface/typeface.html',
-        media: [
-          'TYPEFACE_alpha.mp4',
-          'typeface-screencap-1.jpg',
-          'typeface-screencap-3.jpg',
-          // 'typeface-screencap-5.jpg',
-          // 'typeface-screencap-7.jpg',
-          // 'typeface-screencap-9.jpg',
-          // 'typeface-writing-1.jpg',
-        ],
-      },
-      {
-        slug: 'n12', name: 'N12 Bikini', year: 2013,
-        cats: ['fashion', 'digital-fabrication'],
-        caption: '3D printed textile',
-        link: 'projects/n12/n12.html',
-        media: [
-          'N12-bikini-set-top.jpg',
-          'N12-detail.jpg',
-          // 'N12-bikini-seamless2.jpg',
-          // 'N12-bikini-seamless-detail1.jpg',
-          'N12-hallway1.jpg',
-          'N12-white_detail.jpg',
-        ],
-      },
-      {
-        slug: 'shoes', name: '3D Printed Shoes', year: 2014,
-        cats: ['fashion', 'digital-fabrication'],
-        link: 'projects/shoes/shoes.html',
-        media: [
-          { src: 'Daphne-Leaves-1.jpg',     caption: 'Daphne shoe' },
-          { src: 'Laurel-pump.jpg',         caption: 'Laurel pump' },
-          { src: 'Laurel-shoe-on-model.jpg',caption: 'Laurel on model' },
-          { src: 'Laurel_timelapse2.gif',   caption: 'Laurel timelapse' },
-          { src: 'Strvct-wedge-black.jpg',  caption: 'Strvct wedge' },
-          { src: 'shoe_butterfly.jpg',      caption: 'Butterfly shoe' },
-          { src: 'shoe_black_main.jpg',     caption: 'Black shoe' },
-          { src: 'Laurel-Tree-sandal.jpg',  caption: 'Laurel tree sandal' },
-        ],
-      },
-      {
-        slug: 'constrvct', name: 'Constrvct', year: 2014,
-        cats: ['fashion'],
-        link: 'projects/constrvct/constrvct.html',
-        media: [
-          { src: 'CONSTRVCT_composite1.jpg',        caption: 'Digital to physical dress' },
-          { src: 'GeekChic.jpg',                    caption: 'Photoshoot at MIT' },
-          { src: 'smithsonian_edit.jpg',            caption: 'Beautiful Users show at Smithsonian Cooper-Hewitt' },
-          { src: 'constrvct_community_designs1.jpg',caption: 'Constrvct.com community designs' },
-          // { src: 'constrvct_community_designs2.jpg', caption: 'Constrvct.com community designs' },
-          { src: 'felicia-constrvct-dress.png',     caption: 'Felicia Day Constrvct dress' },
-          { src: 'nervous-print-pattern.jpg',       caption: 'Nervous System print pattern' },
-          'Screencap_6_2015.mp4',
-        ],
-      },
-      {
-        slug: 'ddress', name: 'D.dress', year: 2011,
-        cats: ['fashion'],
-        caption: 'Computational couture',
-        link: 'projects/ddress/ddress.html',
-        media: [
-          'Ddress-selected1.jpg',
-          'Ddress-selected2.jpg',
-          'Ddress-selected3.jpg',
-          'dress1.jpg',
-          // 'dress2.jpg',
-          // 'dress3.jpg',
-        ],
-      },
-      {
-        slug: 'modakit', name: 'ModaKit', year: 2014,
-        cats: ['fashion', 'interactive'],
-        caption: 'Modular prototyping system for wearable tech',
-        link: 'projects/modakit/modakit.html',
-        media: [
-          'MODA_slides.jpg',
-          'MODA_slides1.jpg',
-          'MODA_slides2.jpg',
-          'MODA_slides4.jpg',
-        ],
-      },
-      {
-        slug: 'rose', name: 'Google Rose', year: 2015,
-        cats: ['fashion', 'interactive'],
-        caption: 'Generative fashion design',
-        link: 'projects/rose/rose.html',
-        media: [
-          'rose-main.png',
-          // 'rose_runway_poster.png',
-          'rose-sketch.png',
-          'Rose_Step4.m4v',
-          'rose_step2_poster.png',
-          // 'generate-0.jpg',
-          // 'generate-1.jpg',
-          // 'generate-2.jpg',
-        ],
-      },
-      {
-        slug: 'shapeways', name: 'Shapeways', year: 2013,
-        cats: ['digital-fabrication'],
-        link: 'projects/shapeways/shapeways.html',
-        media: [
-          { src: 'yuniku.m4v',  caption: 'Custom 3D printed ceramics' },
-          { src: 'sake1.jpg',   caption: 'Custom 3D printed ceramics' },
-          { src: 'sake2.jpg',   caption: 'Custom 3D printed ceramics' },
-          { src: 'sake3.jpg',   caption: 'Custom 3D printed ceramics' },
-          // { src: 'sake4.jpg',   caption: 'Shapeways sake' },
-          { src: 'vibe_white.jpg', caption: 'Soundcloud generated phone case' },
-          { src: 'vibe_group.jpg', caption: 'Soundcloud generated phone case' },
-        ],
-      },
-      {
-        slug: 'westfield', name: 'Westfield', year: 2015,
-        cats: ['sculpture', 'digital-fabrication'],
-        caption: 'Concept for large scale outdoor sculpture',
-        link: 'projects/westfield/westfield.html',
-        media: [
-          'sculpture_front.jpg',
-          'sculpture_2.jpg',
-          'sculpture_3.jpg',
-          'sculpture_night1.jpg',
-          // 'sculpture_night2.jpg',
-          // 'sculpture-parts.jpg',
-           'fabrication1.jpg',
-          'fabrication3.jpg',
-        ],
-      },
+      { slug: 'shoes', name: '3D Printed Shoes', year: 2014, cats: ['fashion','digital-fabrication'], link: 'projects/shoes/shoes.html', media: [
+        { src: 'Daphne-Leaves-1.jpg', caption: 'Daphne shoe' },
+        { src: 'Laurel-pump.jpg', caption: 'Laurel pump' },
+        { src: 'Laurel-shoe-on-model.jpg', caption: 'Laurel on model' },
+        { src: 'Laurel_timelapse2.gif', caption: 'Laurel timelapse' },
+        { src: 'Strvct-wedge-black.jpg', caption: 'Strvct wedge' },
+        { src: 'shoe_butterfly.jpg', caption: 'Butterfly shoe' },
+        { src: 'shoe_black_main.jpg', caption: 'Black shoe' },
+        { src: 'Laurel-Tree-sandal.jpg', caption: 'Laurel tree sandal' },
+      ] },
+      { slug: 'constrvct', name: 'CONSTRVCT', year: 2014, cats: ['fashion'], link: 'projects/constrvct/constrvct.html', media: [
+        { src: 'CONSTRVCT_composite1.jpg', caption: 'Digital to physical dress' },
+        { src: 'GeekChic.jpg', caption: 'Photoshoot at MIT' },
+        { src: 'smithsonian_edit.jpg', caption: 'Beautiful Users show at Smithsonian Cooper-Hewitt' },
+        { src: 'constrvct_community_designs1.jpg', caption: 'constrvct.com community designs' },
+        { src: 'felicia-constrvct-dress.png', caption: 'Felicia Day Constrvct dress' },
+        { src: 'nervous-print-pattern.jpg', caption: 'Nervous System print pattern' },
+        'Screencap_6_2015.mp4',
+      ] },
+      { slug: 'ddress', name: 'D.dress', year: 2011, cats: ['fashion'], caption: 'Computational couture', link: 'projects/ddress/ddress.html', media: ['dress1.jpg','Ddress-selected1.jpg','Ddress-selected2.jpg','Ddress-selected3.jpg'] },
+      { slug: 'modakit', name: 'ModaKit', year: 2014, cats: ['fashion','interactive','hardware'], caption: 'Modular prototyping system for wearable tech', link: 'projects/modakit/modakit.html', media: ['MODA_slides.jpg','MODA_slides2.jpg','ModaKit.png'] },
+      { slug: 'dandelion', name: 'Dandelion', year: 2011, cats: ['fashion','hardware','craft'], caption: 'Wind power generating wearable sculpture', link: null, media: ['Dandelion.mp4','dandelion1.jpg','dandelion2a.jpg','dandelion4.jpg'] },
+    /*
+      { slug: 'rose', name: 'Google Rose', year: 2015, cats: ['fashion','interactive'], caption: 'Generative fashion design', link: 'projects/rose/rose.html', media: ['rose-sketch.png','Rose_Step4.m4v','rose_step2_poster.png','rose-main.png'] },
+      { slug: 'shapeways', name: 'Shapeways', year: 2013, cats: ['digital-fabrication','interactive'], link: 'projects/shapeways/shapeways.html', media: [
+        { src: 'yuniku.m4v', caption: 'Custom 3D printed ceramics' },
+        //{ src: 'sake1.jpg', caption: 'Custom 3D printed ceramics' },
+        { src: 'sake2.jpg', caption: 'Custom 3D printed ceramics' },
+        //{ src: 'sake3.jpg', caption: 'Custom 3D printed ceramics' },
+        { src: 'vibe_white.jpg', caption: 'Soundcloud generated phone case' },
+        { src: 'vibe_group.jpg', caption: 'Soundcloud generated phone case' },
+      ] },
+      */
+      { slug: 'viralnet', name: 'Viralnet', year: 2020, cats: ['data', 'interactive'], caption: '3D visualization of virus genomes', link: 'projects/viralnet/viralnet.html', media: ['Nodes_Gradual_small.gif','render0.png', 'render10.png','render11.png'] },
+      { slug: 'westfield', name: 'Westfield', year: 2015, cats: ['sculpture','digital-fabrication'], caption: 'Concept for large scale outdoor sculpture', link: 'projects/westfield/westfield.html', media: ['sculpture_front.jpg','sculpture_2.jpg','sculpture_3.jpg','sculpture_night1.jpg','fabrication1.jpg','fabrication3.jpg'] },
+    /*
+      { slug: 'art', name: 'Pablo', year: 2020, cats: ['craft','illustration'], caption: 'Stop motion animation of a lonely cubist romantic.', link: null, media: ['pablo_clip.mp4'] },
+      */
     ];
 
-    /* =============================================================
-       Below this line: rendering, filtering, lightbox. No edits needed.
-    ============================================================= */
-
     const VIDEO_RE = /\.(mp4|m4v|mov|webm)(\?|$)/i;
-    const ABS_RE   = /^(https?:|images\/|projects\/)/;
-
-    const projectMeta = Object.fromEntries(projects.map(p => [p.slug, p]));
-    const projectOrder = projects.map(p => p.slug);
-
+    const ABS_RE = /^(https?:|images\/|projects\/)/;
+    const projectMeta = Object.fromEntries(artProjects.map(p => [p.slug, p]));
     function resolveSrc(p, src) {
       if (ABS_RE.test(src)) return src;
       const base = p.base || `projects/${p.slug}/`;
       return base + src;
     }
-
-    // Flatten projects into per-tile data records
     const items = [];
-    projects.forEach(p => {
+    artProjects.forEach(p => {
       (p.media || []).forEach(m => {
         const entry = (typeof m === 'string') ? { src: m } : m;
         const src = resolveSrc(p, entry.src);
         const caption = entry.caption || p.caption || '';
         const isVideo = VIDEO_RE.test(src);
         const href = p.link || '#';
-        items.push({
-          slug: p.slug, name: p.name, year: p.year, cats: p.cats,
-          src, caption, isVideo, href,
-          external: /^https?:/.test(href),
-        });
+        items.push({ slug: p.slug, name: p.name, year: p.year, cats: p.cats, src, caption, isVideo, href, external: /^https?:/.test(href) });
       });
     });
 
@@ -531,7 +281,6 @@
       a.dataset.slug = item.slug;
       a.href = item.href;
       if (item.external) { a.target = '_blank'; a.rel = 'noopener'; }
-
       let media;
       const markLoaded = () => a.classList.add('loaded');
       if (item.isVideo) {
@@ -551,17 +300,14 @@
       }
       if (item.caption) media.setAttribute('alt', item.caption);
       media.src = item.src;
-      // Already-cached media may finish before we attach the listener
       if (!item.isVideo && media.complete && media.naturalWidth) markLoaded();
       a.appendChild(media);
       return a;
     }
 
-    function slugFromAnchor(a) { return a.dataset.slug; }
-
     const filtersEl = document.getElementById('filters');
     let activeFilter = 'all';
-    categories.forEach(cat => {
+    artCategories.forEach(cat => {
       const b = document.createElement('button');
       b.className = 'filter-btn' + (cat === 'all' ? ' active' : '');
       b.textContent = cat.replace('-', ' ');
@@ -569,31 +315,22 @@
       b.addEventListener('click', () => {
         activeFilter = cat;
         filtersEl.querySelectorAll('.filter-btn').forEach(x => x.classList.toggle('active', x.dataset.cat === cat));
-        render();
+        renderGallery();
       });
       filtersEl.appendChild(b);
     });
-
     const galleryEl = document.getElementById('gallery');
 
-    function appendClone(container, item) {
-      container.appendChild(buildTile(item));
-    }
-
-    function render() {
+    function renderGallery() {
       const filtered = items.filter(i => activeFilter === 'all' || i.cats.includes(activeFilter));
       galleryEl.innerHTML = '';
-      if (!filtered.length) {
-        galleryEl.innerHTML = '<div class="empty">Nothing here yet.</div>';
-        return;
-      }
+      if (!filtered.length) { galleryEl.innerHTML = '<div class="empty">Nothing here yet.</div>'; return; }
       const m = document.createElement('div');
       m.className = 'masonry';
-      filtered.forEach(i => appendClone(m, i));
+      filtered.forEach(i => m.appendChild(buildTile(i)));
       galleryEl.appendChild(m);
     }
-
-    render();
+    renderGallery();
 
     // Tooltip
     const tooltip = document.createElement('div');
@@ -602,28 +339,23 @@
     document.body.appendChild(tooltip);
     const tipTitle = tooltip.querySelector('.tt-title');
     const tipDesc = tooltip.querySelector('.tt-desc');
-
     galleryEl.addEventListener('mouseover', e => {
       const a = e.target.closest('a');
       if (!a || !galleryEl.contains(a)) return;
       const media = a.querySelector('img, video');
       if (!media) return;
-      const slug = slugFromAnchor(a);
-      const meta = projectMeta[slug];
+      const meta = projectMeta[a.dataset.slug];
       tipTitle.textContent = meta ? meta.name : '';
       tipDesc.textContent = media.getAttribute('alt') || (meta && meta.caption) || '';
       tooltip.classList.add('visible');
     });
     galleryEl.addEventListener('mouseout', e => {
-      if (!e.relatedTarget || !e.target.closest('a')?.contains(e.relatedTarget)) {
-        tooltip.classList.remove('visible');
-      }
+      if (!e.relatedTarget || !e.target.closest('a')?.contains(e.relatedTarget)) tooltip.classList.remove('visible');
     });
     galleryEl.addEventListener('mousemove', e => {
       if (!tooltip.classList.contains('visible')) return;
       const pad = 14;
-      let x = e.clientX + pad;
-      let y = e.clientY + pad;
+      let x = e.clientX + pad, y = e.clientY + pad;
       const r = tooltip.getBoundingClientRect();
       if (x + r.width + 8 > window.innerWidth) x = e.clientX - r.width - pad;
       if (y + r.height + 8 > window.innerHeight) y = e.clientY - r.height - pad;
@@ -657,22 +389,18 @@
     const lbPrev = lb.querySelector('.lb-prev');
     const lbNext = lb.querySelector('.lb-next');
     const lbClose = lb.querySelector('.lb-close');
-
-    let lbGroup = [];
-    let lbIndex = 0;
+    let lbGroup = [], lbIndex = 0;
 
     function openLightbox(anchor) {
-      const slug = slugFromAnchor(anchor);
-      // Build group from currently rendered tiles with same slug
+      const slug = anchor.dataset.slug;
       const tiles = [...galleryEl.querySelectorAll('.masonry a')];
-      lbGroup = tiles.filter(a => (slugFromAnchor(a)) === slug);
+      lbGroup = tiles.filter(a => a.dataset.slug === slug);
       lbIndex = lbGroup.indexOf(anchor);
       if (lbIndex < 0) lbIndex = 0;
       renderLightbox();
       lb.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
-
     function renderLightbox() {
       const a = lbGroup[lbIndex];
       const orig = a.querySelector('img, video');
@@ -689,62 +417,49 @@
       }
       media.className = 'lightbox-media';
       lbMediaWrap.appendChild(media);
-
-      const slug = slugFromAnchor(a);
-      const meta = projectMeta[slug];
+      const meta = projectMeta[a.dataset.slug];
       lbTitle.textContent = meta ? meta.name : '';
       lbDesc.textContent = orig.getAttribute('alt') || (meta && meta.caption) || '';
-
       const href = a.getAttribute('href');
-      if (href && href !== '#' && !(meta && meta.noLink)) {
+      if (href && href !== '#') {
         lbMore.style.display = 'inline-block';
         lbMore.href = href;
-        if (href.startsWith('http')) {
-          lbMore.target = '_blank';
-        } else {
-          lbMore.removeAttribute('target');
-        }
+        if (href.startsWith('http')) lbMore.target = '_blank'; else lbMore.removeAttribute('target');
       } else {
         lbMore.style.display = 'none';
       }
-
       lbCounter.textContent = lbGroup.length > 1 ? `${lbIndex + 1} / ${lbGroup.length}` : '';
       lbPrev.disabled = lbGroup.length <= 1;
       lbNext.disabled = lbGroup.length <= 1;
       lbPrev.style.display = lbGroup.length > 1 ? 'flex' : 'none';
       lbNext.style.display = lbGroup.length > 1 ? 'flex' : 'none';
     }
-
     function closeLightbox() {
       lb.classList.remove('open');
       lbMediaWrap.innerHTML = '';
       document.body.style.overflow = '';
     }
-
-    function step(delta) {
+    function lbStep(delta) {
       if (!lbGroup.length) return;
       lbIndex = (lbIndex + delta + lbGroup.length) % lbGroup.length;
       renderLightbox();
     }
-
     galleryEl.addEventListener('click', e => {
       const a = e.target.closest('.masonry a');
       if (!a || !galleryEl.contains(a)) return;
       e.preventDefault();
       openLightbox(a);
     });
-
-    lbPrev.addEventListener('click', () => step(-1));
-    lbNext.addEventListener('click', () => step(1));
+    lbPrev.addEventListener('click', () => lbStep(-1));
+    lbNext.addEventListener('click', () => lbStep(1));
     lbClose.addEventListener('click', closeLightbox);
     lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
     document.addEventListener('keydown', e => {
       if (!lb.classList.contains('open')) return;
       if (e.key === 'Escape') closeLightbox();
-      else if (e.key === 'ArrowLeft') step(-1);
-      else if (e.key === 'ArrowRight') step(1);
+      else if (e.key === 'ArrowLeft') lbStep(-1);
+      else if (e.key === 'ArrowRight') lbStep(1);
     });
   </script>
-
 </body>
 </html>
