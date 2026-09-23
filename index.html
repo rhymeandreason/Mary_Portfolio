@@ -146,25 +146,25 @@
     /* ── Readme / About ── */
     .about { padding: 24px 36px 36px; }
     .about h1 { font-size: 30px; line-height: 1.2; margin: 0 0 26px; letter-spacing: -0.015em; font-weight: 700; }
-    .about p { font-size: 14px; line-height: 1.7; color: var(--ink-2); margin: 0 0 20px; }
+    .about p { font-size: 16px; line-height: 1.7; color: var(--ink-2); margin: 0 0 20px; }
     .about .row { display: flex; gap: 18px; align-items: center; margin-bottom: 32px; }
     .about .row img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
     .about .row small { display: block; font-size: 12px; color: var(--ink-2); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
-    .about .links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 22px; font-size: 14px; font-weight: 600; }
+    .about .links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 22px; font-size: 16px; font-weight: 600; }
     .about .links a { text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.3); }
 
     /* ── Daily Note ── */
     .daily { padding: 20px 26px 0; display: flex; flex-direction: column; height: 100%; }
     .daily h2 { font-size: 26px; margin: 0 0 12px; font-weight: 700; letter-spacing: -0.01em; }
     .daily ul { list-style: none; margin: 0; padding: 12px 0; border-top: 1px solid var(--line); }
-    .daily li { display: flex; gap: 12px; align-items: flex-start; font-size: 16px; line-height: 1.35; padding: 8px 0; cursor: pointer; }
+    .daily li { display: flex; gap: 12px; align-items: flex-start; font-size: 18px; line-height: 1.35; padding: 8px 0; cursor: pointer; }
     .daily li .box { width: 20px; height: 20px; border: 2px solid var(--ink-2); border-radius: 5px; flex: none; margin-top: 1px; display: grid; place-items: center; }
     .daily li .box i { font-size: 12px; color: #fff; opacity: 0; line-height: 1; }
     .daily li.done .box { background: var(--ink-2); border-color: var(--ink-2); }
     .daily li.done .box i { opacity: 1; }
     .daily li.done span { text-decoration: line-through; color: var(--ink-3); }
     .daily .add { display: flex; gap: 12px; align-items: center; padding: 10px 0 18px; color: var(--ink-3); }
-    .daily .add input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 16px; color: var(--ink); outline: 0; }
+    .daily .add input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 18px; color: var(--ink); outline: 0; }
     .daily .add input::placeholder { color: var(--ink-3); }
     .cal { border-top: 1px solid var(--line); padding: 16px 0 18px; text-align: center; margin-top: auto; }
     .cal h3 { font-size: 14px; margin: 0 0 8px; color: var(--ink-2); }
@@ -206,7 +206,7 @@
     .notes .tabs b { color: var(--ink); border-bottom: 2px solid var(--ink); padding-bottom: 8px; margin-bottom: -11px; }
     .notes .cards { columns: 2; column-gap: 14px; }
     .notes .card { break-inside: avoid; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; margin-bottom: 14px; }
-    .notes .card h4 { margin: 0 0 8px; font-size: 16px; font-weight: 600; letter-spacing: -0.005em; }
+    .notes .card h4 { margin: 0 0 8px; font-size: 18px; font-weight: 600; letter-spacing: -0.005em; }
     .notes .card p { margin: 0 0 8px; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
     .notes .card .link { display: block; font-size: 12px; color: var(--ink-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; text-decoration: none; margin-top: 8px; }
     .notes .card .link:hover { color: var(--ink); }
@@ -233,7 +233,7 @@
     .app .side button { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; background: none; font: inherit; font-size: 13px; color: var(--ink-2); padding: 6px 9px; border-radius: 7px; cursor: pointer; text-align: left; }
     .app .side button:hover { background: rgba(0,0,0,0.05); }
     .app .side button.on { background: var(--ink); color: #fff; }
-    .app .side button i { font-size: 16px; flex: none; opacity: 0.75; line-height: 1; }
+    .app .side button i { font-size: 18px; flex: none; opacity: 0.75; line-height: 1; }
     .app .side .cap { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); padding: 8px 9px 4px; }
     .app .pane { flex: 1; min-width: 0; min-height: 0; overflow: auto; padding: 14px 18px 20px; }
     /* Media pane: the scroller runs to the window edge, so padding moves inside it */
@@ -269,7 +269,7 @@
     /* image, flanked by its arrows, on the paper itself */
     .viewer .frame { flex: 1; min-height: 0; display: flex; align-items: center; gap: 10px; }
     .viewer .nav { flex: none; width: 34px; height: 34px; border: 1px solid var(--line); background: #fff; border-radius: 50%;
-      font-size: 16px; line-height: 1; color: var(--ink-2); cursor: pointer; display: grid; place-items: center; }
+      font-size: 18px; line-height: 1; color: var(--ink-2); cursor: pointer; display: grid; place-items: center; }
     .viewer .nav:hover { color: var(--ink); border-color: var(--ink-3); }
     .viewer .stage { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; }
     .viewer .stage img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block;
@@ -343,9 +343,9 @@
     .polaroid { background: #fff; padding: 8px 8px 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 10px 24px rgba(0,0,0,0.12); }
     .polaroid img { display: block; width: 100%; height: auto; pointer-events: none; }
     .polaroid span { position: absolute; left: 10px; bottom: 6px; font-size: 12px; color: var(--ink-2); letter-spacing: 0.02em; }
-    .sticky { background: #fff4b8; padding: 16px 18px; width: 200px; font-size: 14px; line-height: 1.45; box-shadow: 0 8px 20px rgba(0,0,0,0.12); color: #4b4224; }
+    .sticky { background: #fff4b8; padding: 16px 18px; width: 200px; font-size: 16px; line-height: 1.45; box-shadow: 0 8px 20px rgba(0,0,0,0.12); color: #4b4224; }
     .sticky.blue { background: #dbe9ff; color: #223052; }
-    .sticky.postit { width: 260px; height: 260px; padding: 22px 24px; display: flex; flex-direction: column; font-size: 14px; line-height: 1.45; }
+    .sticky.postit { width: 260px; height: 260px; padding: 22px 24px; display: flex; flex-direction: column; font-size: 16px; line-height: 1.45; }
     .sticky.postit b { font-size: 18px; line-height: 1.15; margin-bottom: 10px; }
     .sticky.postit p { margin: 0; flex: 1; }
     .sticky.postit a { font-weight: 600; text-decoration: none; margin-top: 10px; }
