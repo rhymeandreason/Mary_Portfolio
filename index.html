@@ -117,6 +117,7 @@
       background: #fbfaf7; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px;
       box-shadow: var(--shadow); overflow: hidden;
       display: flex; flex-direction: column;
+      cursor: default; /* the desk's grab cursor is for panning the empty canvas, not windows */
       transition: box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
     }
     .win.active { box-shadow: var(--shadow-hi); }
@@ -311,7 +312,7 @@
     .files .z { text-align: right; }
 
     /* Settings */
-    .settings { max-width: 560px; font-size: 13px; }
+    .settings { padding: 6px 14px 0; font-size: 13px; }
     .settings .row { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 18px 0; border-bottom: 1px solid var(--line); }
     .settings .row:last-child { border-bottom: 0; }
     .settings .row b { font-weight: 600; display: block; font-size: 18px; line-height: 1.25; margin-bottom: 4px; }
