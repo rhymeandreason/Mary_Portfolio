@@ -182,9 +182,12 @@
     .pulse .stats b { font-size: 26px; display: block; line-height: 1; }
     .pulse .stats small { font-size: 12px; color: var(--ink-2); }
     .pulse .rows { padding-top: 10px; }
-    .pulse .row { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; padding: 5px 0; }
+    .pulse .row { display: grid; grid-template-columns: 96px 1fr 28px; gap: 12px; align-items: start; padding: 5px 0; line-height: 15px; }
+    .pulse .row .c { font-size: 12px; color: var(--ink-3); text-align: right; font-variant-numeric: tabular-nums; }
+    .pulse .src { display: inline-block; margin-top: 12px; font-size: 12px; color: var(--ink-3); text-decoration: none; }
+    .pulse .src:hover { color: var(--ink); }
     .pulse .row label { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); }
-    .pulse .dots { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pulse .dots { display: flex; flex-wrap: wrap; gap: 6px; padding: 3px 0; }
     .pulse .dots i { width: 9px; height: 9px; border-radius: 50%; background: #6b625a; display: block; }
     .pulse .dots i.n { animation: pop 0.3s ease backwards; }
     @keyframes pop { from { transform: scale(0); } }
@@ -927,39 +930,71 @@ function dailyContent() {
 /* ═══════════════════════════════════════════════════════════════
    App: Git Pulse (punchcard of commits; dots keep arriving)
    ═══════════════════════════════════════════════════════════════ */
+/* Real contribution counts from my GitHub profile graph, via a public mirror
+   of it (GitHub's own API needs a token for this). One dot per contribution,
+   stacking into more lines on busy days, up to a cap so one wild day can't
+   swallow the window; the number always tells the truth. */
+const GH_USER = 'rhymeandreason';
+const PULSE_SNAPSHOT = { // last known, in case the mirror is down
+  days: [['2026-09-17', 85], ['2026-09-18', 37], ['2026-09-19', 6], ['2026-09-20', 8], ['2026-09-21', 16], ['2026-09-22', 13], ['2026-09-23', 14]],
+  year: 3526, streak: 59,
+};
+const PULSE_MAX_DOTS = 120;
 function pulseContent() {
   const root = document.createElement('div');
   root.className = 'pulse';
-  const counts = [2, 26, 21, 44, 33, 29, 15];
-  const now = new Date();
-  const label = i => {
-    if (i === 0) return 'Today';
-    if (i === 1) return 'Yesterday';
-    const d = new Date(now); d.setDate(now.getDate() - i);
-    return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-  };
-  const total = () => counts.reduce((a, b) => a + b, 0);
   root.innerHTML = `<h2>Git Pulse</h2>
     <div class="stats">
-      <div><b id="pTotal">${total()}</b><small>commits</small></div>
-      <div><b>${counts.length}</b><small>days active</small></div>
-      <div><b>${counts.length}</b><small>day streak</small></div>
+      <div><b class="wk">—</b><small>this week</small></div>
+      <div><b class="st">—</b><small>day streak</small></div>
+      <div><b class="yr">—</b><small>past year</small></div>
     </div>
-    <div class="rows"></div>`;
+    <div class="rows"></div>
+    <a class="src" href="https://github.com/${GH_USER}" target="_blank" rel="noopener">github.com/${GH_USER} <i class="ph ph-arrow-up-right"></i></a>`;
   const rows = root.querySelector('.rows');
-  counts.forEach((c, i) => {
-    const r = document.createElement('div'); r.className = 'row';
-    r.innerHTML = `<label>${label(i)}</label><div class="dots">${'<i></i>'.repeat(c)}</div>`;
-    rows.appendChild(r);
-  });
-  // a new commit lands every so often
-  setInterval(() => {
-    if (document.hidden) return;
-    counts[0]++;
-    const dots = rows.querySelector('.row .dots');
-    const i = document.createElement('i'); i.className = 'n'; dots.appendChild(i);
-    root.querySelector('#pTotal').textContent = total();
-  }, 9000);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const label = iso => {
+    const [y, m, d] = iso.split('-').map(Number);
+    const ago = Math.round((today - new Date(y, m - 1, d)) / 864e5);
+    if (ago === 0) return 'Today';
+    if (ago === 1) return 'Yesterday';
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  };
+  let shown = {}; // date -> dots drawn, so a refresh only pops in what's new
+  const render = ({ days, year, streak }) => {
+    root.querySelector('.wk').textContent = days.reduce((a, [, c]) => a + c, 0).toLocaleString();
+    root.querySelector('.st').textContent = streak;
+    root.querySelector('.yr').textContent = year.toLocaleString();
+    rows.innerHTML = '';
+    [...days].reverse().forEach(([date, c]) => {
+      const n = Math.min(c, PULSE_MAX_DOTS), had = shown[date] ?? n;
+      const r = document.createElement('div'); r.className = 'row';
+      r.innerHTML = `<label>${label(date)}</label><div class="dots">${Array.from({ length: n }, (_, i) => `<i${i >= had ? ' class="n"' : ''}></i>`).join('')}</div><span class="c">${c}</span>`;
+      rows.appendChild(r);
+      shown[date] = n;
+    });
+  };
+  const load = async () => {
+    try {
+      const r = await fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}?y=last`);
+      const all = (await r.json()).contributions.filter(d => d.date <= today.toLocaleDateString('en-CA'));
+      let streak = 0;
+      // today can still be 0 without breaking the streak
+      for (let i = all.length - 1; i >= 0; i--) {
+        if (all[i].count > 0) streak++;
+        else if (i !== all.length - 1) break;
+      }
+      render({
+        days: all.slice(-7).map(d => [d.date, d.count]),
+        year: all.slice(-365).reduce((a, d) => a + d.count, 0),
+        streak,
+      });
+    } catch { if (!rows.children.length) render(PULSE_SNAPSHOT); }
+  };
+  render(PULSE_SNAPSHOT);
+  shown = {};
+  load();
+  setInterval(() => { if (!document.hidden) load(); }, 10 * 60 * 1000);
   return root;
 }
 
