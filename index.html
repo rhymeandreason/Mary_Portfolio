@@ -338,6 +338,27 @@
     .settings .row > button.switch.on::after { transform: translateX(20px); }
     .settings .row > button.switch:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
+    /* ── Mail ── */
+    .mail { display: flex; flex-direction: column; height: 100%; }
+    .mail .tools { display: flex; align-items: center; gap: 8px; padding: 0 14px 10px; border-bottom: 1px solid var(--line); flex: none; }
+    .mail .tools h3 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin-right: auto; }
+    .mail .tools button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 6px 12px; font: inherit; font-size: 12px; cursor: pointer; color: var(--ink-2); }
+    .mail .tools button:hover { color: var(--ink); border-color: var(--ink-3); }
+    .mail .tools button.send { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .mail .tools button.send:hover { background: #000; color: #fff; }
+    .mail .tools button i { font-size: 14px; }
+    .mail .field { display: flex; align-items: center; gap: 10px; padding: 0 16px; min-height: 40px; border-bottom: 1px solid var(--line); font-size: 14px; flex: none; }
+    .mail .field label { color: var(--ink-3); width: 56px; flex: none; }
+    .mail .field input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; color: var(--ink); outline: 0; padding: 10px 0; }
+    .mail .field input::placeholder, .mail textarea::placeholder { color: var(--ink-3); }
+    .mail .chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); border-radius: 999px; padding: 3px 10px 3px 4px; font-size: 13px; }
+    .mail .chip img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+    .mail textarea { flex: 1; min-height: 120px; border: 0; background: transparent; resize: none; font: inherit; font-size: 15px; line-height: 1.6; color: var(--ink); outline: 0; padding: 14px 16px; }
+    .mail .foot { flex: none; padding: 8px 16px 12px; font-size: 12px; color: var(--ink-3); display: flex; justify-content: space-between; gap: 12px; }
+    .mail .foot.err { color: #c8442c; }
+    .mail .foot.ok { color: #3d8f5a; }
+    .mail .shake { animation: shake 0.3s ease; }
+    @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
     /* ── Loose items (polaroids, stickers, notes) ── */
     .loose { position: absolute; cursor: grab; transition: transform 0.2s ease, box-shadow 0.2s ease; }
     .loose:active { cursor: grabbing; }
@@ -723,6 +744,7 @@ function showWin(id) {
   el.classList.remove('hidden');
   focusWin(el);
   centerOn(el);
+  w.onShow && w.onShow(el);
   syncDock();
 }
 function toggleWin(id) { wins[id].el.classList.contains('hidden') ? showWin(id) : hideWin(id); }
@@ -1251,6 +1273,56 @@ function settingsPane() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   App: Mail — a compose window. No backend on a static site, so Send
+   hands the draft to the visitor's own mail app via mailto:.
+   ═══════════════════════════════════════════════════════════════ */
+const EMAIL = 'rhymeandreason1.0@gmail.com';
+function mailContent() {
+  const root = document.createElement('div');
+  root.className = 'mail';
+  root.innerHTML = `
+    <div class="tools">
+      <h3>New Message</h3>
+      <button class="copy" title="Copy my address"><i class="ph ph-copy"></i>Copy address</button>
+      <button class="send" title="Send (⌘↩)"><i class="ph-fill ph-paper-plane-tilt"></i>Send</button>
+    </div>
+    <div class="field"><label>To</label><span class="chip"><img src="images/2025_mary.jpg" alt="">Mary Huang</span></div>
+    <div class="field"><label for="mail-subj">Subject</label><input id="mail-subj" placeholder="Hello!" autocomplete="off"></div>
+    <textarea placeholder="Write a note…"></textarea>
+    <div class="foot"><span class="status">Opens in your mail app to send.</span><span>${EMAIL}</span></div>`;
+  const subj = root.querySelector('input');
+  const msg = root.querySelector('textarea');
+  const foot = root.querySelector('.foot');
+  const status = root.querySelector('.status');
+  const say = (text, cls) => { status.textContent = text; foot.className = 'foot ' + (cls || ''); };
+
+  const send = () => {
+    if (!msg.value.trim()) {
+      say('Add a message first.', 'err');
+      msg.classList.remove('shake'); void msg.offsetWidth; msg.classList.add('shake');
+      msg.focus();
+      return;
+    }
+    const q = new URLSearchParams({ subject: subj.value.trim() || 'Hello from your portfolio', body: msg.value });
+    // URLSearchParams encodes spaces as '+', which mail clients show literally.
+    location.href = `mailto:${EMAIL}?${q.toString().replace(/\+/g, '%20')}`;
+    say('Handed off to your mail app. Thanks for writing!', 'ok');
+  };
+  root.querySelector('.send').addEventListener('click', send);
+  [subj, msg].forEach(el => el.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
+  }));
+  subj.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); msg.focus(); } });
+  msg.addEventListener('input', () => { if (foot.classList.contains('err')) say('Opens in your mail app to send.'); });
+
+  root.querySelector('.copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(EMAIL); say('Address copied.', 'ok'); }
+    catch { say(EMAIL); }
+  });
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    Loose items on the board
    ═══════════════════════════════════════════════════════════════ */
 function addLoose(html, x, y, rot, cls, w) {
@@ -1271,6 +1343,7 @@ const APPS = [
   { id: 'about', name: 'Readme', icon: 'readme' },
   { id: 'daily', name: 'Daily Note', icon: 'daily' },
   { id: 'pulse', name: 'Git Pulse', icon: 'pulse' },
+  { id: 'mail', name: 'Mail', icon: 'mail' },
   { sep: true },
   { id: 'gallery', name: 'Gallery', icon: 'gallery' },
 ];
@@ -1286,6 +1359,7 @@ const ICONS = {
   impulse: '<span class="ic" style="background:#d1440f"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="7"/><path d="M12 7v5"/></svg></span>',
   tales: '<span class="ic" style="background:#3a2f5c"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></span>',
   quill: '<span class="ic" style="background:#3d8f8f"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 20c4-8 10-14 16-16-1 6-6 13-14 15"/><path d="M4 20l6-6"/></svg></span>',
+  mail: '<span class="ic" style="background:linear-gradient(#5aa9f5,#2f7de1)"><i class="ph-fill ph-envelope-simple" style="font-size:19px;color:#fff"></i></span>',
   gallery: '<span class="ic" style="background:#fff;border:1px solid #ddd"><i class="ph-fill ph-images-square" style="font-size:20px;color:#e6407a"></i></span>',
 };
 
@@ -1317,6 +1391,10 @@ function layout() {
   createWindow({ id: 'daily', title: 'Daily Note', x: 1450, y: 100, w: 360, h: 700, content: dailyContent() });
   createWindow({ id: 'gallery', title: 'Gallery', x: 500, y: 60, w: 900, h: 700, noscroll: true, fullside: true, content: galleryContent() });
   createWindow({ id: 'pulse', title: 'Git Pulse', x: 1120, y: 900, w: 500, h: 'auto', content: pulseContent() });
+  // Mail waits in the dock rather than joining the opening composition.
+  createWindow({ id: 'mail', title: 'New Message', x: 590, y: 900, w: 500, h: 400, noscroll: true, content: mailContent() });
+  wins.mail.el.classList.add('hidden');
+  wins.mail.onShow = el => el.querySelector('input').focus({ preventScroll: true });
 
   addLoose(`<b>Personal Personal Computing</b><p>Replacing my daily apps with self-built, minimal versions and living in them. 30 apps so far, in Tauri on Mac. The windows here are a few of them.</p><a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio <i class="ph ph-arrow-up-right"></i></a>`, 40, 900, -2, 'sticky postit');
   addLoose(`<b>Kodolab</b><p>A web platform for learning biology in 3D. An AI sandbox lets students and teachers generate lessons of their own, seconds between iterations.</p><a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org <i class="ph ph-arrow-up-right"></i></a>`, 300, 780, 3, 'sticky postit pink');
