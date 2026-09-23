@@ -568,7 +568,8 @@ const world = document.getElementById('world');
 let pan = { x: 0, y: 0 };
 let zoom = 1;
 let touched = false; // set once the user pans or zooms by hand
-let trackpad = false; // Mac trackpad: two-finger scroll pans, pinch zooms
+let pinchZoom = true; // Mac trackpad: pinch zooms (on by default)
+let trackpad = false; // Mac trackpad: two-finger scroll pans instead of zooming
 const ZMIN = 0.3, ZMAX = 2.5;
 let zTop = 10;
 const isSmall = () => window.innerWidth < 700;
@@ -639,6 +640,7 @@ function scrollableUnder(e) {
     e.preventDefault();
     // A Mac trackpad pinch arrives as a wheel event with ctrlKey set.
     const pinch = e.ctrlKey || e.metaKey;
+    if (pinch && !pinchZoom) return;
     if (trackpad && !pinch) { touched = true; pan.x -= e.deltaX; pan.y -= e.deltaY; applyPan(); return; }
     const d = (e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY) * (pinch ? 3 : 1);
     zoomAt(e.clientX, e.clientY, Math.exp(-d * 0.0015));
@@ -1225,8 +1227,11 @@ function settingsPane() {
   });
   row('Media grid', 'Thumbnail size in the Media library', gridSeg);
 
+  const pz = toggle(pinchZoom, on => { pinchZoom = on; });
+  row('Pinch to zoom', 'Pinch on a trackpad to zoom the desktop', pz);
+
   const tp = toggle(trackpad, on => { trackpad = on; });
-  row('Trackpad controls', 'Two-finger scroll pans, pinch zooms', tp);
+  row('Trackpad controls', 'Two-finger scroll pans instead of zooming', tp);
 
   const fit = document.createElement('button');
   fit.textContent = 'Fit to window';
