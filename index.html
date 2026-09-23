@@ -805,7 +805,8 @@ function dailyContent() {
   const root = document.createElement('div');
   root.className = 'daily';
   const now = new Date();
-  const dayName = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  const weekday = now.toLocaleDateString('en-US', { weekday: 'long' });
+  const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
   let tasks = [
     { t: 'Browse the projects', d: false },
     { t: 'Ponder what we can now do with AI', d: false },
@@ -841,7 +842,7 @@ function dailyContent() {
   const rem = (7 - ((first + dim) % 7)) % 7;
   for (let d = 1; d <= rem; d++) cells += `<div class="d o">${d}</div>`;
 
-  root.innerHTML = `<h2>${dayName}</h2>`;
+  root.innerHTML = `<h2>${weekday},<br>${dateStr}</h2>`;
   root.appendChild(list);
   const add = document.createElement('div');
   add.className = 'add';
@@ -988,7 +989,7 @@ function galleryContent() {
   const pane = document.createElement('div'); pane.className = 'pane';
   const SECTIONS = [
     { id: 'media', name: 'Media', icon: 'ph-images-square', build: mediaPane },
-    { id: 'notes', name: 'Notes', icon: 'ph-note', build: notesPane },
+    { id: 'notes', name: 'Projects', icon: 'ph-note', build: notesPane },
     { id: 'files', name: 'File Directory', icon: 'ph-folder-open', build: filesPane },
     { id: 'settings', name: 'Settings', icon: 'ph-gear', build: settingsPane },
   ];
