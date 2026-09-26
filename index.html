@@ -285,12 +285,12 @@
     .viewer .info a { color: var(--ink-2); }
 
     /* Notes: a grid of project cards, each with the write-up from the homepage */
-    .workgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(212px, 1fr)); gap: 16px; align-items: stretch; }
+    .workgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; align-items: stretch; }
     .workgrid a { display: flex; flex-direction: column; min-width: 0; text-decoration: none;
       background: #fff; border: 1px solid var(--line); border-radius: 11px; padding: 10px 10px 14px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
     .workgrid a:hover { transform: translateY(-3px); border-color: #d9d2c6; box-shadow: 0 10px 24px rgba(0,0,0,0.10); }
-    .workgrid img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 6px; background: #eee; display: block; }
+    .workgrid img { width: 100%; height: auto; border-radius: 6px; background: #eee; display: block; }
     .workgrid .txt { min-width: 0; padding: 11px 3px 0; overflow-wrap: anywhere; flex: 1; display: flex; flex-direction: column; }
     .workgrid .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; padding-top: 11px; }
     .workgrid .tags span { font-size: 12px; letter-spacing: 0.04em; color: var(--ink-2); background: rgba(0,0,0,0.045);
@@ -450,7 +450,7 @@
 const PROJECTS = [
   // Mirrors the homepage (index.html): the two "Currently Building" features
   // followed by Selected Work, in the same order.
-  { href: 'https://kodolab.org', img: 'projects/kodolab/kodo-hemoglobin.webp', meta: 'Now · 2026', title: 'Kodolab', tags: ['web', '3d'], desc: "A web platform for learning biology in 3D, with an AI sandbox for generating lessons in seconds." },
+  { href: 'https://kodolab.org', img: 'images/thumbs/Kodolab_c.webp', meta: 'Now · 2026', title: 'Kodolab', tags: ['web', '3d'], desc: "A web platform for learning biology in 3D, with an AI sandbox for generating lessons in seconds." },
   { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.webp', meta: 'Industrial Light & Magic · 2022', title: 'ILM Stagecraft', tags: ['mobile', '3d'], desc: "iPad app for controlling virtual production stages. Nominated for a Technical Emmy." },
   { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.webp', meta: 'Impulse Labs · 2024', title: 'Impulse Stove', tags: ['hardware'], desc: "A 15kW induction stove with a novel knob interface. Solo designer, launched at CES." },
   { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.webp', meta: 'Earthshot Labs · 2022', title: 'Biome', tags: ['mobile', '3d'], desc: "ML and AR mobile platform for measuring rainforests. 10x faster than traditional field surveys." },
@@ -819,7 +819,7 @@ function contentBounds() {
   if (!isFinite(x0)) return null;
   return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
 }
-/* Pick a zoom + pan that frames the whole board in the current window. */
+/* Pick a zoom + pan that frames the board's width in the current window. */
 function fitContent(animate) {
   const b = contentBounds();
   if (!b) return;
@@ -828,9 +828,9 @@ function fitContent(animate) {
   // On phones, framing the whole board would make it unreadable — frame the
   // widest window instead and let the rest be reached by panning.
   const wide = isSmall() ? Math.max(...[...world.querySelectorAll('.win:not(.hidden)')].map(el => el.offsetWidth)) : b.w;
-  const fit = isSmall()
-    ? (vw - padX) / wide
-    : Math.min((vw - padX * 2) / b.w, (vh - top - bottom) / b.h);
+  // On desktop, fill the width and anchor to the top; the lower windows can
+  // run off the bottom edge and be reached by panning.
+  const fit = isSmall() ? (vw - padX) / wide : (vw * 0.9) / b.w;
   zoom = Math.min(ZMAX, Math.max(ZMIN, Math.min(fit, 1)));
   if (isSmall()) {
     const el = wins.about.el;
@@ -842,7 +842,7 @@ function fitContent(animate) {
     return;
   }
   pan.x = Math.round((vw - b.w * zoom) / 2 - b.x * zoom);
-  pan.y = Math.round(top + (vh - top - bottom - b.h * zoom) / 2 - b.y * zoom);
+  pan.y = Math.round(top + 20 - b.y * zoom);
   if (animate) world.style.transition = 'transform 0.4s cubic-bezier(.2,.7,.2,1)';
   applyPan();
   if (animate) setTimeout(() => world.style.transition = '', 450);
@@ -1636,8 +1636,8 @@ function layout() {
   const W = window.innerWidth;
 
   createWindow({ id: 'about', title: 'readme.txt', x: 40, y: 100, w: 420, h: 'auto', content: aboutContent() });
-  createWindow({ id: 'daily', title: 'Daily Note', x: 1450, y: 100, w: 360, h: 700, content: dailyContent() });
-  createWindow({ id: 'gallery', title: 'Gallery', x: 500, y: 60, w: 900, h: 700, noscroll: true, fullside: true, content: galleryContent() });
+  createWindow({ id: 'daily', title: 'Daily Note', x: 1490, y: 100, w: 360, h: 700, content: dailyContent() });
+  createWindow({ id: 'gallery', title: 'Gallery', x: 500, y: 60, w: 950, h: 700, noscroll: true, fullside: true, content: galleryContent() });
   createWindow({ id: 'pulse', title: 'Git Pulse', x: 1120, y: 900, w: 500, h: 'auto', content: pulseContent() });
   // Mail waits in the dock rather than joining the opening composition.
   createWindow({ id: 'mail', title: 'New Message', x: 590, y: 900, w: 500, h: 400, noscroll: true, content: mailContent() });
