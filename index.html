@@ -192,6 +192,31 @@
     .pulse .dots i.n { animation: pop 0.3s ease backwards; }
     @keyframes pop { from { transform: scale(0); } }
 
+    /* Weather — Bay Area microclimates */
+    .weather { padding: 14px 24px 12px; }
+    .weather .hd { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 12px; }
+    .weather h2 { font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0; font-weight: 700; }
+    .weather .hd small { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+    .weather .spread { border-top: 1px solid var(--line); padding: 14px 0 6px; display: flex; align-items: baseline; gap: 12px; }
+    .weather .spread b { font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+    .weather .spread span { font-size: 14px; color: var(--ink-2); line-height: 1.35; }
+    .weather .scale { position: relative; height: 44px; margin: 8px 6px 14px; }
+    .weather .scale .track { position: absolute; left: 0; right: 0; top: 21px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, #9fb7d6, #e7d9b5, #e8a268); }
+    .weather .scale .pin { position: absolute; top: 0; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; transition: left 0.6s cubic-bezier(.2,.7,.2,1); }
+    .weather .scale .pin small { font-size: 11px; color: var(--ink-2); white-space: nowrap; line-height: 1; margin-bottom: 5px; }
+    .weather .scale .pin i { width: 12px; height: 12px; border-radius: 50%; background: var(--ink); border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.25); }
+    .weather .scale .pin.low { top: 17px; flex-direction: column-reverse; }
+    .weather .scale .pin.low small { margin: 5px 0 0; }
+    .weather .place { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: center; padding: 11px 0; border-top: 1px solid var(--line); }
+    .weather .place b { font-size: 16px; }
+    .weather .place em { font-style: normal; font-size: 12px; color: var(--ink-3); margin-left: 6px; }
+    .weather .place .cond { grid-column: 1; font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+    .weather .place .cond i { font-size: 16px; }
+    .weather .place .t { grid-column: 2; grid-row: 1 / span 2; text-align: right; }
+    .weather .place .t b { font-size: 26px; font-weight: 500; display: block; line-height: 1; font-variant-numeric: tabular-nums; }
+    .weather .place .t small { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+    .weather .karl { grid-column: 1 / -1; font-size: 12px; color: var(--ink-2); font-style: italic; margin-top: 4px; }
+
     /* ── Modes ── */
     .modes { display: grid; place-items: center; height: 100%; padding: 22px; }
     .modes .disc {
@@ -1330,6 +1355,93 @@ function settingsPane() {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   App: Weather — three towns, three climates. Live from Open-Meteo
+   (free, no key); falls back to a typical late-September afternoon.
+   ═══════════════════════════════════════════════════════════════ */
+const WX_PLACES = [
+  { name: 'Woodacre', note: 'home', lat: 38.0127, lon: -122.6436 },
+  { name: 'San Francisco', short: 'SF', note: 'the city', lat: 37.7749, lon: -122.4194 },
+  { name: 'Berkeley', note: 'east bay', lat: 37.8716, lon: -122.2727 },
+];
+const WX_SNAPSHOT = [
+  { t: 78, hi: 82, lo: 49, code: 1, rh: 40, day: 1 },
+  { t: 61, hi: 64, lo: 55, code: 45, rh: 90, day: 1 },
+  { t: 69, hi: 72, lo: 54, code: 2, rh: 60, day: 1 },
+];
+function wxLook(code, rh, day) {
+  // Overcast and saturated reads as fog here, even when the model calls it cloud.
+  if (code === 45 || code === 48 || (code === 3 && rh >= 85)) return ['Fog', 'ph-cloud-fog'];
+  if (code === 0) return day ? ['Clear', 'ph-sun'] : ['Clear', 'ph-moon'];
+  if (code <= 2) return [code === 1 ? 'Mostly clear' : 'Partly cloudy', day ? 'ph-cloud-sun' : 'ph-cloud-moon'];
+  if (code === 3) return ['Overcast', 'ph-cloud'];
+  if (code <= 57) return ['Drizzle', 'ph-cloud-rain'];
+  if (code <= 67 || (code >= 80 && code <= 82)) return ['Rain', 'ph-cloud-rain'];
+  if (code <= 77 || code === 85 || code === 86) return ['Snow', 'ph-snowflake'];
+  return ['Thunderstorms', 'ph-cloud-lightning'];
+}
+function weatherContent() {
+  const root = document.createElement('div');
+  root.className = 'weather';
+  root.innerHTML = `<div class="hd"><h2>Microclimates</h2><small class="upd"></small></div>
+    <div class="spread"><b>—</b><span></span></div>
+    <div class="scale"><div class="track"></div></div>
+    <div class="places"></div>`;
+  const scale = root.querySelector('.scale');
+  const pins = WX_PLACES.map(p => {
+    const el = document.createElement('div'); el.className = 'pin';
+    el.innerHTML = `<small>${p.short || p.name}</small><i></i>`;
+    scale.appendChild(el);
+    return el;
+  });
+  const render = (data, when) => {
+    const now = data.map((d, i) => ({ ...WX_PLACES[i], ...d }));
+    const hot = now.reduce((a, b) => (b.t > a.t ? b : a));
+    const cold = now.reduce((a, b) => (b.t < a.t ? b : a));
+    const d = Math.round(hot.t - cold.t);
+    root.querySelector('.spread b').textContent = d + '°';
+    root.querySelector('.spread span').textContent = d < 3
+      ? 'Rare day: all three towns within a few degrees.'
+      : `warmer in ${hot.name} than ${cold.name}, right now.`;
+    root.querySelector('.upd').textContent = when;
+    // One shared scale from the day's coolest low to its warmest high.
+    const lo = Math.min(...now.map(p => p.lo)), hi = Math.max(...now.map(p => p.hi));
+    const order = [...now].sort((a, b) => a.t - b.t);
+    now.forEach((p, i) => {
+      pins[i].style.left = ((p.t - lo) / Math.max(1, hi - lo) * 100).toFixed(1) + '%';
+      pins[i].classList.toggle('low', order.indexOf(p) === 1); // middle label drops below so labels don't collide
+    });
+    root.querySelector('.places').innerHTML = now.map(p => {
+      const [word, icon] = wxLook(p.code, p.rh, p.day);
+      const karl = p.name === 'San Francisco' && word === 'Fog' ? '<span class="karl">Karl the Fog is in.</span>' : '';
+      return `<div class="place">
+        <div><b>${p.name}</b><em>${p.note}</em></div>
+        <div class="t"><b>${Math.round(p.t)}°</b><small>H ${Math.round(p.hi)}° · L ${Math.round(p.lo)}°</small></div>
+        <div class="cond"><i class="ph ${icon}"></i>${word}</div>${karl}
+      </div>`;
+    }).join('');
+  };
+  const load = async () => {
+    try {
+      const q = new URLSearchParams({
+        latitude: WX_PLACES.map(p => p.lat).join(','), longitude: WX_PLACES.map(p => p.lon).join(','),
+        current: 'temperature_2m,weather_code,relative_humidity_2m,is_day',
+        daily: 'temperature_2m_max,temperature_2m_min', temperature_unit: 'fahrenheit',
+        timezone: 'America/Los_Angeles', forecast_days: 1,
+      });
+      const res = await (await fetch('https://api.open-meteo.com/v1/forecast?' + q)).json();
+      render(res.map(r => ({
+        t: r.current.temperature_2m, code: r.current.weather_code, rh: r.current.relative_humidity_2m, day: r.current.is_day,
+        hi: r.daily.temperature_2m_max[0], lo: r.daily.temperature_2m_min[0],
+      })), new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' }));
+    } catch { /* keep whatever is showing */ }
+  };
+  render(WX_SNAPSHOT, 'typical afternoon');
+  load();
+  setInterval(load, 15 * 60 * 1000);
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
    App: Mail — a compose window. No backend on a static site, so Send
    hands the draft to the visitor's own mail app via mailto:.
    ═══════════════════════════════════════════════════════════════ */
@@ -1566,6 +1678,7 @@ const APPS = [
   { id: 'about', name: 'Readme', icon: 'readme' },
   { id: 'daily', name: 'Daily Note', icon: 'daily' },
   { id: 'pulse', name: 'Git Pulse', icon: 'pulse' },
+  { id: 'weather', name: 'Weather', icon: 'weather' },
   { id: 'mail', name: 'Mail', icon: 'mail' },
   { id: 'music', name: 'Music', icon: 'music' },
   { sep: true },
@@ -1576,6 +1689,7 @@ const ICONS = {
   readme: '<span class="ic" style="background:#1a1917">Hi</span>',
   files: '<span class="ic" style="background:#7f9cc9"><i class="ph-fill ph-folder" style="font-size:19px;color:#fff"></i></span>',
   daily: '<span class="ic" style="background:#f4f1ea;color:#1a1917;border:1px solid #ddd">' + new Date().getDate() + '</span>',
+  weather: '<span class="ic" style="background:linear-gradient(#8fb4de,#c9d6e3)"><i class="ph-fill ph-cloud-sun" style="font-size:19px;color:#fff"></i></span>',
   pulse: '<span class="ic" style="background:#6b625a"><i class="ph ph-pulse" style="font-size:19px;color:#fff"></i></span>',
   modes: '<span class="ic" style="background:#0b0b0b;border-radius:50%"><i style="width:9px;height:9px;border-radius:50%;background:#e6407a;display:block"></i></span>',
   studio: '<span class="ic" style="background:#e6407a">S</span>',
@@ -1617,6 +1731,7 @@ function layout() {
   createWindow({ id: 'about', title: 'readme.txt', x: 40, y: 100, w: 420, h: 'auto', content: aboutContent() });
   createWindow({ id: 'daily', title: 'Daily Note', x: 1490, y: 100, w: 360, h: 700, content: dailyContent() });
   createWindow({ id: 'gallery', title: 'Gallery', x: 500, y: 60, w: 950, h: 700, noscroll: true, fullside: true, content: galleryContent() });
+  createWindow({ id: 'weather', title: 'Weather', x: 620, y: 830, w: 440, h: 'auto', content: weatherContent() });
   createWindow({ id: 'pulse', title: 'Git Pulse', x: 1120, y: 900, w: 500, h: 'auto', content: pulseContent() });
   // Mail waits in the dock rather than joining the opening composition.
   createWindow({ id: 'mail', title: 'New Message', x: 590, y: 900, w: 500, h: 400, noscroll: true, content: mailContent() });
