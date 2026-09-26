@@ -3,7 +3,7 @@
    it grows a little each time and blooms on the third watering. */
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
 
-const W = 380, H = 380;          // canvas size in CSS px
+const W = 380, H = 440;          // canvas size in CSS px
 const POT_SCALE = 0.74;          // pot size relative to the plant
 
 const rand = (a = 0, b = 1) => a + Math.random() * (b - a);
@@ -43,9 +43,9 @@ function main() {
   wrap.insertBefore(renderer.domElement, tip);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(21, W / H, 0.1, 50);
+  const camera = new THREE.PerspectiveCamera(24.2, W / H, 0.1, 50);
   camera.position.set(0, 2.3, 9.4);
-  camera.lookAt(0, 1.45, 0);
+  camera.lookAt(0, 1.73, 0); // headroom above the plant for the watering can
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0xf3d9c4, 1.1));
   const sun = new THREE.DirectionalLight(0xffffff, 1.9);
@@ -332,6 +332,7 @@ function main() {
   // Leaves are planned before they're built, so each one can find a spot that doesn't
   // run through its neighbors. A leaf's footprint is a capsule down its midrib.
   const placedLeaves = [];
+  const unfurls = [];  // sprouting leaves opening up: { geo, shut, open, t, dur }
   function planLeaf(az, rank, { fan = true, young = false } = {}) {
     // rank 0 = young leaf in the middle (tall, upright); 1 = old outer leaf (low, spreading).
     if (fan) az = fanAzimuth(az);
@@ -380,25 +381,41 @@ function main() {
         end.clone().addScaledVector(dir, -h * 0.35), end,
       );
       pivot.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 14, 0.015, 5), petioleMat));
-      const geo = young
-        // A new leaf still unfurling: narrow and rolled up tight.
-        ? leafGeometry({ len, wid, profile: t => Math.pow(Math.sin(Math.PI * Math.pow(t, 0.7)), 0.6), fold: -1.6, droop: 0.02 })
+      // A new leaf still unfurling: narrow and rolled up tight.
+      const rolled = () => leafGeometry({ len, wid: young ? wid : 0.09 * len, profile: t => Math.pow(Math.sin(Math.PI * Math.pow(t, 0.7)), 0.6), fold: -1.6, droop: 0.02 });
+      const geo = young ? rolled()
         : leafGeometry({
           len, wid, profile: leafShape.profile,
           fold: rand(-0.45, -0.25),                                    // edges cup toward the face
           droop: Math.random() < 0.75 ? rand(-0.45, -0.22) : rand(0.15, 0.3), // tip arches back (sometimes forward)
-          curl: rand(-0.3, 0.3), wave: rand(0.08, 0.2), phase: rand(0, 6), twist: rand(-0.35, 0.35),
+          curl: rand(-0.3, 0.3), wave: rand(0.08, 0.2), phase: rand(0, 6), twist: rand(-0.18, 0.18),
         });
+      if (grow && !young) {
+        // A sprout comes up rolled, then opens once its stem is up.
+        const open = geo.attributes.position.array.slice(), shut = rolled().attributes.position.array;
+        geo.attributes.position.array.set(shut);
+        geo.computeVertexNormals();
+        unfurls.push({ geo, shut, open, t: -0.7, dur: 1.8 });
+      }
       const leaf = new THREE.Group();
       leaf.add(new THREE.Mesh(geo, toon('#ffffff', { map: leafTexture(pattern), side: THREE.FrontSide })));
       leaf.add(new THREE.Mesh(geo, toon(underside.color, { side: THREE.BackSide })));
       leaf.position.copy(end);
       // Its face is partly turned toward the room, the way a potted plant grows toward the light.
       // (Blade geometry: length +x, face −y.)
-      const toViewer = VIEW.clone().applyAxisAngle(Y_AXIS, -az);
-      const natural = new THREE.Vector3(Math.sin(tilt), -Math.cos(tilt), 0);
-      const face = natural.lerp(toViewer, 0.7);
+      // Start from the face the stem's curve gives it, then roll a limited amount toward the viewer.
+      // Leaves pointing right at the viewer have no clear way to turn, so they keep the stem's curve.
+      const face = new THREE.Vector3(Math.sin(tilt), -Math.cos(tilt), 0);
       face.addScaledVector(dir, -face.dot(dir)).normalize();
+      const view = VIEW.clone().applyAxisAngle(Y_AXIS, -az);
+      view.addScaledVector(dir, -view.dot(dir));
+      const clarity = view.length();
+      if (clarity > 0.25) {
+        view.divideScalar(clarity);
+        const angle = Math.atan2(new THREE.Vector3().crossVectors(face, view).dot(dir), face.dot(view));
+        const roll = clamp(angle * 0.7 * THREE.MathUtils.smoothstep(clarity, 0.25, 0.7), -0.95, 0.95);
+        face.applyAxisAngle(dir, roll);
+      }
       const down = face.clone().negate(), side = new THREE.Vector3().crossVectors(dir, down);
       leaf.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(dir, down, side));
       pivot.add(leaf);
@@ -595,7 +612,7 @@ function main() {
   function water() {
     if (pour) { impulse(1.5); return; }
     const box = new THREE.Box3().setFromObject(plant);
-    const tipY = clamp(Math.max(box.max.y, SOIL_Y + 0.6) + 0.25, 1.6, 2.55);
+    const tipY = clamp(Math.max(box.max.y, SOIL_Y + 0.6) + 0.25, 1.6, 2.9);
     pour = { t: 0, x: 0.2 + 0.69, y: tipY + 0.22, poured: false };
     can.position.set(pour.x, pour.y, 0.2);
     can.rotation.set(0, -0.35, 0);
@@ -609,10 +626,9 @@ function main() {
     growTo = Math.min(1.35, growTo + 0.07);
     impulse(3);
     if (waterings === 3 && !bloomed) { bloom(); window.sfx && window.sfx('check'); }
-    if (waterings > 3 && waterings <= 7) {
-      if (kind === 'leafy') leafyFrond(rand(0, Math.PI * 2), true, rand(0, 0.3)); // new leaves come up in the middle
-      if (kind === 'snake') snakeBlade(rand(0, Math.PI * 2), true);
-    }
+    // Calatheas put up a new stem every watering; new leaves come up in the middle and unfurl.
+    if (kind === 'leafy' && waterings <= 8) leafyFrond(rand(0, Math.PI * 2), true, rand(0, 0.35));
+    if (kind === 'snake' && waterings > 3 && waterings <= 7) snakeBlade(rand(0, Math.PI * 2), true);
   }
 
   /* ── Animation ─────────────────────────────────────────── */
@@ -637,6 +653,16 @@ function main() {
       if (p.t >= p.dur) pops.splice(i, 1);
     }
     if (!pops.some(p => p.raw)) grow += (growTo - grow) * Math.min(1, dt * 2.5);
+    for (let i = unfurls.length - 1; i >= 0; i--) {
+      const u = unfurls[i];
+      u.t += dt;
+      const k = clamp(u.t / u.dur, 0, 1), e = k * k * (3 - 2 * k); // ease in and out
+      const pos = u.geo.attributes.position.array;
+      for (let j = 0; j < pos.length; j++) pos[j] = u.shut[j] + (u.open[j] - u.shut[j]) * e;
+      u.geo.attributes.position.needsUpdate = true;
+      u.geo.computeVertexNormals();
+      if (k >= 1) unfurls.splice(i, 1);
+    }
     plant.scale.setScalar(grow);
 
     // Leaves on springs, plus a slow idle sway.
