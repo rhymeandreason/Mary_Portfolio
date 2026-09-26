@@ -3,7 +3,7 @@
    it grows a little each time and blooms on the third watering. */
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
 
-const W = 320, H = 380;          // canvas size in CSS px
+const W = 380, H = 380;          // canvas size in CSS px
 const POT_SCALE = 0.74;          // pot size relative to the plant
 
 const rand = (a = 0, b = 1) => a + Math.random() * (b - a);
@@ -155,17 +155,21 @@ function main() {
 
   /* ── Leaves ────────────────────────────────────────────── */
   // A leaf is a small grid lying along +x, facing up; folded at the midrib and drooping at the tip.
-  function leafGeometry({ len, wid, profile, fold = 0.25, droop = 0.3, twist = 0, color }) {
-    const N = 12, M = 6, pos = [], col = [], idx = [];
+  function leafGeometry({ len, wid, profile, fold = 0.25, droop = 0.3, twist = 0, curl = 0, wave = 0, phase = 0, color }) {
+    const N = 14, M = 8, pos = [], col = [], uv = [], idx = [];
     const c = new THREE.Color();
     for (let i = 0; i <= N; i++) {
       const t = i / N, w = wid * profile(t);
       for (let j = 0; j <= M; j++) {
         const u = j / M * 2 - 1;
-        let x = len * t, y = fold * w * Math.abs(u) - droop * len * t * t, z = u * w;
+        // Soft cup across the blade, an arch along it, one edge rolling more than the other, and a wavy margin.
+        let x = len * t, z = u * w;
+        let y = fold * w * (0.35 * Math.abs(u) + 0.65 * u * u) - droop * len * t * t
+          + curl * w * u * Math.abs(u) + wave * w * Math.sin(t * Math.PI * 2.5 + phase) * u * u;
         const a = twist * t, cy = y * Math.cos(a) - z * Math.sin(a), cz = y * Math.sin(a) + z * Math.cos(a);
         pos.push(x, cy, cz);
-        color(c, t, u); col.push(c.r, c.g, c.b);
+        uv.push(t, (u + 1) / 2);
+        if (color) { color(c, t, u); col.push(c.r, c.g, c.b); }
       }
     }
     for (let i = 0; i < N; i++) for (let j = 0; j < M; j++) {
@@ -174,7 +178,8 @@ function main() {
     }
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    if (color) g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
     g.setIndex(idx);
     g.computeVertexNormals();
     return g;
@@ -183,19 +188,124 @@ function main() {
   const stemMat = toon('#4d9a4a');
 
   const baseGreen = new THREE.Color(pick(GREENS));
-  const variegation = pick(['none', 'none', 'marble', 'pink']);
-  function leafColor(seed) {
-    const g = baseGreen.clone().offsetHSL(rand(-0.02, 0.02), rand(-0.05, 0.05), rand(-0.05, 0.05));
-    const light = g.clone().offsetHSL(0, -0.1, 0.18), dark = g.clone().offsetHSL(0, 0, -0.08);
-    const patch = new THREE.Color(variegation === 'pink' ? '#ff7fae' : '#f4f1dc');
-    return (c, t, u) => {
-      c.copy(dark).lerp(light, Math.max(0, 1 - Math.abs(u) * 6) * 0.8); // pale midrib
-      if (variegation !== 'none') {
-        const n = Math.sin(t * 9 + seed) * Math.sin(u * 5 + seed * 1.7) + Math.sin(t * 17 + seed * 3) * 0.4;
-        if (n > 0.55) c.copy(patch);
-      }
-    };
+
+  /* ── Calathea leaves ───────────────────────────────────── */
+  // Each leaf's pattern is painted onto a small canvas in leaf space:
+  // x runs base → tip, y runs edge → midrib → edge.
+  const LW = 256, LH = 128;
+  const X = t => t * LW, Y = u => (u + 1) / 2 * LH;
+  const shade = (hex, l) => '#' + new THREE.Color(hex).offsetHSL(rand(-0.015, 0.015), 0, l).getHexString();
+  function stroke(g, color, width, pts) {
+    g.strokeStyle = color; g.lineWidth = width; g.lineCap = 'round'; g.lineJoin = 'round';
+    g.beginPath(); pts.forEach(([t, u], i) => (i ? g.lineTo(X(t), Y(u)) : g.moveTo(X(t), Y(u)))); g.stroke();
   }
+  function blob(g, color, t, u, rx, ry, rot) {
+    g.save(); g.translate(X(t), Y(u)); g.rotate(rot); g.fillStyle = color;
+    g.beginPath(); g.ellipse(0, 0, rx * LW, ry * LH, 0, 0, Math.PI * 2); g.fill(); g.restore();
+  }
+  // Lateral veins leave the midrib and sweep toward the tip.
+  const lateral = (t0, side, reach = 1, sweep = 0.13) => [[t0, 0], [t0 + sweep * 0.45, side * reach * 0.55], [t0 + sweep, side * reach]];
+  const PATTERNS = {
+    // Calathea makoyana: pale leaf, dark feathered blotches in alternating sizes.
+    peacock(g) {
+      g.fillStyle = shade('#c8df98', 0); g.fillRect(0, 0, LW, LH);
+      const dark = shade('#2f6a3c', 0);
+      for (let i = 0; i < 10; i++) {
+        const t = 0.08 + i * 0.088, big = i % 2 === 0;
+        [-1, 1].forEach(s => {
+          stroke(g, dark, 1.5, lateral(t, s));
+          blob(g, dark, t + 0.045, s * (big ? 0.42 : 0.3), big ? 0.034 : 0.022, big ? 0.3 : 0.2, s * 0.35);
+        });
+      }
+      stroke(g, dark, 7, [[0, -1], [1, -1]]); stroke(g, dark, 7, [[0, 1], [1, 1]]);
+      stroke(g, shade('#e7f0c4', 0), 3, [[0, 0], [1, 0]]);
+    },
+    // Calathea ornata: deep green with paired pink pinstripes.
+    pinstripe(g) {
+      g.fillStyle = shade('#1f4733', 0); g.fillRect(0, 0, LW, LH);
+      const ink = pick(['#f4a9c6', '#f7c6d6', '#f1ede2']);
+      for (let i = 0; i < 8; i++) {
+        const t = 0.12 + i * 0.095;
+        [-1, 1].forEach(s => [0, 0.022].forEach(o => stroke(g, ink, 1.6, lateral(t + o, s, 0.78, 0.11).slice(0).map(([a, b], k) => [a, k ? b : s * 0.14]))));
+      }
+      stroke(g, shade('#2d5c41', 0.05), 2.5, [[0, 0], [1, 0]]);
+    },
+    // Calathea lancifolia: light green, dark ovals alternating along the midrib.
+    rattlesnake(g) {
+      g.fillStyle = shade('#b7d67c', 0); g.fillRect(0, 0, LW, LH);
+      const dark = shade('#34603a', 0);
+      for (let i = 0; i < 11; i++) {
+        const t = 0.07 + i * 0.08, s = i % 2 ? 1 : -1;
+        blob(g, dark, t, s * 0.34, 0.03, 0.2, 0);
+        blob(g, dark, t + 0.04, -s * 0.2, 0.016, 0.1, 0);
+      }
+      stroke(g, dark, 9, [[0, -1], [1, -1]]); stroke(g, dark, 9, [[0, 1], [1, 1]]);
+      stroke(g, shade('#6f9a4a', 0), 2, [[0, 0], [1, 0]]);
+    },
+    // Calathea roseopicta: dark leaf, a feathered pink or silver band tracing the edge.
+    medallion(g) {
+      g.fillStyle = shade('#2a5443', 0); g.fillRect(0, 0, LW, LH);
+      const band = pick(['#eef2e4', '#f2a6bd', '#e8efe0']), sage = shade('#9cc0a0', 0);
+      for (let t = 0.06; t < 0.95; t += 0.016) {
+        [-1, 1].forEach(s => {
+          stroke(g, sage, 2.6, [[t, 0], [t + 0.035, s * (0.3 + 0.12 * Math.sin(t * 40))]]); // feathered center
+          stroke(g, band, 2.2, [[t, s * 0.62], [t + 0.03, s * 0.76]]);                        // band near the edge
+        });
+      }
+      stroke(g, shade('#7a3a4c', 0), 2.5, [[0, 0], [1, 0]]);
+    },
+    // Maranta: green, red herringbone veins, a lime feather down the middle.
+    herringbone(g) {
+      g.fillStyle = shade('#5b9844', 0); g.fillRect(0, 0, LW, LH);
+      const lime = shade('#c2e07a', 0), red = pick(['#d8344f', '#e0486a']), dark = shade('#2e5d2f', 0);
+      for (let t = 0.05; t < 0.95; t += 0.02) [-1, 1].forEach(s => stroke(g, lime, 3, [[t, 0], [t + 0.02, s * 0.3]]));
+      for (let i = 0; i < 9; i++) {
+        const t = 0.08 + i * 0.1;
+        [-1, 1].forEach(s => {
+          stroke(g, red, 2, lateral(t, s, 1, 0.12));
+          blob(g, dark, t + 0.07, s * 0.72, 0.022, 0.12, s * 0.4);
+        });
+      }
+      stroke(g, red, 3, [[0, 0], [1, 0]]);
+    },
+    // Calathea zebrina: bright green with bold dark bands.
+    zebra(g) {
+      g.fillStyle = shade('#86c56c', 0); g.fillRect(0, 0, LW, LH);
+      const dark = shade('#2f6a3d', 0);
+      for (let i = 0; i < 12; i++) [-1, 1].forEach(s => stroke(g, dark, i % 2 ? 4 : 6, lateral(0.06 + i * 0.075, s, 1, 0.1)));
+      stroke(g, shade('#cfeaa4', 0), 4, [[0, 0], [1, 0]]);
+    },
+    // Plain burgundy leaves, for mixing in.
+    burgundy(g) {
+      g.fillStyle = shade('#6d2946', 0); g.fillRect(0, 0, LW, LH);
+      const vein = shade('#8e3d60', 0);
+      for (let i = 0; i < 9; i++) [-1, 1].forEach(s => stroke(g, vein, 1.4, lateral(0.08 + i * 0.1, s)));
+      stroke(g, shade('#a14a6e', 0), 2.5, [[0, 0], [1, 0]]);
+    },
+  };
+  const texCache = {};
+  function leafTexture(name) {
+    // A few variants per pattern, shared between leaves.
+    const key = name + Math.floor(Math.random() * 3);
+    if (texCache[key]) return texCache[key];
+    const c = document.createElement('canvas'); c.width = LW; c.height = LH;
+    PATTERNS[name](c.getContext('2d'));
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.anisotropy = 4;
+    return (texCache[key] = tex);
+  }
+
+  // ?leaf=peacock|pinstripe|rattlesnake|medallion|herringbone|zebra picks the pattern.
+  const askedLeaf = new URLSearchParams(location.search).get('leaf');
+  const calathea = PATTERNS[askedLeaf] && askedLeaf !== 'burgundy' ? askedLeaf : pick(Object.keys(PATTERNS).filter(k => k !== 'burgundy'));
+  const mixBurgundy = ['herringbone', 'medallion', 'peacock'].includes(calathea) && Math.random() < 0.4;
+  const underside = toon(['herringbone', 'zebra'].includes(calathea) ? '#9fc07e' : pick(['#7a3556', '#8a3f62']));
+  const petioleMat = toon(['herringbone', 'pinstripe'].includes(calathea) || mixBurgundy ? '#b45a72' : '#6f9a4e');
+  // Leaf outline: width is half-width as a fraction of length. Ovals taper into the stem and come to a point.
+  const leafShape = calathea === 'rattlesnake'
+    ? { len: [0.62, 0.85], wid: [0.19, 0.22], profile: t => Math.pow(Math.sin(Math.PI * Math.pow(t, 0.9)), 0.7) * (1 + 0.07 * Math.sin(t * 30)) }
+    : { len: [0.55, 0.75], wid: [0.3, 0.36], profile: t => Math.pow(Math.sin(Math.PI * Math.pow(t, 0.82)), 0.95) };
 
   const plant = new THREE.Group();
   plant.position.y = SOIL_Y;
@@ -216,21 +326,81 @@ function main() {
     return f;
   }
 
-  function leafyFrond(az, grow = false) {
-    const h = rand(0.45, 1.05), out = rand(0.25, 0.7);
+  // Spread calathea stems toward the sides, so the plant fans out wide rather than tall.
+  const fanAzimuth = az => Math.atan2(Math.sin(az) * 0.35, Math.cos(az));
+  const VIEW = new THREE.Vector3(0, 0.25, 1).normalize(), Y_AXIS = new THREE.Vector3(0, 1, 0);
+  // Leaves are planned before they're built, so each one can find a spot that doesn't
+  // run through its neighbors. A leaf's footprint is a capsule down its midrib.
+  const placedLeaves = [];
+  function planLeaf(az, rank, { fan = true, young = false } = {}) {
+    // rank 0 = young leaf in the middle (tall, upright); 1 = old outer leaf (low, spreading).
+    if (fan) az = fanAzimuth(az);
+    // Like a calathea: the top leaf nearly upright, lower leaves arching out to level or a little below.
+    const h = young ? rand(0.85, 1.05) : THREE.MathUtils.lerp(0.95, 0.22, rank) + rand(-0.12, 0.12);
+    const out = young ? rand(0, 0.06) : THREE.MathUtils.lerp(0.05, 0.42, rank) + rand(-0.08, 0.08);
+    const tilt = young ? rand(1.3, 1.5) : THREE.MathUtils.lerp(1.35, -0.25, rank) + rand(-0.3, 0.3);
+    const len = rand(...leafShape.len) * THREE.MathUtils.lerp(0.85, 1.1, rank) * (young ? 0.6 : rand(0.8, 1.15));
+    const wid = young ? 0.09 * len : rand(...leafShape.wid) * len;
+    const dir = new THREE.Vector3(Math.cos(tilt), Math.sin(tilt), rand(-0.1, 0.1)).normalize();
+    const end = new THREE.Vector3(out, h, 0);
+    // Into plant space: the frond's holder sits a little off-center and turns by az.
+    const base = new THREE.Vector3(Math.sin(az) * 0.12, 0, Math.cos(az) * 0.12);
+    const toPlant = v => v.applyAxisAngle(Y_AXIS, az).add(base);
+    const a = toPlant(end.clone().addScaledVector(dir, len * 0.12));
+    const b = toPlant(end.clone().addScaledVector(dir, len * 0.88));
+    return { az, rank, young, h, out, tilt, len, wid, dir, end, a, b, r: wid * 0.8 };
+  }
+  // Closest distance between two midrib segments, sampled.
+  const _p = new THREE.Vector3(), _q = new THREE.Vector3();
+  function leafGap(p, q) {
+    let d = Infinity;
+    for (let i = 0; i <= 6; i++) {
+      _p.lerpVectors(p.a, p.b, i / 6);
+      for (let j = 0; j <= 6; j++) d = Math.min(d, _p.distanceTo(_q.lerpVectors(q.a, q.b, j / 6)));
+    }
+    return d;
+  }
+  function leafyFrond(az, grow = false, rank = Math.random(), opts = {}) {
+    // Try nearby placements and keep the first that touches nothing (or the least crowded one).
+    let plan = null, best = Infinity;
+    for (let k = 0; k < 30 && best > 0; k++) {
+      const p = planLeaf(k ? az + rand(-1, 1) : az, k ? clamp(rank + rand(-0.3, 0.3), 0, 1) : rank, opts);
+      const crowd = placedLeaves.reduce((c, q) => c + Math.max(0, p.r + q.r - leafGap(p, q)), 0);
+      if (crowd < best) { best = crowd; plan = p; }
+    }
+    placedLeaves.push(plan);
+    return buildLeaf(plan, grow);
+  }
+  function buildLeaf({ az, rank, young, h, out, tilt, len, wid, dir, end }, grow) {
+    const pattern = mixBurgundy && Math.random() < 0.3 ? 'burgundy' : calathea;
     const f = addFrond(az, pivot => {
-      const curve = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(0, 0, 0), new THREE.Vector3(out * 0.1, h * 0.45, 0),
-        new THREE.Vector3(out * 0.55, h * 0.9, 0), new THREE.Vector3(out, h, 0),
-      ]);
-      pivot.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 12, 0.022, 5), stemMat));
-      const leaf = new THREE.Mesh(leafGeometry({
-        len: rand(0.42, 0.62), wid: rand(0.2, 0.28),
-        profile: t => Math.pow(Math.sin(Math.PI * Math.pow(t, 0.7)), 0.9) * (1 + 0.25 * Math.pow(1 - t, 4)),
-        fold: rand(0.15, 0.35), droop: rand(0.1, 0.45), color: leafColor(rand(0, 10)),
-      }), leafMat);
-      leaf.position.copy(curve.getPoint(1));
-      leaf.rotation.set(rand(-0.4, 0.4), 0, rand(-0.35, 0.25));
+      // The stem rises, then bends into the leaf's direction so the midrib carries on from it.
+      const curve = new THREE.CubicBezierCurve3(
+        new THREE.Vector3(0, 0, 0), new THREE.Vector3(out * 0.1, h * 0.55, 0),
+        end.clone().addScaledVector(dir, -h * 0.35), end,
+      );
+      pivot.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 14, 0.015, 5), petioleMat));
+      const geo = young
+        // A new leaf still unfurling: narrow and rolled up tight.
+        ? leafGeometry({ len, wid, profile: t => Math.pow(Math.sin(Math.PI * Math.pow(t, 0.7)), 0.6), fold: -1.6, droop: 0.02 })
+        : leafGeometry({
+          len, wid, profile: leafShape.profile,
+          fold: rand(-0.45, -0.25),                                    // edges cup toward the face
+          droop: Math.random() < 0.75 ? rand(-0.45, -0.22) : rand(0.15, 0.3), // tip arches back (sometimes forward)
+          curl: rand(-0.3, 0.3), wave: rand(0.08, 0.2), phase: rand(0, 6), twist: rand(-0.35, 0.35),
+        });
+      const leaf = new THREE.Group();
+      leaf.add(new THREE.Mesh(geo, toon('#ffffff', { map: leafTexture(pattern), side: THREE.FrontSide })));
+      leaf.add(new THREE.Mesh(geo, toon(underside.color, { side: THREE.BackSide })));
+      leaf.position.copy(end);
+      // Its face is partly turned toward the room, the way a potted plant grows toward the light.
+      // (Blade geometry: length +x, face −y.)
+      const toViewer = VIEW.clone().applyAxisAngle(Y_AXIS, -az);
+      const natural = new THREE.Vector3(Math.sin(tilt), -Math.cos(tilt), 0);
+      const face = natural.lerp(toViewer, 0.7);
+      face.addScaledVector(dir, -face.dot(dir)).normalize();
+      const down = face.clone().negate(), side = new THREE.Vector3().crossVectors(dir, down);
+      leaf.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(dir, down, side));
       pivot.add(leaf);
     });
     if (grow) { f.holder.scale.setScalar(0.001); pops.push({ obj: f.holder, t: 0, dur: 0.8, to: 1 }); }
@@ -281,8 +451,13 @@ function main() {
   }
 
   if (kind === 'leafy') {
-    const n = Math.floor(rand(6, 10));
-    for (let i = 0; i < n; i++) leafyFrond(i / n * Math.PI * 2 + rand(-0.3, 0.3));
+    // Leaves alternate left and right on their way down, with a few set forward or back.
+    const n = Math.floor(rand(6, 9)), first = Math.random() < 0.5 ? 0 : Math.PI;
+    for (let i = 0; i < n; i++) leafyFrond(first + (i % 2) * Math.PI + rand(-0.8, 0.8), false, rand(0, 1));
+    // A few strays at any angle, some leaning toward you, some behind, so the fan isn't too tidy.
+    const strays = Math.floor(rand(2, 5));
+    for (let i = 0; i < strays; i++) leafyFrond(rand(0, Math.PI * 2), false, rand(0.2, 1), { fan: false });
+    if (Math.random() < 0.5) leafyFrond(rand(0, Math.PI * 2), false, 0, { young: true });
   } else if (kind === 'snake') {
     const n = Math.floor(rand(5, 8));
     for (let i = 0; i < n; i++) snakeBlade(i / n * Math.PI * 2 + rand(-0.4, 0.4));
@@ -435,7 +610,7 @@ function main() {
     impulse(3);
     if (waterings === 3 && !bloomed) { bloom(); window.sfx && window.sfx('check'); }
     if (waterings > 3 && waterings <= 7) {
-      if (kind === 'leafy') leafyFrond(rand(0, Math.PI * 2), true);
+      if (kind === 'leafy') leafyFrond(rand(0, Math.PI * 2), true, rand(0, 0.3)); // new leaves come up in the middle
       if (kind === 'snake') snakeBlade(rand(0, Math.PI * 2), true);
     }
   }
