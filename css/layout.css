@@ -158,6 +158,25 @@ h1, h2, h3, h4, h5, h6 { font-family: "futura-pt", sans-serif; margin-top: 0; }
   font-family: "futura-pt", sans-serif;
   font-weight: 400;
 }
+/* Hero links: read as links, and say when they leave the site */
+.hero-text .meta a {
+  color: #111;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(0,0,0,0.22);
+  transition: text-decoration-color 0.2s;
+}
+.hero-text .meta a:hover { text-decoration-color: #111; }
+.hero-text .meta a[target="_blank"]::after {
+  content: "→";
+  display: inline-block;
+  margin-left: 4px;
+  color: rgba(0,0,0,0.35);
+  text-decoration: none;
+  transition: transform 0.2s, color 0.2s;
+}
+.hero-text .meta a[target="_blank"]:hover::after { transform: translateX(3px); color: #111; }
 .hero-text .description {
   font-size: 1.7rem;
   line-height: 1.7;
