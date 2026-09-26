@@ -2,133 +2,104 @@
 <html lang="en">
 <head>
 
-  <!-- Basic Page Needs
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Mary Huang : Portfolio</title>
+  <title>Viralnet — Mary Huang</title>
   <meta name="description" content="">
   <meta name="author" content="">
-
-  <!-- Mobile Specific Metas
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- FONT
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
-
-  <!-- Video Player
-    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <script src="https://cdn.plyr.io/3.5.6/plyr.js"></script>
-  <link rel="stylesheet" href="https://cdn.plyr.io/3.5.6/plyr.css" />
-  <!-- CSS
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link rel="stylesheet" href="../../css/normalize.css">
-  <link rel="stylesheet" href="../../css/skeleton.css">
-  <link rel="stylesheet" href="../../css/main.css">
-
-  <!-- Favicon
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <link rel="stylesheet" href="../../css/layout.css">
   <link rel="icon" type="image/png" href="../../images/favicon.png">
+
+  <style>
+    .render-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .render-grid img { width: 100%; display: block; }
+    @media (max-width: 900px) {
+      .render-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
 
-
 <body>
-  <script>
-
-  </script>
-
   <div class="container project-page">
-
     <div class="row top-nav">
-      <div class="one-half column" >
+      <div class="one-half column">
         <a href="/index.html">
           <h5 class="name-title">Mary Huang</h5>
         </a>
       </div>
     </div>
+  </div>
 
-    <div class="row">
-      <div class="seven columns" >
-        <img src="render0.png" />
+  <div style="max-width:1350px; margin: 0 auto; padding: 0 4%;">
+
+    <!-- Hero -->
+    <div class="hero">
+      <div class="hero-image">
+        <img src="render0.png" alt="Viralnet 3D force-directed graph render" />
       </div>
-      <div class="five columns">
-        <h5 class="large-title">Viralnet</h5>
-        <p>
-          2020 <br>
-          Design & Code
+      <div class="hero-text">
+        <p class="eyebrow">Joint Genome Institute · 2020</p>
+        <h1>Viralnet</h1>
+        <p class="meta">
+          Design &amp; Code<br>
+          <a href="https://github.com/ryneches/viralnet" target="_blank" rel="noopener">GitHub</a>
         </p>
-        <p>
-          <a href="https://github.com/ryneches/viralnet" target="blank">Github</a>
-          <br>
-          Data visualization of virus genomes, in partnership with Dr. Russell Neches (computational biologist at the Berkeley Genome Institute).
-          <br><br>
-<!--
-
-          I'm designing & coding the 3D graphics in javascript using the <a href="https://github.com/vasturiano/3d-force-graph" target="blank">3d-force-graph</a> library, which combines D3 with three.js
-          <br><br>
-        -->
-          Force-directed graphs are commonly used in computational biology, but they are commonly an ugly mess and exceedingly difficult to navigate. This is our aspiration for a scientific tool for the future.
-        </p>
-
-      </div>
-    </div>
-
-
-    <div class="row">
-      <div class="twelve columns" >
-        <img src="VirusSelected.png" />
-      </div>
-    </div>
-<hr>
-    <div class="row tight-grid">
-      <div class="six columns" >
-        <!--
-        <video class="minimal" playsinline autoplay loop><source src="Add_Level2.m4v"> </video>
-        -->
-        <img src="Nodes-All_small.gif" />
-      </div>
-      <div class="six columns" >
-        <img src="Nodes_Gradual_small.gif" />
-        <!--
-        <video class="minimal" playsinline autoplay loop><source src="Add_Level2_Gradual.m4v"> </video>
-        -->
-        <p>
-          Loading nodes gradually gives a very different effect.
+        <p class="description">
+          Data visualization of virus genomes, in partnership with Dr. Russell Neches, computational biologist at the Joint Genome Institute (JGI).
         </p>
       </div>
     </div>
-<hr>
-    <div class="row gallery tight-grid">
-      <div class="twelve columns" >
-        <img src="render9.png" />
-        <img src="render10.png" />
-        <img src="render11.png" />
-        <img src="render12.png" />
 
-        <img src="render1.png" />
-        <img src="render2.png" />
-        <img src="render3.png" />
-        <img src="render4.png" />
+    <div class="content-section" style="margin-top: 80px;">
 
-        <img src="render5.png" />
-        <img src="render6.png" />
-        <img src="render7.png" />
-        <img src="render8.png" />
-
+      <div class="pull-quote">
+        <p>Force-directed graphs are common in computational biology, but they're often an ugly mess and exceedingly difficult to navigate. This is our aspiration for a scientific tool of the future.</p>
       </div>
+
+      <div class="full-bleed">
+        <img src="VirusSelected.png" alt="A selected virus and its connections" />
+      </div>
+
+      <div class="two-col">
+        <div class="full-bleed">
+          <img src="Nodes-All_small.gif" alt="All nodes loading at once" />
+          <p class="caption">All nodes loaded at once.</p>
+        </div>
+        <div class="full-bleed">
+          <img src="Nodes_Gradual_small.gif" alt="Nodes loading gradually" />
+          <p class="caption">Loading nodes gradually gives a very different effect.</p>
+        </div>
+      </div>
+
+      <div>
+        <p class="section-label">Renders</p>
+        <div class="render-grid">
+          <img src="render9.png" alt="Viralnet render" />
+          <img src="render10.png" alt="Viralnet render" />
+          <img src="render11.png" alt="Viralnet render" />
+          <img src="render12.png" alt="Viralnet render" />
+          <img src="render1.png" alt="Viralnet render" />
+          <img src="render2.png" alt="Viralnet render" />
+          <img src="render3.png" alt="Viralnet render" />
+          <img src="render4.png" alt="Viralnet render" />
+          <img src="render5.png" alt="Viralnet render" />
+          <img src="render6.png" alt="Viralnet render" />
+          <img src="render7.png" alt="Viralnet render" />
+          <img src="render8.png" alt="Viralnet render" />
+        </div>
+      </div>
+
     </div>
-
-
 
     <div class="row spacer"></div>
 
   </div>
 
-
-
-
-<!-- End Document
-  –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 </body>
 </html>
