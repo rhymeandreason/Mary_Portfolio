@@ -743,6 +743,48 @@ function scrollableUnder(e) {
 
 document.addEventListener('dragstart', e => e.preventDefault());
 
+/* ═══════════════════════════════════════════════════════════════
+   Sounds — tiny synthesized cues, no audio files. Quiet by design;
+   the audio context wakes on the first click, as browsers require.
+   ═══════════════════════════════════════════════════════════════ */
+let soundOn = true;
+try { soundOn = localStorage.getItem('sound') !== 'off'; } catch {}
+let actx = null, amaster = null;
+function wakeAudio() {
+  if (actx) { if (actx.state === 'suspended') actx.resume(); return; }
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  actx = new AC();
+  amaster = actx.createGain(); amaster.gain.value = 0.16; amaster.connect(actx.destination);
+}
+document.addEventListener('pointerdown', wakeAudio, { capture: true, passive: true });
+function tone(f0, f1, dur, type = 'sine', vol = 1, delay = 0) {
+  const t = actx.currentTime + delay;
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(f0, t);
+  o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.008);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(amaster);
+  o.start(t); o.stop(t + dur + 0.02);
+}
+const SFX = {
+  open:  () => { tone(440, 660, 0.12, 'sine', 0.5); tone(660, 880, 0.1, 'sine', 0.25, 0.04); },
+  close: () => tone(620, 360, 0.12, 'sine', 0.4),
+  tick:  () => tone(1900, 1500, 0.025, 'triangle', 0.25),
+  check: () => { tone(880, 880, 0.05, 'triangle', 0.3); tone(1320, 1320, 0.08, 'triangle', 0.25, 0.05); },
+};
+function sfx(name) {
+  if (!soundOn || !actx || actx.state !== 'running') return;
+  try { SFX[name](); } catch {}
+}
+// Small UI controls get a soft tick.
+document.addEventListener('click', e => {
+  if (e.target.closest('.switch, .seg button, .filters button, .app .side button')) sfx('tick');
+}, true);
+
 /* Generic drag for anything with a handle */
 function makeDraggable(el, handle, onStart) {
   let start = null;
@@ -808,12 +850,13 @@ function createWindow({ id, title, x, y, w, h, content, noscroll, fullside, onOp
   onOpen && onOpen(el);
   return el;
 }
-function hideWin(id) { wins[id].el.classList.add('hidden'); syncDock(); }
+function hideWin(id) { wins[id].el.classList.add('hidden'); sfx('close'); syncDock(); }
 function showWin(id) {
   const w = wins[id];
   const el = w.el;
   if (!el.classList.contains('hidden')) { focusWin(el); centerOn(el); return; }
   el.classList.remove('hidden');
+  sfx('open');
   w.place && w.place(el); // some windows open where the visitor is looking
   focusWin(el);
   centerOn(el);
@@ -922,7 +965,7 @@ function dailyContent() {
       li.className = task.d ? 'done' : '';
       li.innerHTML = `<div class="box">${check}</div><span></span>`;
       li.querySelector('span').textContent = task.t;
-      li.addEventListener('click', () => { task.d = !task.d; render(); });
+      li.addEventListener('click', () => { task.d = !task.d; sfx(task.d ? 'check' : 'tick'); render(); });
       list.appendChild(li);
     });
   };
@@ -1326,6 +1369,13 @@ function settingsPane() {
     wrap.appendChild(r);
     return r;
   };
+
+  const snd = toggle(soundOn, on => {
+    soundOn = on;
+    try { localStorage.setItem('sound', on ? 'on' : 'off'); } catch {}
+    if (on) { wakeAudio(); setTimeout(() => sfx('check'), 30); }
+  });
+  row('Sounds', 'Soft clicks when you open, close, and check things', snd);
 
   const SIZES = [[96, 'Small'], [124, 'Medium'], [168, 'Large']];
   const gridSeg = document.createElement('div'); gridSeg.className = 'seg';
