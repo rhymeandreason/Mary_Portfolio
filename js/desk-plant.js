@@ -45,7 +45,7 @@ function main() {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(24.2, W / H, 0.1, 50);
   camera.position.set(0, 2.3, 9.4);
-  camera.lookAt(0, 1.73, 0); // headroom above the plant for the watering can
+  camera.lookAt(0, 1.83, 0); // headroom above the plant for the watering can
 
   scene.add(new THREE.HemisphereLight(0xffffff, 0xf3d9c4, 1.1));
   const sun = new THREE.DirectionalLight(0xffffff, 1.9);
@@ -86,9 +86,32 @@ function main() {
   pot.add(new THREE.Mesh(new THREE.LatheGeometry(body, 40), potMat));
   const soilTop = pr.h - 0.05;
   pot.scale.setScalar(POT_SCALE);
-  const SOIL_Y = soilTop * POT_SCALE; // top of the soil, in scene units
+  const STAND_H = 0.2;                           // the pot sits up on a little stand
+  pot.position.y = STAND_H;
+  const SOIL_Y = STAND_H + soilTop * POT_SCALE;  // top of the soil, in scene units
 
-  const pattern = pick(['plain', 'rim', 'stripes', 'dots']);
+  // A little wooden plant stand: a round top on straight, sturdy legs.
+  const stand = new THREE.Group();
+  scene.add(stand);
+  const woodMat = toon(pick(['#c08a57', '#b07a4a', '#8a5a3a', '#d6ae80']));
+  const standR = pr.b * POT_SCALE + 0.035;
+  const standTop = new THREE.Mesh(new THREE.CylinderGeometry(standR, standR * 0.96, 0.04, 36), woodMat);
+  standTop.position.y = STAND_H - 0.02;
+  stand.add(standTop);
+  const legs = Math.random() < 0.5 ? 3 : 4, legA = rand(0, Math.PI);
+  for (let i = 0; i < legs; i++) {
+    const a = legA + i / legs * Math.PI * 2;
+    const from = new THREE.Vector3(Math.cos(a) * standR * 0.7, STAND_H - 0.03, Math.sin(a) * standR * 0.7);
+    const to = new THREE.Vector3(Math.cos(a) * standR * 0.7, 0, Math.sin(a) * standR * 0.7); // straight down
+    const leg = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, from.distanceTo(to), 10), woodMat);
+    leg.position.copy(from).add(to).multiplyScalar(0.5);
+    leg.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), from.clone().sub(to).normalize());
+    stand.add(leg);
+  }
+
+  // A face, some of the time; a face gets a clean pot (no stripes or dots across it).
+  const face = Math.random() < 0.5;
+  const pattern = pick(face ? ['plain', 'rim'] : ['plain', 'rim', 'stripes', 'dots']);
   const accentMat = toon(accent);
   // Outer wall radius at height y, matching the lathe profile above.
   const radiusAt = y => (pr.b + 0.03) + (pr.t - pr.b - 0.03) * clamp((y - 0.04) / (pr.h - rimH - 0.04), 0, 1);
@@ -113,8 +136,7 @@ function main() {
     }
   }
 
-  // A face, some of the time.
-  const face = Math.random() < 0.5 && pattern !== 'dots';
+  // The face.
   const eyes = [];
   if (face) {
     const ink = toon('#1d1b1a');
@@ -812,7 +834,7 @@ function main() {
     if (x < r.left || x > r.right || y < r.top || y > r.bottom) return false;
     ndc.set((x - r.left) / r.width * 2 - 1, -((y - r.top) / r.height) * 2 + 1);
     ray.setFromCamera(ndc, camera);
-    return ray.intersectObjects([plant, pot], true).length > 0;
+    return ray.intersectObjects([plant, pot, stand], true).length > 0;
   };
   function impulse(mag) {
     fronds.forEach(f => { f.vx += rand(-1, 1) * mag * f.flex; f.vz += rand(-1, 1) * mag * f.flex; });
