@@ -19,6 +19,7 @@
   </script>
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
@@ -150,7 +151,7 @@
     .win.active .lights b.c { background: #ff5f57; }
     .win.active .lights b.m { background: #febc2e; }
     .win.active .lights b.z { background: #28c840; }
-    .win .body { flex: 1; min-height: 0; overflow: auto; }
+    .win .body { flex: 1; min-height: 0; overflow: auto; zoom: var(--text-zoom, 1); }
     .win .body.noscroll { overflow: hidden; }
     .win .body::-webkit-scrollbar { width: 8px; }
     .win .body::-webkit-scrollbar-thumb { background: #ddd7cd; border-radius: 4px; }
@@ -451,9 +452,11 @@
     .polaroid span { position: absolute; left: 10px; bottom: 6px; font-size: 12px; color: var(--ink-2); letter-spacing: 0.02em; }
     .sticky { background: #fff4b8; padding: 16px 18px; width: 200px; font-size: 16px; line-height: 1.45; box-shadow: 0 8px 20px rgba(0,0,0,0.12); color: #4b4224; }
     .sticky.blue { background: #dbe9ff; color: #223052; }
-    .sticky.postit { width: 260px; height: 260px; padding: 22px 24px; display: flex; flex-direction: column; font-size: 16px; line-height: 1.45; }
-    .sticky.postit b { font-size: 18px; line-height: 1.15; margin-bottom: 10px; }
-    .sticky.postit p { margin: 0; flex: 1; }
+    .sticky.postit { width: 260px; height: 260px; padding: 18px 24px 16px; display: flex; flex-direction: column; font-size: 16px; line-height: 1.45; }
+    /* notes keep their size and spot; only their writing scales */
+    .sticky.postit > * { zoom: var(--text-zoom, 1); }
+    .sticky.postit b { font-family: "Caveat", "Bradley Hand", cursive; font-size: 30px; font-weight: 600; line-height: 1; margin-bottom: 12px; }
+    .sticky.postit p { margin: 0; flex: 1; font-family: "Caveat", "Bradley Hand", cursive; font-size: 23px; font-weight: 600; line-height: 1.15; }
     .sticky.postit a { font-weight: 600; text-decoration: none; margin-top: 10px; }
     .sticky.pink { background: #ffd9e6; color: #4e2233; }
     /* Post-its: a glued strip along the top, a bottom edge that lifts off the desk
@@ -1393,6 +1396,61 @@ function toggle(on, onChange) {
 }
 
 /* Media thumbnail size, shared by the settings panel and the grid. */
+// Text size scales what's inside windows and notes; the window chrome stays put.
+let textZoom = 1;
+function setTextZoom(z) {
+  textZoom = z;
+  document.documentElement.style.setProperty('--text-zoom', z);
+  try { localStorage.setItem('textZoom', z); } catch {}
+  applyMinFont();
+}
+
+// Minimum text size, like the browser setting: any text that would render
+// smaller than this (after Text size scaling) is bumped up to it.
+let minFont = 0;
+const fsOrig = new Map(); // element → its own inline font-size before we bumped it
+function bumpText(els) {
+  if (!minFont) return;
+  const hasText = el => [...el.childNodes].some(n => n.nodeType === 3 && n.nodeValue.trim());
+  const bump = [];
+  els.forEach(el => {
+    if (fsOrig.has(el) || !hasText(el)) return;
+    const z = el.closest('.win .body, .sticky.postit') ? textZoom : 1;
+    const fs = parseFloat(getComputedStyle(el).fontSize);
+    if (fs * z < minFont) bump.push([el, minFont / z]);
+  });
+  bump.forEach(([el, px]) => { fsOrig.set(el, el.style.fontSize); el.style.fontSize = px + 'px'; });
+}
+function applyMinFont() {
+  if (typeof world === 'undefined') return;
+  fsOrig.forEach((v, el) => { el.style.fontSize = v; });
+  fsOrig.clear();
+  bumpText([...world.querySelectorAll('*')]);
+}
+function setMinFont(px) {
+  minFont = px;
+  try { localStorage.setItem('minFont', px); } catch {}
+  applyMinFont();
+}
+try { minFont = parseFloat(localStorage.getItem('minFont')) || 0; } catch {}
+// Apps rebuild their lists as they go (music, weather, files); check only what's new.
+const minFontPending = new Set();
+new MutationObserver(muts => {
+  if (!minFont) return;
+  const first = !minFontPending.size;
+  muts.forEach(m => m.addedNodes.forEach(n => {
+    const el = n.nodeType === 1 ? n : n.parentElement;
+    if (el) minFontPending.add(el);
+  }));
+  if (first && minFontPending.size) requestAnimationFrame(() => {
+    const els = [];
+    minFontPending.forEach(el => { if (el.isConnected) els.push(el, ...el.querySelectorAll('*')); });
+    minFontPending.clear();
+    bumpText(els);
+  });
+}).observe(document.getElementById('world'), { childList: true, subtree: true });
+try { const z = parseFloat(localStorage.getItem('textZoom')); if (z) setTextZoom(z); } catch {}
+
 let mediaCell = 124;
 function setMediaCell(px) {
   mediaCell = px;
@@ -1430,6 +1488,32 @@ function settingsPane() {
     gridSeg.appendChild(b);
   });
   row('Media grid', 'Thumbnail size in the Media library', gridSeg);
+
+  const TEXT = [[0.9, 'Small'], [1, 'Medium'], [1.15, 'Large']];
+  const textSeg = document.createElement('div'); textSeg.className = 'seg';
+  TEXT.forEach(([z, name]) => {
+    const b = document.createElement('button'); b.textContent = name;
+    b.classList.toggle('on', z === textZoom);
+    b.addEventListener('click', () => {
+      setTextZoom(z);
+      textSeg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    });
+    textSeg.appendChild(b);
+  });
+  row('Text size', 'Text in every window and note', textSeg);
+
+  const MIN = [[0, 'Off'], [13, '13'], [14, '14'], [16, '16']];
+  const minSeg = document.createElement('div'); minSeg.className = 'seg';
+  MIN.forEach(([px, name]) => {
+    const b = document.createElement('button'); b.textContent = name;
+    b.classList.toggle('on', px === minFont);
+    b.addEventListener('click', () => {
+      setMinFont(px);
+      minSeg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    });
+    minSeg.appendChild(b);
+  });
+  row('Minimum text size', 'Never show text smaller than this', minSeg);
 
   const pz = toggle(pinchZoom, on => { pinchZoom = on; });
   row('Pinch to zoom', 'Pinch on a trackpad to zoom the desktop', pz);
@@ -1873,8 +1957,8 @@ function layout() {
   wins.music.el.querySelector('.lights .c').addEventListener('click', () => music.stop());
   wins.mail.onShow = el => el.querySelector('input').focus({ preventScroll: true });
 
-  addLoose(`<b>Personal Personal Computing</b><p>Replacing my daily apps with self-built, minimal versions and living in them. 30 apps so far, in Tauri on Mac. The windows here are a few of them.</p><a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio <i class="ph ph-arrow-up-right"></i></a>`, 40, 900, -2, 'sticky postit');
-  addLoose(`<b>Kodolab</b><p>A web platform for learning biology in 3D. An AI sandbox lets students and teachers generate lessons of their own, seconds between iterations.</p><a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org <i class="ph ph-arrow-up-right"></i></a>`, 300, 780, 3, 'sticky postit lavender');
+  addLoose(`<b>Personal Personal Computing</b><p>30 self-built apps I live in every day. The windows here are a few of them.</p><a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio <i class="ph ph-arrow-up-right"></i></a>`, 40, 900, -2, 'sticky postit');
+  addLoose(`<b>Kodolab</b><p>Learn biology in 3D. An AI sandbox turns ideas into lessons in seconds.</p><a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org <i class="ph ph-arrow-up-right"></i></a>`, 300, 780, 3, 'sticky postit lavender');
 
   // Frame the whole composition in whatever window we were given.
   if (small) {
@@ -1890,6 +1974,7 @@ function layout() {
    ═══════════════════════════════════════════════════════════════ */
 buildDock();
 layout();
+applyMinFont();
 setMode(1);
 /* Battery, the way a menu bar shows it. Needs the Battery Status API;
    where the browser doesn't expose it (Safari, Firefox), show nothing. */
