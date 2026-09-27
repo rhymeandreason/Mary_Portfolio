@@ -62,19 +62,19 @@ function main() {
   const POTS = ['#e8795a', '#f4a3b8', '#f6c945', '#4f6bed', '#63c7a2', '#b79cf2', '#ff8f4d', '#f2efe6'];
   const ACCENTS = ['#ffffff', '#1f2a44', '#ffd23f', '#ff6f91', '#3c8dde'];
   const GREENS = ['#3aa655', '#2f8f5b', '#6cc24a', '#1f7a55', '#4bb36b'];
-  const PETALS = ['#ff6fa3', '#ff8c61', '#ffd23f', '#b388ff', '#ffffff', '#ff4f6d'];
   const CANS = ['#5ab0f0', '#f2b33d', '#e8697d', '#6cc4a1', '#9b8cf2'];
 
-  // ?plant=leafy|snake|succulent picks one; otherwise it's a surprise.
+  // ?plant=leafy|succulent|jade|cactus picks one; otherwise it's a surprise.
+  const KINDS = ['leafy', 'succulent', 'jade', 'cactus'];
   const asked = new URLSearchParams(location.search).get('plant');
-  const kind = ['leafy', 'snake', 'succulent'].includes(asked) ? asked : pick(['leafy', 'leafy', 'snake', 'succulent']);
+  const kind = KINDS.includes(asked) ? asked : pick(['leafy', 'leafy', 'succulent', 'jade', 'cactus']);
   const potColor = pick(POTS);
   const accent = pick(ACCENTS.filter(c => c !== potColor));
 
   /* ── Pot ───────────────────────────────────────────────── */
   const pot = new THREE.Group();
   scene.add(pot);
-  const bowl = kind === 'succulent' && Math.random() < 0.6;
+  const bowl = (kind === 'succulent' && Math.random() < 0.6) || (kind === 'cactus' && Math.random() < 0.35);
   const pr = bowl ? { b: 0.5, t: 0.72, h: 0.62 } : { b: rand(0.4, 0.48), t: rand(0.58, 0.66), h: rand(0.8, 0.9) };
   const rimH = rand(0.1, 0.16);
   const body = [
@@ -184,8 +184,6 @@ function main() {
     g.computeVertexNormals();
     return g;
   }
-  const leafMat = toon('#ffffff', { vertexColors: true, side: THREE.DoubleSide });
-  const stemMat = toon('#4d9a4a');
 
   const baseGreen = new THREE.Color(pick(GREENS));
 
@@ -431,27 +429,6 @@ function main() {
     return f;
   }
 
-  function snakeBlade(az, grow = false) {
-    const len = rand(1.0, 1.7), lean = rand(0.04, 0.3);
-    const edge = new THREE.Color(Math.random() < 0.6 ? '#e6d45a' : '#bfe39a');
-    const band = baseGreen.clone().offsetHSL(0, 0, -0.12), pale = baseGreen.clone().offsetHSL(0, -0.1, 0.12);
-    const f = addFrond(az, pivot => {
-      const blade = new THREE.Mesh(leafGeometry({
-        len, wid: rand(0.09, 0.13),
-        profile: t => (t < 0.8 ? 0.75 + 0.25 * Math.sin(t * 3.4) : Math.max(0.05, (1 - t) / 0.2)),
-        fold: 0.35, droop: 0, twist: rand(-0.6, 0.6),
-        color: (c, t, u) => {
-          if (Math.abs(u) > 0.78) c.copy(edge);
-          else c.copy(Math.sin(t * 40 + u * 3) > 0.2 ? band : pale); // tiger banding
-        },
-      }), leafMat);
-      blade.rotation.z = Math.PI / 2 - lean;
-      pivot.add(blade);
-    }, { flex: 0.6, offset: rand(0.05, 0.2) });
-    if (grow) { f.holder.scale.setScalar(0.001); pops.push({ obj: f.holder, t: 0, dur: 0.9, to: 1 }); }
-    return f;
-  }
-
   const tipColor = new THREE.Color(pick(['#ff8fb1', '#ff9f6b', '#c79bff', '#ffd1dc']));
   const plump = (() => {
     const g = new THREE.SphereGeometry(1, 14, 10), p = g.attributes.position, col = [];
@@ -474,6 +451,163 @@ function main() {
     }, { flex: 0.35, offset: 0 });
   }
 
+  /* ── Jade plant (Crassula): a little tree with plump paired leaves ── */
+  const jadeLeafGeo = (() => {
+    const g = new THREE.SphereGeometry(1, 14, 10), p = g.attributes.position, col = [];
+    const jade = new THREE.Color(pick(['#5aa564', '#4e9a6a', '#6aae5c'])), blush = new THREE.Color(pick(['#d0604f', '#c9546a', '#d9784a']));
+    const c = new THREE.Color();
+    for (let i = 0; i < p.count; i++) { c.copy(jade).lerp(blush, clamp((0.25 - Math.abs(p.getY(i))) / 0.25, 0, 1) * 0.85); col.push(c.r, c.g, c.b); }
+    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    return g;
+  })();
+  const jadeLeafMat = toon('#ffffff', { vertexColors: true });
+  const barkMat = toon('#8b7658'), twigMat = toon('#7f9a58');
+  const jadeTips = []; // branch ends, for flowers: { parent, pos, dir }
+  function jadeLeaf(parent, at, stemDir, side, lift, size) {
+    // Leaf lies along z; x is its width, y its thickness.
+    const out = new THREE.Vector3().copy(side).multiplyScalar(Math.cos(lift)).addScaledVector(stemDir, Math.sin(lift)).normalize();
+    const wide = new THREE.Vector3().crossVectors(stemDir, out).normalize(), thick = new THREE.Vector3().crossVectors(out, wide);
+    const m = new THREE.Mesh(jadeLeafGeo, jadeLeafMat);
+    m.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(wide, thick, out));
+    m.scale.set(0.068 * size, 0.034 * size, 0.1 * size);
+    m.position.copy(at).addScaledVector(out, 0.095 * size);
+    parent.add(m);
+  }
+  function jadeBranch(parent, start, dir, len, radius, depth) {
+    const bend = new THREE.Vector3(rand(-0.1, 0.1), 0.12, rand(-0.1, 0.1));
+    const end = start.clone().addScaledVector(dir, len).add(bend.clone().multiplyScalar(len * 0.3));
+    const curve = new THREE.QuadraticBezierCurve3(start, start.clone().addScaledVector(dir, len * 0.5), end);
+    parent.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 6, radius, 6), depth < 1 ? barkMat : twigMat));
+    const tipDir = curve.getTangent(1).normalize();
+    if (depth < 2) {
+      const kids = Math.random() < 0.3 ? 3 : 2;
+      for (let i = 0; i < kids; i++) {
+        const axis = new THREE.Vector3(rand(-1, 1), rand(-0.3, 0.3), rand(-1, 1)).cross(tipDir).normalize();
+        const d = tipDir.clone().applyAxisAngle(axis, rand(0.35, 0.7) * (i % 2 ? 1 : -1)).add(new THREE.Vector3(0, 0.25, 0)).normalize();
+        jadeBranch(parent, end, d, len * rand(0.6, 0.8), radius * 0.7, depth + 1);
+      }
+    } else {
+      // Pairs of leaves, each pair turned a quarter from the last, smaller toward the tip.
+      let side = new THREE.Vector3().crossVectors(tipDir, new THREE.Vector3(0, 0, 1)).normalize();
+      for (let pr2 = 0; pr2 < 4; pr2++) {
+        const at = end.clone().addScaledVector(tipDir, -0.05 * (3 - pr2));
+        const size = 0.7 + (3 - pr2) * 0.12;
+        [1, -1].forEach(sgn => jadeLeaf(parent, at, tipDir, side.clone().multiplyScalar(sgn), 0.5 + pr2 * 0.25, size));
+        side = side.applyAxisAngle(tipDir, Math.PI / 2);
+      }
+      jadeTips.push({ parent, pos: end.clone().addScaledVector(tipDir, 0.03), dir: tipDir });
+    }
+  }
+  function buildJade() {
+    const trunkH = rand(0.28, 0.4), lean = new THREE.Vector3(rand(-0.06, 0.06), trunkH, rand(-0.04, 0.04));
+    const trunk = new THREE.QuadraticBezierCurve3(new THREE.Vector3(), new THREE.Vector3(lean.x * -0.5, trunkH * 0.5, 0), lean);
+    plant.add(new THREE.Mesh(new THREE.TubeGeometry(trunk, 8, 0.065, 8), barkMat));
+    const n = Math.random() < 0.5 ? 3 : 4, az0 = rand(0, Math.PI * 2);
+    for (let i = 0; i < n; i++) {
+      const az = az0 + i / n * Math.PI * 2 + rand(-0.3, 0.3);
+      const f = addFrond(az, pivot => {
+        const dir = new THREE.Vector3(Math.cos(rand(0.6, 1.1)), Math.sin(rand(0.6, 1.1)), 0).normalize();
+        jadeBranch(pivot, new THREE.Vector3(), dir, rand(0.26, 0.38), 0.032, 0);
+      }, { flex: 0.45, offset: 0 });
+      f.holder.position.copy(lean).multiplyScalar(rand(0.75, 1));
+    }
+  }
+
+  /* ── Cactus: ribbed, spiny, and a little jiggly ─────────── */
+  const cactusGreen = new THREE.Color(pick(['#4f9a5e', '#5aa36a', '#3f8a5a', '#5e9f78']));
+  const areoleMat = toon('#f4efe4'), spineMat = toon(pick(['#f6e7c8', '#efe2c0', '#fff4dc']));
+  const cactusTops = []; // where the flower goes: { parent, pos, r }
+  // A spiral cactus stem (Cereus 'Spiralis'): ribs that twist around the column, lumpy between
+  // the spine clusters, with a gentle lean and a rounded top.
+  function cactusBody(parent, { h, r, ribs, twist, lean = new THREE.Vector2() }) {
+    const radius = y => (y < h - r ? r * (0.92 + 0.08 * (y / (h - r))) : r * Math.sqrt(Math.max(0, 1 - ((y - (h - r)) / r) ** 2)));
+    const drift = y => new THREE.Vector3(lean.x * y * y, 0, lean.y * y * y);  // the column's lean
+    const spacing = 0.085;                                                     // between spine clusters
+    const pts = [];
+    for (let i = 0; i <= 48; i++) { const y = h * i / 48; pts.push(new THREE.Vector2(Math.max(0.001, radius(y)), y)); }
+    const g = new THREE.LatheGeometry(pts, ribs * 10);
+    const p = g.attributes.position, col = [], c = new THREE.Color();
+    const ridge = cactusGreen.clone().offsetHSL(0, 0, 0.09), groove = cactusGreen.clone().offsetHSL(0, 0.05, -0.12);
+    for (let i = 0; i < p.count; i++) {
+      const x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+      const rib = 0.5 + 0.5 * Math.cos(ribs * (Math.atan2(z, x) - twist * y));
+      const lump = 1 + 0.12 * rib * Math.pow(Math.sin(Math.PI * y / spacing), 2); // bulges between areoles
+      const k = (1 - 0.3 * (1 - rib)) * lump, d = drift(y);
+      p.setXYZ(i, x * k + d.x, y, z * k + d.z);
+      c.copy(groove).lerp(ridge, rib); col.push(c.r, c.g, c.b);
+    }
+    g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    g.computeVertexNormals();
+    parent.add(new THREE.Mesh(g, toon('#ffffff', { vertexColors: true })));
+    // Spine clusters sit in the pinches along each twisting ridge.
+    const spots = [];
+    for (let k = 0; k < ribs; k++) {
+      for (let y = spacing; y < h - 0.03; y += spacing) {
+        const rr = radius(y);
+        if (rr > 0.03) spots.push({ th: k / ribs * Math.PI * 2 + twist * y, y, rr });
+      }
+    }
+    const dots = new THREE.InstancedMesh(new THREE.SphereGeometry(0.013, 6, 5), areoleMat, spots.length);
+    const spines = new THREE.InstancedMesh(new THREE.ConeGeometry(0.004, 0.055, 4), spineMat, spots.length * 3);
+    const m = new THREE.Matrix4(), q = new THREE.Quaternion(), UP = new THREE.Vector3(0, 1, 0), one = new THREE.Vector3(1, 1, 1);
+    spots.forEach(({ th, y, rr }, i) => {
+      const outward = new THREE.Vector3(Math.cos(th), 0, Math.sin(th));
+      const at = outward.clone().multiplyScalar(rr * 1.03 + 0.004).add(drift(y)).setY(y);
+      dots.setMatrixAt(i, m.compose(at, q.identity(), one));
+      [-0.6, 0, 0.6].forEach((tip, j) => {
+        const d = outward.clone().add(new THREE.Vector3(0, tip, 0)).add(new THREE.Vector3(-outward.z, 0, outward.x).multiplyScalar((j - 1) * 0.5)).normalize();
+        spines.setMatrixAt(i * 3 + j, m.compose(at.clone().addScaledVector(d, 0.027), q.setFromUnitVectors(UP, d), one));
+      });
+    });
+    parent.add(dots, spines);
+    return drift(h).setY(h);  // the top of the stem
+  }
+  const spiralTwist = () => rand(1.6, 2.6) * (Math.random() < 0.5 ? 1 : -1);
+  // It starts as one short column and grows taller with each watering.
+  const cactus = { h: rand(0.42, 0.52), maxH: rand(1.3, 1.5), stretch: null };
+  function buildCactus() {
+    addFrond(0, pivot => {
+      Object.assign(cactus, {
+        r: rand(0.2, 0.23), ribs: Math.floor(rand(5, 8)), twist: spiralTwist(),
+        lean: new THREE.Vector2(rand(-0.06, 0.06), rand(-0.04, 0.02)),
+        stem: new THREE.Group(), top: new THREE.Group(), topY: 0,
+      });
+      pivot.add(cactus.stem, cactus.top);
+      shapeCactus();
+      cactusTops.push({ parent: cactus.top, pos: new THREE.Vector3(0, -0.01, 0), r: cactus.r });
+    }, { flex: 0.2, offset: 0 });
+  }
+  function shapeCactus() {
+    const { stem, top } = cactus;
+    stem.children.forEach(ch => ch.geometry && ch.geometry.dispose());
+    stem.clear();
+    const at = cactusBody(stem, cactus);
+    top.position.copy(at);
+    cactus.topY = at.y;
+  }
+  function growCactus() {
+    if (cactus.h >= cactus.maxH) return;
+    const before = cactus.h;
+    cactus.h = Math.min(cactus.maxH, cactus.h + 0.18);
+    shapeCactus();
+    // Rebuilt at the new height; stretch up into it from the old one.
+    cactus.stretch = { from: before / cactus.h, t: -0.2, dur: 0.9 };
+    cactus.stem.scale.y = cactus.stretch.from;
+    cactus.top.position.y = cactus.topY * cactus.stretch.from;
+  }
+  // Baby spirals around the base, after a few waterings.
+  function cactusPup() {
+    const a = rand(0, Math.PI * 2), d = rand(0.27, 0.33);
+    const f = addFrond(0, pivot => {
+      const g = new THREE.Group();
+      g.position.set(Math.cos(a) * d, 0, Math.sin(a) * d);
+      cactusBody(g, { h: rand(0.2, 0.3), r: rand(0.07, 0.085), ribs: 6, twist: spiralTwist() });
+      pivot.add(g);
+    }, { flex: 0.15, offset: 0 });
+    f.holder.scale.setScalar(0.001);
+    pops.push({ obj: f.holder, t: 0, dur: 0.7, to: 1 });
+  }
+
   if (kind === 'leafy') {
     // Leaves alternate left and right on their way down, with a few set forward or back.
     const n = Math.floor(rand(6, 9)), first = Math.random() < 0.5 ? 0 : Math.PI;
@@ -484,9 +618,10 @@ function main() {
     if (Math.random() < 0.5) leafyFrond(rand(0, Math.PI * 2), false, 0, { young: true });
     const basal = Math.floor(rand(2, 4));
     for (let i = 0; i < basal; i++) leafyFrond(rand(0, Math.PI * 2), false, 1, { fan: false, basal: true });
-  } else if (kind === 'snake') {
-    const n = Math.floor(rand(5, 8));
-    for (let i = 0; i < n; i++) snakeBlade(i / n * Math.PI * 2 + rand(-0.4, 0.4));
+  } else if (kind === 'jade') {
+    buildJade();
+  } else if (kind === 'cactus') {
+    buildCactus();
   } else {
     const n = Math.floor(rand(22, 32));
     for (let i = n - 1; i >= 0; i--) succulentLeaf(i, n);
@@ -496,50 +631,149 @@ function main() {
   fronds.forEach(f => { f.bx = f.pivot.rotation.x; f.bz = f.pivot.rotation.z; });
 
   /* ── Flowers (on the third watering) ───────────────────── */
-  const petal = PETALS.filter(c => c !== potColor);
-  function flower(color, size = 1) {
-    const g = new THREE.Group(), pm = toon(color);
-    const n = Math.random() < 0.5 ? 5 : 6;
-    for (let i = 0; i < n; i++) {
-      const p = new THREE.Mesh(new THREE.SphereGeometry(1, 10, 8), pm);
-      const a = i / n * Math.PI * 2;
-      p.scale.set(0.075 * size, 0.022 * size, 0.045 * size);
-      p.position.set(Math.cos(a) * 0.065 * size, 0, Math.sin(a) * 0.065 * size);
-      p.rotation.y = -a;
-      g.add(p);
-    }
-    const center = new THREE.Mesh(new THREE.SphereGeometry(0.035 * size, 10, 8), toon(color === '#ffd23f' ? '#ff8c61' : '#ffd23f'));
-    center.position.y = 0.012;
-    g.add(center);
-    return g;
-  }
   let bloomed = false;
+  // Calatheas rarely flower, and when they do it's modest: a short stalk near the base
+  // with a little cone of bracts and a few tiny tubular flowers peeking out.
+  function calatheaBloom() {
+    bloomed = true;
+    const bractMat = toon(pick(['#efe9d2', '#e6edd0', '#f3e3c6'])), flowerMat = toon(pick(['#ffffff', '#d9c6f2', '#f6f0ff']));
+    const h = rand(0.28, 0.42), lean = rand(0.05, 0.18);
+    const f = addFrond(rand(0, Math.PI * 2), pivot => {
+      const curve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0, 0, 0), new THREE.Vector3(lean * 0.3, h * 0.5, 0), new THREE.Vector3(lean, h, 0),
+      ]);
+      pivot.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 8, 0.012, 5), petioleMat));
+      const head = new THREE.Group();
+      head.position.copy(curve.getPoint(1));
+      const bract = new THREE.SphereGeometry(1, 8, 6), tiny = new THREE.SphereGeometry(1, 6, 5);
+      for (let i = 0; i < 9; i++) {
+        const k = i / 8, a = i * 2.4;
+        const b = new THREE.Mesh(bract, bractMat);
+        b.scale.set(0.022 * (1 - k * 0.5), 0.034, 0.012);
+        b.position.set(Math.cos(a) * 0.018 * (1 - k * 0.6), k * 0.1, Math.sin(a) * 0.018 * (1 - k * 0.6));
+        b.rotation.set(0, -a, -0.35);
+        head.add(b);
+        if (i % 3 === 1) {
+          const fl = new THREE.Mesh(tiny, flowerMat);
+          fl.scale.set(0.009, 0.02, 0.009);
+          fl.position.set(Math.cos(a) * 0.03, k * 0.1 + 0.02, Math.sin(a) * 0.03);
+          fl.rotation.z = -Math.cos(a) * 0.6; fl.rotation.x = Math.sin(a) * 0.6;
+          head.add(fl);
+        }
+      }
+      head.scale.setScalar(0.001);
+      pops.push({ obj: head, t: -0.5, dur: 0.6, to: 1 });
+      pivot.add(head);
+    }, { flex: 0.5, offset: rand(0.05, 0.15) });
+    f.bx = f.bz = 0;
+    f.holder.scale.set(1, 0.001, 1);
+    pops.push({ obj: f.holder, t: 0, dur: 0.7, to: 1, axis: 'y' });
+  }
+  // Each succulent flowers its own way.
+  function growIn(obj, delay = 0, dur = 0.5) {
+    const to = obj.userData.size || 1;
+    obj.scale.setScalar(0.001);
+    pops.push({ obj, t: -delay, dur, to });
+  }
+  function stalkUp(f, delay = 0) {
+    f.bx = f.bz = 0;
+    f.holder.scale.set(1, 0.001, 1);
+    pops.push({ obj: f.holder, t: -delay, dur: 0.7, to: 1, axis: 'y' });
+  }
+  // Echeveria: a long arching stalk hung with little coral bells.
+  function echeveriaBloom() {
+    const bellMat = toon(pick(['#ff7f5a', '#ff6f6f', '#ff9a4d'])), lipMat = toon('#ffd24a'), stalkMat = toon('#d98c9b');
+    const h = rand(0.75, 0.95), lean = rand(0.35, 0.5);
+    const f = addFrond(rand(0, Math.PI * 2), pivot => {
+      const curve = new THREE.CubicBezierCurve3(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0.02, h * 0.7, 0),
+        new THREE.Vector3(lean * 0.7, h * 1.05, 0), new THREE.Vector3(lean, h * 0.85, 0));
+      pivot.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 16, 0.012, 5), stalkMat));
+      const bell = new THREE.CylinderGeometry(0.014, 0.03, 0.05, 10, 1, true), lip = new THREE.CircleGeometry(0.026, 10);
+      for (let i = 0; i < 5; i++) {
+        const b = new THREE.Group();
+        b.add(new THREE.Mesh(bell, toon(bellMat.color, { side: THREE.DoubleSide })));
+        const l = new THREE.Mesh(lip, lipMat); l.rotation.x = Math.PI / 2; l.position.y = -0.022; b.add(l);
+        b.position.copy(curve.getPoint(0.6 + i * 0.1)).add(new THREE.Vector3(0, -0.03, rand(-0.02, 0.02)));
+        b.rotation.z = rand(-0.3, 0.3);
+        pivot.add(b); growIn(b, 0.6 + i * 0.12);
+      }
+    }, { flex: 0.7, offset: rand(0.1, 0.2) });
+    stalkUp(f);
+  }
+  // Jade: clusters of tiny starry flowers at the branch tips.
+  function jadeBloom() {
+    const petalMat = toon(pick(['#ffffff', '#ffe3ec', '#fff4f7'])), eye = toon('#f2c14e');
+    const petal = new THREE.SphereGeometry(1, 6, 5), dot = new THREE.SphereGeometry(1, 6, 5);
+    jadeTips.sort(() => Math.random() - 0.5).slice(0, 5).forEach(({ parent, pos }, k) => {
+      const cluster = new THREE.Group();
+      cluster.position.copy(pos);
+      for (let i = 0; i < 9; i++) {
+        const star = new THREE.Group(), a = i / 9 * Math.PI * 2 * 1.6 + rand(-0.3, 0.3), r = i < 3 ? 0.015 : 0.045;
+        star.position.set(Math.cos(a) * r, rand(0.01, 0.05) + (i < 3 ? 0.03 : 0), Math.sin(a) * r);
+        star.rotation.set(rand(-0.4, 0.4), rand(0, 6), rand(-0.4, 0.4));
+        for (let j = 0; j < 5; j++) {
+          const pp = new THREE.Mesh(petal, petalMat), b = j / 5 * Math.PI * 2;
+          pp.scale.set(0.014, 0.004, 0.006); pp.position.set(Math.cos(b) * 0.012, 0, Math.sin(b) * 0.012); pp.rotation.y = -b;
+          star.add(pp);
+        }
+        const c = new THREE.Mesh(dot, eye); c.scale.setScalar(0.005); star.add(c);
+        cluster.add(star);
+      }
+      cluster.userData.size = 3;
+      parent.add(cluster); growIn(cluster, 0.3 + k * 0.15);
+    });
+  }
+  // Cactus: one big, dramatic orange flower that opens up on top.
+  const opening = []; // petals swinging open: { obj, from, to, t, dur }
+  function cactusBloom() {
+    const top = cactusTops[0];
+    if (!top) return;
+    const flower = new THREE.Group();
+    flower.position.copy(top.pos);
+    const deep = new THREE.Color(pick(['#ff6a13', '#ff5a1f', '#ff7b1c'])), gold = new THREE.Color('#ffc93c');
+    const petalMat = toon('#ffffff', { vertexColors: true, side: THREE.DoubleSide });
+    // A short flower tube, then three rings of petals.
+    const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.035, 0.1, 14), toon('#e8a03a'));
+    tube.position.y = 0.05; flower.add(tube);
+    const head = new THREE.Group(); head.position.y = 0.1; flower.add(head);
+    [[12, 0.3, 0.28], [10, 0.25, 0.62], [8, 0.18, 0.95]].forEach(([n, len, open], ring) => {
+      for (let i = 0; i < n; i++) {
+        const pivot = new THREE.Group();
+        pivot.rotation.y = (i + ring * 0.5) / n * Math.PI * 2 + rand(-0.06, 0.06);
+        const petal = new THREE.Mesh(leafGeometry({
+          len: len * rand(0.9, 1.1), wid: len * 0.26, profile: t => Math.pow(Math.sin(Math.PI * Math.pow(t, 0.65)), 0.8),
+          fold: 0.35, droop: -0.15, twist: rand(-0.2, 0.2),
+          color: (c, t) => c.copy(gold).lerp(deep, clamp(t * 1.4 - 0.1 + ring * -0.15, 0, 1)),
+        }), petalMat);
+        pivot.add(petal);
+        pivot.rotation.z = 1.45; // closed, pointing up
+        opening.push({ obj: pivot, from: 1.45, to: open + rand(-0.08, 0.08), t: -0.6 - ring * 0.25 - i * 0.02, dur: 1.4 });
+        head.add(pivot);
+      }
+    });
+    // A spray of golden stamens around a pale green stigma.
+    const filament = new THREE.CylinderGeometry(0.003, 0.003, 1, 3), anther = new THREE.SphereGeometry(0.009, 6, 4);
+    const fMat = toon('#fff1b8'), aMat = toon('#ffb61e');
+    for (let i = 0; i < 40; i++) {
+      const d = new THREE.Vector3(rand(-1, 1), rand(1.2, 2.2), rand(-1, 1)).normalize(), len = rand(0.06, 0.1);
+      const fm = new THREE.Mesh(filament, fMat);
+      fm.scale.y = len; fm.position.copy(d).multiplyScalar(len / 2); fm.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), d);
+      const am = new THREE.Mesh(anther, aMat); am.position.copy(d).multiplyScalar(len);
+      head.add(fm, am);
+    }
+    const stigma = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 6), toon('#cfe8a0'));
+    stigma.position.y = 0.12; head.add(stigma);
+    // Big, and tipped toward the viewer so you look into it.
+    flower.rotation.set(0.5, 0, rand(-0.12, 0.12));
+    flower.userData.size = 1.7;
+    top.parent.add(flower);
+    growIn(flower, 0.2, 0.6);
+  }
   function bloom() {
     bloomed = true;
-    const count = kind === 'succulent' ? 1 : Math.floor(rand(2, 4));
-    const color = pick(petal);
-    for (let i = 0; i < count; i++) {
-      const h = kind === 'succulent' ? rand(0.9, 1.1) : rand(1.05, 1.4) * (kind === 'snake' ? 1.1 : 1);
-      const lean = rand(0.1, 0.35);
-      const f = addFrond(rand(0, Math.PI * 2), pivot => {
-        const curve = new THREE.CatmullRomCurve3([
-          new THREE.Vector3(0, 0, 0), new THREE.Vector3(lean * 0.2, h * 0.5, 0), new THREE.Vector3(lean, h, 0),
-        ]);
-        pivot.add(new THREE.Mesh(new THREE.TubeGeometry(curve, 10, 0.014, 5), stemMat));
-        const heads = kind === 'succulent' ? 3 : 1;
-        for (let j = 0; j < heads; j++) {
-          const fl = flower(color, kind === 'succulent' ? 0.6 : 1);
-          fl.position.copy(curve.getPoint(1 - j * 0.12)).add(new THREE.Vector3(0, 0.02, j ? rand(-0.06, 0.06) : 0));
-          fl.rotation.set(rand(-0.3, 0.3), rand(0, 6), rand(-0.3, 0.3));
-          fl.scale.setScalar(0.001);
-          pops.push({ obj: fl, t: -0.5 - i * 0.2 - j * 0.15, dur: 0.6, to: 1 });
-          pivot.add(fl);
-        }
-      }, { flex: 0.8, offset: rand(0.05, 0.2) });
-      f.bx = f.bz = 0;
-      f.holder.scale.set(1, 0.001, 1);
-      pops.push({ obj: f.holder, t: -i * 0.2, dur: 0.7, to: 1, axis: 'y' });
-    }
+    if (kind === 'jade') jadeBloom();
+    else if (kind === 'cactus') cactusBloom();
+    else echeveriaBloom();
   }
 
   /* ── Watering can ──────────────────────────────────────── */
@@ -632,15 +866,18 @@ function main() {
 
   function afterPour() {
     waterings++;
-    growTo = Math.min(1.35, growTo + 0.07);
+    growTo = Math.min(kind === 'cactus' ? 1 : 1.35, growTo + 0.07); // the cactus grows taller instead
     impulse(3);
-    if (waterings === 3 && !bloomed) { bloom(); window.sfx && window.sfx('check'); }
+    if (waterings === 3 && !bloomed) {
+      if (kind !== 'leafy') { bloom(); window.sfx && window.sfx('check'); }
+      else if (Math.random() < 0.35 || new URLSearchParams(location.search).has('bloom')) { calatheaBloom(); window.sfx && window.sfx('check'); } // mostly, calatheas just grow leaves
+    }
     // Calatheas put up a new stem every watering; new leaves come up in the middle and unfurl.
     if (kind === 'leafy' && waterings <= 8) {
       if (Math.random() < 0.65) leafyFrond(rand(0, Math.PI * 2), true, 1, { fan: false, basal: true }); // small, at the base
       else leafyFrond(rand(0, Math.PI * 2), true, rand(0, 0.35));                                    // or tall, in the middle
     }
-    if (kind === 'snake' && waterings > 3 && waterings <= 7) snakeBlade(rand(0, Math.PI * 2), true);
+    if (kind === 'cactus') { growCactus(); if (waterings > 3 && waterings <= 6) cactusPup(); }
   }
 
   /* ── Animation ─────────────────────────────────────────── */
@@ -665,6 +902,21 @@ function main() {
       if (p.t >= p.dur) pops.splice(i, 1);
     }
     if (!pops.some(p => p.raw)) grow += (growTo - grow) * Math.min(1, dt * 2.5);
+    if (cactus.stretch) {
+      const st = cactus.stretch;
+      st.t += dt;
+      const k = clamp(st.t / st.dur, 0, 1), e = easeOutBack(k), sy = st.from + (1 - st.from) * e;
+      cactus.stem.scale.y = sy;
+      cactus.top.position.y = cactus.topY * sy;
+      if (k >= 1) cactus.stretch = null;
+    }
+    for (let i = opening.length - 1; i >= 0; i--) {
+      const o = opening[i];
+      o.t += dt;
+      const k = clamp(o.t / o.dur, 0, 1), e = 1 - Math.pow(1 - k, 3);
+      o.obj.rotation.z = o.from + (o.to - o.from) * e;
+      if (k >= 1) opening.splice(i, 1);
+    }
     for (let i = unfurls.length - 1; i >= 0; i--) {
       const u = unfurls[i];
       u.t += dt;
