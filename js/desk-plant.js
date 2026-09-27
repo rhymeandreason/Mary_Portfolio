@@ -4,7 +4,7 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
 
 const W = 380, H = 440;          // canvas size in CSS px
-const POT_SCALE = 0.74;          // pot size relative to the plant
+const POT_SCALE = 0.74;          // pot size relative to the plant (the rosette's is smaller)
 
 const rand = (a = 0, b = 1) => a + Math.random() * (b - a);
 const pick = arr => arr[Math.floor(Math.random() * arr.length)];
@@ -85,16 +85,18 @@ function main() {
   const potMat = toon(potColor, { side: THREE.DoubleSide });
   pot.add(new THREE.Mesh(new THREE.LatheGeometry(body, 40), potMat));
   const soilTop = pr.h - 0.05;
-  pot.scale.setScalar(POT_SCALE);
+  // The rosette is low and compact, so it gets a smaller pot.
+  const potScale = kind === 'succulent' ? 0.56 : POT_SCALE;
+  pot.scale.setScalar(potScale);
   const STAND_H = 0.2;                           // the pot sits up on a little stand
   pot.position.y = STAND_H;
-  const SOIL_Y = STAND_H + soilTop * POT_SCALE;  // top of the soil, in scene units
+  const SOIL_Y = STAND_H + soilTop * potScale;  // top of the soil, in scene units
 
   // A little wooden plant stand: a round top on straight, sturdy legs.
   const stand = new THREE.Group();
   scene.add(stand);
   const woodMat = toon(pick(['#c08a57', '#b07a4a', '#8a5a3a', '#d6ae80']));
-  const standR = pr.b * POT_SCALE + 0.035;
+  const standR = pr.b * potScale + 0.035;
   const standTop = new THREE.Mesh(new THREE.CylinderGeometry(standR, standR * 0.96, 0.04, 36), woodMat);
   standTop.position.y = STAND_H - 0.02;
   stand.add(standTop);
@@ -821,7 +823,7 @@ function main() {
   const splashGeo = new THREE.SphereGeometry(0.014, 6, 4);
   const drops = [], splashes = [];
   const UP = new THREE.Vector3(0, 1, 0), SPOUT_DIR = new THREE.Vector3(-0.813, 0.582, 0), dir = new THREE.Vector3();
-  const potR = radiusAt(soilTop) * POT_SCALE;
+  const potR = radiusAt(soilTop) * potScale;
 
   /* ── Interaction ───────────────────────────────────────── */
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
