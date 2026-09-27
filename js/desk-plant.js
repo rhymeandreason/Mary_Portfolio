@@ -333,14 +333,19 @@ function main() {
   // run through its neighbors. A leaf's footprint is a capsule down its midrib.
   const placedLeaves = [];
   const unfurls = [];  // sprouting leaves opening up: { geo, shut, open, t, dur }
-  function planLeaf(az, rank, { fan = true, young = false } = {}) {
+  function planLeaf(az, rank, { fan = true, young = false, basal = false } = {}) {
     // rank 0 = young leaf in the middle (tall, upright); 1 = old outer leaf (low, spreading).
     if (fan) az = fanAzimuth(az);
     // Like a calathea: the top leaf nearly upright, lower leaves arching out to level or a little below.
-    const h = young ? rand(0.85, 1.05) : THREE.MathUtils.lerp(0.95, 0.22, rank) + rand(-0.12, 0.12);
-    const out = young ? rand(0, 0.06) : THREE.MathUtils.lerp(0.05, 0.42, rank) + rand(-0.08, 0.08);
-    const tilt = young ? rand(1.3, 1.5) : THREE.MathUtils.lerp(1.35, -0.25, rank) + rand(-0.3, 0.3);
-    const len = rand(...leafShape.len) * THREE.MathUtils.lerp(0.85, 1.1, rank) * (young ? 0.6 : rand(0.8, 1.15));
+    let h = young ? rand(0.85, 1.05) : THREE.MathUtils.lerp(0.95, 0.22, rank) + rand(-0.12, 0.12);
+    let out = young ? rand(0, 0.06) : THREE.MathUtils.lerp(0.05, 0.42, rank) + rand(-0.08, 0.08);
+    let tilt = young ? rand(1.3, 1.5) : THREE.MathUtils.lerp(1.35, -0.25, rank) + rand(-0.3, 0.3);
+    let len = rand(...leafShape.len) * THREE.MathUtils.lerp(0.85, 1.1, rank) * (young ? 0.6 : rand(0.8, 1.15));
+    if (basal) {
+      // New growth at the base: short stems, small leaves peeking over the rim.
+      h = rand(0.12, 0.3); out = rand(0.12, 0.3); tilt = rand(0.2, 1.0);
+      len = rand(...leafShape.len) * rand(0.42, 0.58);
+    }
     const wid = young ? 0.09 * len : rand(...leafShape.wid) * len;
     const dir = new THREE.Vector3(Math.cos(tilt), Math.sin(tilt), rand(-0.1, 0.1)).normalize();
     const end = new THREE.Vector3(out, h, 0);
@@ -408,6 +413,8 @@ function main() {
       const face = new THREE.Vector3(Math.sin(tilt), -Math.cos(tilt), 0);
       face.addScaledVector(dir, -face.dot(dir)).normalize();
       const view = VIEW.clone().applyAxisAngle(Y_AXIS, -az);
+      // A leaf's top turns to the light: whichever side faces more up and toward the room.
+      if (face.y + 0.6 * face.dot(view) < 0) face.negate();
       view.addScaledVector(dir, -view.dot(dir));
       const clarity = view.length();
       if (clarity > 0.25) {
@@ -475,6 +482,8 @@ function main() {
     const strays = Math.floor(rand(2, 5));
     for (let i = 0; i < strays; i++) leafyFrond(rand(0, Math.PI * 2), false, rand(0.2, 1), { fan: false });
     if (Math.random() < 0.5) leafyFrond(rand(0, Math.PI * 2), false, 0, { young: true });
+    const basal = Math.floor(rand(2, 4));
+    for (let i = 0; i < basal; i++) leafyFrond(rand(0, Math.PI * 2), false, 1, { fan: false, basal: true });
   } else if (kind === 'snake') {
     const n = Math.floor(rand(5, 8));
     for (let i = 0; i < n; i++) snakeBlade(i / n * Math.PI * 2 + rand(-0.4, 0.4));
@@ -627,7 +636,10 @@ function main() {
     impulse(3);
     if (waterings === 3 && !bloomed) { bloom(); window.sfx && window.sfx('check'); }
     // Calatheas put up a new stem every watering; new leaves come up in the middle and unfurl.
-    if (kind === 'leafy' && waterings <= 8) leafyFrond(rand(0, Math.PI * 2), true, rand(0, 0.35));
+    if (kind === 'leafy' && waterings <= 8) {
+      if (Math.random() < 0.65) leafyFrond(rand(0, Math.PI * 2), true, 1, { fan: false, basal: true }); // small, at the base
+      else leafyFrond(rand(0, Math.PI * 2), true, rand(0, 0.35));                                    // or tall, in the middle
+    }
     if (kind === 'snake' && waterings > 3 && waterings <= 7) snakeBlade(rand(0, Math.PI * 2), true);
   }
 
