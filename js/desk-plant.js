@@ -3,7 +3,7 @@
    it grows a little each time and blooms on the third watering. */
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.min.js';
 
-const W = 380, H = 440;          // canvas size in CSS px
+const W = 342, H = 396;          // canvas size in CSS px
 const POT_SCALE = 0.74;          // pot size relative to the plant (the rosette's is smaller)
 
 const rand = (a = 0, b = 1) => a + Math.random() * (b - a);
@@ -17,7 +17,7 @@ function main() {
   /* ── Stage ─────────────────────────────────────────────── */
   const wrap = document.createElement('div');
   wrap.id = 'plant';
-  wrap.style.cssText = `position:fixed; right:10px; bottom:4px; width:${W}px; height:${H}px; pointer-events:none; z-index:40;`;
+  wrap.style.cssText = `position:fixed; right:-14px; bottom:0; width:${W}px; height:${H}px; pointer-events:none; z-index:40;`;
   const tip = document.createElement('div');
   tip.className = 'plant-tip';
   wrap.appendChild(tip);
@@ -1028,6 +1028,29 @@ function main() {
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
+
+  // A PNG of the plant as it looks right now, cropped to the plant itself
+  // (the canvas keeps headroom for the watering can). Mail uses it for its stamp.
+  window.deskPlantSnapshot = () => {
+    renderer.render(scene, camera); // read back in the same task, before the buffer clears
+    const src = renderer.domElement, w = src.width, h = src.height;
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const g = c.getContext('2d');
+    g.drawImage(src, 0, 0);
+    const px = g.getImageData(0, 0, w, h).data;
+    let x0 = w, y0 = h, x1 = -1, y1 = -1;
+    for (let y = 0; y < h; y += 2) for (let x = 0; x < w; x += 2) {
+      if (px[(y * w + x) * 4 + 3] > 160) { // solid pixels only, not the soft floor shadow
+        if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+      }
+    }
+    if (x1 < 0) return null;
+    const pad = Math.round((x1 - x0) * 0.06);
+    x0 = Math.max(0, x0 - pad); y0 = Math.max(0, y0 - pad); x1 = Math.min(w, x1 + pad); y1 = Math.min(h, y1 + 2);
+    const out = document.createElement('canvas'); out.width = x1 - x0; out.height = y1 - y0;
+    out.getContext('2d').drawImage(c, x0, y0, out.width, out.height, 0, 0, out.width, out.height);
+    return out.toDataURL('image/png');
+  };
 
   window.addEventListener('resize', () => { wrap.style.display = window.innerWidth < 700 ? 'none' : ''; });
 }

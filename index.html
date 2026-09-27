@@ -382,24 +382,54 @@
     .settings .row > button.switch:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
     /* ── Mail ── */
-    .mail { display: flex; flex-direction: column; height: 100%; }
-    .mail .tools { display: flex; align-items: center; gap: 8px; padding: 0 14px 10px; border-bottom: 1px solid var(--line); flex: none; }
+    /* Mail: an airmail envelope edge and a stamp around an otherwise plain composer. */
+    /* The stripes wrap the whole window, so the traffic lights sit on the paper inside. */
+    #win-mail {
+      padding: 5px;
+      background: repeating-linear-gradient(-45deg, #e5443a 0 8px, #fffaf0 8px 12px, #2f5fd0 12px 20px, #fffaf0 20px 24px);
+    }
+    #win-mail > .titlebar { background: #fffcf6; border-radius: 7px 7px 0 0; }
+    #win-mail > .body { background: #fffcf6; border-radius: 0 0 7px 7px; }
+    .mail { height: 100%; overflow: hidden; }
+    .mail .paper { height: 100%; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .mail .tools { display: flex; align-items: center; gap: 8px; padding: 10px 14px 10px 16px; border-bottom: 1px solid var(--line); flex: none; }
     .mail .tools h3 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin-right: auto; }
     .mail .tools button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 6px 12px; font: inherit; font-size: 12px; cursor: pointer; color: var(--ink-2); }
     .mail .tools button:hover { color: var(--ink); border-color: var(--ink-3); }
-    .mail .tools button.send { background: var(--ink); border-color: var(--ink); color: #fff; }
-    .mail .tools button.send:hover { background: #000; color: #fff; }
+    .mail .tools button.send { background: #e5443a; border-color: #e5443a; color: #fff; }
+    .mail .tools button.send:hover { background: #cc372e; border-color: #cc372e; color: #fff; }
     .mail .tools button i { font-size: 14px; }
-    .mail .field { display: flex; align-items: center; gap: 10px; padding: 0 16px; min-height: 40px; border-bottom: 1px solid var(--line); font-size: 14px; flex: none; }
+    .mail .field { display: flex; align-items: center; gap: 10px; padding: 0 92px 0 16px; min-height: 40px; border-bottom: 1px solid var(--line); font-size: 14px; flex: none; }
     .mail .field label { color: var(--ink-3); width: 56px; flex: none; }
     .mail .field input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; color: var(--ink); outline: 0; padding: 10px 0; }
     .mail .field input::placeholder, .mail textarea::placeholder { color: var(--ink-3); }
     .mail .chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); border-radius: 999px; padding: 3px 10px 3px 4px; font-size: 13px; }
     .mail .chip img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
-    .mail textarea { flex: 1; min-height: 120px; border: 0; background: transparent; resize: none; font: inherit; font-size: 15px; line-height: 1.6; color: var(--ink); outline: 0; padding: 14px 16px; }
-    .mail .foot { flex: none; padding: 8px 16px 12px; font-size: 12px; color: var(--ink-3); display: flex; justify-content: space-between; gap: 12px; }
+    .mail textarea {
+      flex: 1; min-height: 120px; border: 0; background: transparent; resize: none; outline: 0; margin: 0;
+      font: inherit; font-size: 15px; line-height: 1.6; color: var(--ink); padding: 14px 16px;
+      overflow-x: hidden; overflow-y: auto; scrollbar-width: none;
+    }
+    .mail textarea::-webkit-scrollbar { display: none; }
+    .mail .foot { flex: none; padding: 8px 16px 10px; font-size: 12px; color: var(--ink-3); display: flex; justify-content: space-between; gap: 12px; }
     .mail .foot.err { color: #c8442c; }
     .mail .foot.ok { color: #3d8f5a; }
+    /* Stamp with punched edges; a postmark lands on it when the letter is sent */
+    .mail .stamp { position: absolute; right: 18px; top: 54px; transform: rotate(4deg); filter: drop-shadow(0 1px 1.5px rgba(60,40,0,0.22)); }
+    .mail .stamp div {
+      width: 56px; height: 64px; padding: 4px; background: #fff;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle, transparent 2px, #000 2.5px) -4px -4px / 8px 8px;
+              mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle, transparent 2px, #000 2.5px) -4px -4px / 8px 8px;
+    }
+    .mail .stamp span { display: block; height: 100%; position: relative; background: #ffe391; overflow: hidden; }
+    .mail .stamp img { position: absolute; left: 50%; bottom: 0; width: 28px; height: 30px; border-radius: 50% 50% 0 0; object-fit: cover; transform: translateX(-50%); }
+    /* fill the stamp and crop in close; leaf tips and the stand can run off the edge */
+    .mail .stamp img.plant { left: 0; top: 0; width: 100%; height: 100%; border-radius: 0; object-fit: cover; transform: scale(1.12); transform-origin: 50% 30%; }
+    .mail .postmark { position: absolute; right: 34px; top: 60px; width: 88px; opacity: 0; transform: scale(1.4) rotate(-12deg); pointer-events: none; }
+    .mail.sent .postmark { animation: postmark 0.35s cubic-bezier(.3,1.6,.5,1) forwards; }
+    .mail.sent .stamp { animation: stampthunk 0.35s ease; }
+    @keyframes postmark { to { opacity: 0.75; transform: scale(1) rotate(-12deg); } }
+    @keyframes stampthunk { 40% { transform: rotate(4deg) scale(0.94); } }
     .mail .shake { animation: shake 0.3s ease; }
     @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
     /* ── Music ── */
@@ -462,7 +492,7 @@
     /* Post-its: a glued strip along the top, a bottom edge that lifts off the desk
        (shadow pooled under it), a softly curled corner, and a little paper grain. */
     .sticky.postit {
-      --note: #fff5a0; --note-edge: #f1e37c;
+      --note: #ffe391; --note-edge: #f3cd66;
       background:
         linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0) 18%),
         radial-gradient(120% 60% at 100% 100%, rgba(0,0,0,0.05), rgba(0,0,0,0) 45%),
@@ -477,7 +507,7 @@
         0 20px 18px -14px rgba(30,20,0,0.38);
     }
     .sticky.postit.pink { --note: #ffbad6; --note-edge: #f7a0c4; }
-    .sticky.postit.lavender { --note: #ddd2ff; --note-edge: #c9bbf4; color: #33285a; }
+    .sticky.postit.lavender { --note: #e8d3f6; --note-edge: #d7b9ec; color: #3e2650; }
     .sticky.postit.lift {
       box-shadow:
         inset 0 -1px 0 var(--note-edge),
@@ -847,6 +877,31 @@ function makeDraggable(el, handle, onStart) {
   const end = () => { start = null; el.classList.remove('lift'); };
   handle.addEventListener('pointerup', end);
   handle.addEventListener('pointercancel', end);
+  handle.addEventListener('dblclick', e => {
+    if (e.target.closest('a, button, input, .lights, .resize')) return;
+    frameItem(el);
+  });
+}
+
+/* Double-click a window's title bar or a loose item to frame it; do it again
+   (without moving anything in between) to go back to the whole desk. */
+let framed = null;
+function frameItem(el) {
+  if (framed && framed.el === el && framed.x === pan.x && framed.y === pan.y && framed.z === zoom
+      && framed.l === el.offsetLeft && framed.t === el.offsetTop) {
+    framed = null; touched = false; fitContent(true); return;
+  }
+  const top = 56 + 24, bottom = 88 + 24, padX = 48; // menu bar + dock, plus air
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const w = el.offsetWidth, h = el.offsetHeight;
+  zoom = Math.min(1.25, Math.max(ZMIN, Math.min((vw - padX * 2) / w, (vh - top - bottom) / h)));
+  pan.x = Math.round(vw / 2 - (el.offsetLeft + w / 2) * zoom);
+  pan.y = Math.round(top + (vh - top - bottom) / 2 - (el.offsetTop + h / 2) * zoom);
+  touched = true;
+  world.style.transition = 'transform 0.4s cubic-bezier(.2,.7,.2,1)';
+  applyPan();
+  setTimeout(() => world.style.transition = '', 450);
+  framed = { el, x: pan.x, y: pan.y, z: zoom, l: el.offsetLeft, t: el.offsetTop };
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1625,6 +1680,7 @@ function mailContent() {
   const root = document.createElement('div');
   root.className = 'mail';
   root.innerHTML = `
+    <div class="paper">
     <div class="tools">
       <h3>New Message</h3>
       <button class="copy" title="Copy my address"><i class="ph ph-copy"></i>Copy address</button>
@@ -1633,7 +1689,15 @@ function mailContent() {
     <div class="field"><label>To</label><span class="chip"><img src="images/2025_mary.jpg" alt="">Mary Huang</span></div>
     <div class="field"><label for="mail-subj">Subject</label><input id="mail-subj" placeholder="Hello!" autocomplete="off"></div>
     <textarea placeholder="Write a note…"></textarea>
-    <div class="foot"><span class="status">Opens in your mail app to send.</span><span>${EMAIL}</span></div>`;
+    <div class="stamp"><div><span><img src="images/2025_mary.jpg" alt=""></span></div></div>
+    <svg class="postmark" viewBox="0 0 92 44" fill="none" stroke="#2b3a67" stroke-width="1.4">
+      <circle cx="22" cy="22" r="19"/><circle cx="22" cy="22" r="15" stroke-width=".8"/>
+      <text x="22" y="20" text-anchor="middle" font-size="7" font-weight="700" fill="#2b3a67" stroke="none" letter-spacing=".5">SF BAY</text>
+      <text x="22" y="29" text-anchor="middle" font-size="6.5" fill="#2b3a67" stroke="none">${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase()}</text>
+      <path d="M44 12q6-4 12 0t12 0 12 0 12 0M44 22q6-4 12 0t12 0 12 0 12 0M44 32q6-4 12 0t12 0 12 0 12 0"/>
+    </svg>
+    <div class="foot"><span class="status">Opens in your mail app to send.</span><span>${EMAIL}</span></div>
+    </div>`;
   const subj = root.querySelector('input');
   const msg = root.querySelector('textarea');
   const foot = root.querySelector('.foot');
@@ -1651,6 +1715,7 @@ function mailContent() {
     // URLSearchParams encodes spaces as '+', which mail clients show literally.
     location.href = `mailto:${EMAIL}?${q.toString().replace(/\+/g, '%20')}`;
     say('Handed off to your mail app. Thanks for writing!', 'ok');
+    root.classList.remove('sent'); void root.offsetWidth; root.classList.add('sent');
   };
   root.querySelector('.send').addEventListener('click', send);
   [subj, msg].forEach(el => el.addEventListener('keydown', e => {
@@ -1941,21 +2006,28 @@ function layout() {
   createWindow({ id: 'weather', title: 'Weather', x: 620, y: 830, w: 440, h: 'auto', content: weatherContent() });
   createWindow({ id: 'pulse', title: 'Git Pulse', x: 1120, y: 900, w: 500, h: 'auto', content: pulseContent() });
   // Mail waits in the dock rather than joining the opening composition.
-  createWindow({ id: 'mail', title: 'New Message', x: 590, y: 900, w: 500, h: 400, noscroll: true, content: mailContent() });
+  createWindow({ id: 'mail', title: 'New Message', x: 590, y: 900, w: 500, h: 410, noscroll: true, content: mailContent() });
   wins.mail.el.classList.add('hidden');
   createWindow({ id: 'music', title: 'Music', x: 1660, y: 860, w: 620, h: 460, noscroll: true, fullside: true, content: musicContent() });
   wins.music.el.classList.add('hidden');
   // Settings are global to the desktop, so they get their own window, waiting in the dock.
   createWindow({ id: 'settings', title: 'Settings', x: 620, y: 160, w: 520, h: 'auto', content: settingsPane() });
   wins.settings.el.classList.add('hidden');
-  wins.settings.place = el => {
-    // Open in the middle of the screen, wherever the board has been panned to.
+  // Settings and Mail open in the middle of the screen, wherever the board has been panned to.
+  const centerOnScreen = el => {
     el.style.left = Math.round((window.innerWidth / 2 - pan.x) / zoom - el.offsetWidth / 2) + 'px';
     el.style.top = Math.round((window.innerHeight / 2 - pan.y) / zoom - el.offsetHeight / 2) + 'px';
   };
+  wins.settings.place = centerOnScreen;
+  wins.mail.place = centerOnScreen;
   // Closing the player stops the music; minimizing lets it keep playing.
   wins.music.el.querySelector('.lights .c').addEventListener('click', () => music.stop());
-  wins.mail.onShow = el => el.querySelector('input').focus({ preventScroll: true });
+  wins.mail.onShow = el => {
+    // The stamp shows the desk plant as it is right now (it's different every visit).
+    const snap = window.deskPlantSnapshot && window.deskPlantSnapshot();
+    if (snap) { const img = el.querySelector('.stamp img'); img.src = snap; img.classList.add('plant'); }
+    el.querySelector('input').focus({ preventScroll: true });
+  };
 
   addLoose(`<b>Personal Personal Computing</b><p>30 self-built apps I live in every day. The windows here are a few of them.</p><a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio <i class="ph ph-arrow-up-right"></i></a>`, 40, 900, -2, 'sticky postit');
   addLoose(`<b>Kodolab</b><p>Learn biology in 3D. An AI sandbox turns ideas into lessons in seconds.</p><a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org <i class="ph ph-arrow-up-right"></i></a>`, 300, 780, 3, 'sticky postit lavender');
