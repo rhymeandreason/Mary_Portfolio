@@ -492,7 +492,7 @@
     /* Post-its: a glued strip along the top, a bottom edge that lifts off the desk
        (shadow pooled under it), a softly curled corner, and a little paper grain. */
     .sticky.postit {
-      --note: #fff191; --note-edge: #ffd562;
+      --note: #fdedb5; --note-edge: #efd894;
       background:
         linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0) 18%),
         radial-gradient(120% 60% at 100% 100%, rgba(0,0,0,0.05), rgba(0,0,0,0) 45%),
@@ -508,6 +508,12 @@
     }
     .sticky.postit.pink { --note: #ffbad6; --note-edge: #f7a0c4; }
     .sticky.postit.lavender { --note: #e8d3f6; --note-edge: #d7b9ec; color: #3e2650; }
+    .sticky.postit:not(.pink):not(.lavender) {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0) 18%),
+        linear-gradient(175deg, rgba(255,255,255,0.25), rgba(255,255,255,0) 40%),
+        var(--note);
+    }
     .sticky.postit.lift {
       box-shadow:
         inset 0 -1px 0 var(--note-edge),
@@ -1030,7 +1036,7 @@ function aboutContent() {
     <p>I architect core interaction principles, distill complexity into elegant systems, and figure out all the messy connecting bits to ship. I've always been a designer who can code, and now agentic coding has become core to my practice.</p>
     <p>Let's seek the bold visions of what technology can be.</p>
     <div class="links">
-      <a href="mailto:rhymeandreason1.0@gmail.com">Email</a>
+      <a href="mailto:hello@mary-huang.com">Email</a>
       <a href="https://www.linkedin.com/in/maryhuang1/" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://github.com/rhymeandreason" target="_blank" rel="noopener">GitHub</a>
       <a href="classic.html">Classic site</a>
@@ -1052,7 +1058,7 @@ function dailyContent() {
     { t: 'Brainstorm how AI can be about human interaction instead of automation', d: false },
     { t: 'Update website', d: true },
     { t: 'Ship a biology lab for the browser', d: true },
-    { t: 'Say hi → rhymeandreason1.0@gmail.com', d: false },
+    { t: 'Say hi → hello@mary-huang.com', d: false },
   ];
 
   const check = '<i class="ph-bold ph-check"></i>';
@@ -1675,7 +1681,7 @@ function weatherContent() {
    App: Mail — a compose window. No backend on a static site, so Send
    hands the draft to the visitor's own mail app via mailto:.
    ═══════════════════════════════════════════════════════════════ */
-const EMAIL = 'rhymeandreason1.0@gmail.com';
+const EMAIL = 'hello@mary-huang.com';
 function mailContent() {
   const root = document.createElement('div');
   root.className = 'mail';
