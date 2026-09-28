@@ -548,7 +548,7 @@
 const PROJECTS = [
   // Mirrors the homepage (index.html): the two "Currently Building" features
   // followed by Selected Work, in the same order.
-  { href: 'https://kodolab.org', img: 'images/thumbs/Kodolab_c.webp', meta: 'Now · 2026', title: 'Kodolab', tags: ['web', '3d'], desc: "A web platform for learning biology in 3D, with an AI sandbox for generating lessons in seconds." },
+  { href: 'https://kodolab.org', img: 'images/thumbs/Kodolab_c.webp', meta: 'Now · 2026', title: 'Kodolab', tags: ['web', '3d'], desc: "An open-source web platform for learning biology in 3D, with an AI sandbox for generating lessons in seconds." },
   { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.webp', meta: 'Industrial Light & Magic · 2022', title: 'ILM Stagecraft', tags: ['mobile', '3d'], desc: "iPad app for controlling virtual production stages. Nominated for a Technical Emmy." },
   { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.webp', meta: 'Impulse Labs · 2024', title: 'Impulse Stove', tags: ['hardware'], desc: "A 15kW induction stove with a novel knob interface. Solo designer, launched at CES." },
   { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.webp', meta: 'Earthshot Labs · 2022', title: 'Biome', tags: ['mobile', '3d'], desc: "ML and AR mobile platform for measuring rainforests. 10x faster than traditional field surveys." },
@@ -1214,7 +1214,7 @@ function notesContent() {
       <div class="card">
         <h4>Kodolab</h4>
         <img src="projects/kodolab/kodo-membrane.webp" alt="Kodolab membrane lesson">
-        <p>A web platform for learning biology in 3D. An AI sandbox lets students and teachers generate lessons of their own, with seconds between iterations.</p>
+        <p>An open-source web platform for learning biology in 3D. An AI sandbox lets students and teachers generate lessons of their own, with seconds between iterations.</p>
         <a class="link" href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org</a>
         <time>2026</time>
       </div>
@@ -2030,7 +2030,7 @@ function layout() {
   };
 
   addLoose(`<b>Personal Personal Computing</b><p>30 self-built apps I live in every day. The windows here are a few of them.</p><a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio <i class="ph ph-arrow-up-right"></i></a>`, 40, 900, -2, 'sticky postit');
-  addLoose(`<b>Kodolab</b><p>Learn biology with 3D simulations. AI sandbox turns ideas into lessons in seconds.</p><a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org <i class="ph ph-arrow-up-right"></i></a>`, 300, 780, 3, 'sticky postit lavender');
+  addLoose(`<b>Kodolab</b><p>Learn biology with 3D simulations. AI sandbox, ideas → lessons in seconds. Open-source</p><a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org <i class="ph ph-arrow-up-right"></i></a>`, 300, 780, 3, 'sticky postit lavender');
 
   // Frame the whole composition in whatever window we were given.
   if (small) {
