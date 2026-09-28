@@ -116,6 +116,7 @@ h1, h2, h3, h4, h5, h6 { font-family: "futura-pt", sans-serif; margin-top: 0; }
   gap: 24px;
   margin-bottom: 0;
 }
+.hero--equal { grid-template-columns: 1fr 1fr; }
 .hero-image {
   overflow: hidden;
 }
