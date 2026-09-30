@@ -39,6 +39,12 @@
     .iphone-video-se:hover {
       box-shadow: none !important;
     }
+    /* ── Tool screenshots: lift them off the light page ── */
+    .tool-shot img {
+      border: 1px solid rgba(0,0,0,0.12);
+      border-radius: 6px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+    }
     @media (max-width: 900px) {
       .phones-row { grid-template-columns: 1fr 1fr; }
     }
@@ -124,10 +130,10 @@
       <div>
         <p class="section-label">Pattern Generation Tool <span style="font-weight:400; font-size:1.8rem; color:rgba(0,0,0,0.4);">— internal pipeline</span></p>
         <div class="two-col" style="align-items:stretch;">
-          <div class="full-bleed">
+          <div class="full-bleed tool-shot">
             <img src="patternbase.png" alt="Pattern generation tool" />
           </div>
-          <div class="full-bleed">
+          <div class="full-bleed tool-shot">
             <img src="patterncustom.png" alt="Pattern generation tool 2" style="height:100%;"/>
           </div>
         </div>
