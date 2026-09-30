@@ -13,7 +13,7 @@
         if (location.search.indexOf('canvas=1') !== -1) return;
         var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
         var narrow = Math.min(window.innerWidth, window.screen.width) < 700;
-        if (coarse && narrow) location.replace('classic.html' + location.hash);
+        if (coarse && narrow) location.replace('index.html' + location.hash);
       } catch (e) {}
     })();
   </script>
@@ -535,7 +535,7 @@
 <body>
 
 <div id="bar">
-  <a class="name" href="classic.html">Mary Huang</a>
+  <a class="name" href="index.html">Mary Huang</a>
   <div class="right">
     <span id="battery" title="Battery"><span class="pct">—</span><i class="ph ph-battery-high"></i></span>
     <span id="clock">00:00</span>
@@ -685,10 +685,10 @@ const ART = [
 
 
 const FILES = [
-  { p: "classic.html", n: "Portfolio", k: "Page", s: 14489 },
+  { p: "index.html", n: "Portfolio", k: "Page", s: 14489 },
   { p: "timeline.html", n: "Timeline", k: "Page", s: 23085 },
   { p: "images.html", n: "Images", k: "Page", s: 29211 },
-  { p: "index.html", n: "Canvas", k: "Page", s: 48294 },
+  { p: "canvas.html", n: "Canvas", k: "Page", s: 48294 },
   { p: "projects/Amazon/amazon.html", n: "Amazon Made For You", k: "Project", s: 6149 },
   { p: "projects/PoeMobile", n: "PoeMobile", k: "Folder", s: 5 },
   { p: "projects/ar_ideas/ar_ideas.html", n: "AR Tests", k: "Project", s: 2642 },
@@ -1039,7 +1039,7 @@ function aboutContent() {
       <a href="mailto:hello@mary-huang.com">Email</a>
       <a href="https://www.linkedin.com/in/maryhuang1/" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://github.com/rhymeandreason" target="_blank" rel="noopener">GitHub</a>
-      <a href="classic.html">Classic site</a>
+      <a href="index.html">Classic site</a>
     </div>
   </div>`;
 }
