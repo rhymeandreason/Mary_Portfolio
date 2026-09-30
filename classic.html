@@ -160,11 +160,14 @@
     .project-card { display: block; text-decoration: none; color: inherit; }
     .project-card img {
       width: 100%;
+      aspect-ratio: 900 / 506;
+      object-fit: cover;
       display: block;
       border-radius: 4px;
       border: 1px solid #ececec;
       transition: box-shadow 0.3s ease, transform 0.3s ease;
     }
+    .project-card img.contain { object-fit: contain; background: #faf8f4; }
     .project-card:hover img {
       box-shadow: 0 7px 22px rgba(0,0,0,0.18);
       transform: translateY(-2px);
@@ -232,20 +235,19 @@
       <h1>I design and build 0&#8239;→&#8239;1 interfaces for new kinds of technology.</h1>
       <div class="statement-body">
         <p>Hello!</p>
-        <p>I've worked on frontier technology experiences for 15 years, across over a dozen new launches at startups, big companies, and studios.</p>
+        <p>I've worked on frontier technology experiences for 10+ years, across over a dozen new launches at startups, big companies, and studios.</p>
         <p>I architect core interaction principles, distill complexity into elegant systems, and figure out all the messy connecting bits to ship. I've always been a designer who can code, and now agentic coding has become my core to my practice.</p>
         <p>Let's seek the bold visions of what technology can be.</p>
       </div>
     </section>
 
-    <!-- ── Now ── -->
+    <!-- ── Now (hidden: Kodolab moved to Selected Work) ──
     <section id="now">
       <div class="section-head">
         <div>
           <h2>Currently Building...</h2>
         </div>
       </div>
-<!--
       <article class="feature">
         <a class="feature-media feature-tri" href="https://rhymeandreason.studio" target="_blank" rel="noopener">
           <img src="projects/ppc/media-gallery-2.webp" alt="Media Gallery: image organizer for a project folder" loading="lazy">
@@ -261,26 +263,10 @@
           </div>
         </div>
       </article>
--->
 
-      <article class="feature">
-        <a class="feature-media feature-grid" href="https://kodolab.org" target="_blank" rel="noopener">
-          <img src="projects/kodolab/kodo-water.webp" alt="Structure of water: hydrogen bonds forming and reforming" loading="lazy">
-          <img src="projects/kodolab/kodo-membrane.webp" alt="The membrane: ions and water around a bilayer with channels" loading="lazy">
-          <img src="projects/kodolab/kodo-folding.webp" alt="A peptide chain folding into an alpha helix" loading="lazy">
-          <img src="projects/kodolab/kodo-hemoglobin.webp" alt="Hemoglobin: four folded chains drawn from PDB coordinates" loading="lazy">
-        </a>
-        <div class="feature-text">
-          <h3>Kodolab</h3>
-          <p>An open-source web platform for learning biology in 3D. A built-in AI sandbox enables students and teachers to generate lessons of their own, with seconds between iterations. A library of components ensures scientific accuracy and detail that general AI agents can't achieve alone.</p>
-          <div class="links">
-            <a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org →</a>
-            <a href="https://github.com/rhymeandreason/ScienceSandbox" target="_blank" rel="noopener">GitHub →</a>
-          </div>
-        </div>
-      </article>
 
     </section>
+    -->
 
     <!-- ── Selected work ── -->
     <section id="work">
@@ -308,17 +294,18 @@
     // Selected work. Edit this list to change what appears on the homepage;
     // the full history lives in timeline.html.
     const selected = [
+      { href: 'https://kodolab.org', img: 'projects/kodolab/kodo-hemoglobin.webp', meta: 'Kodolab · 2026', title: 'Kodolab', contain: true, desc: 'Open-source web platform for learning biology in 3D, with an AI sandbox for generating lessons.', external: true },
       { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.webp', meta: 'Impulse Labs · 2024', title: 'Impulse Stove', desc: 'A 15kW induction stove with a novel knob interface. Solo designer, launched at CES.' },
       { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.webp', meta: 'Industrial Light & Magic · 2022', title: 'ILM Stagecraft', desc: 'iPad app for controlling virtual production stages. Nominated for a Technical Emmy.' },
       { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.webp', meta: 'Earthshot Labs · 2022', title: 'Biome', desc: 'ML and AR mobile platform for measuring rainforests. 10x faster than traditional field surveys.' },
       { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.webp', meta: 'ILM Immersive · 2020', title: "Tales from the Galaxy's Edge", desc: 'Spatial and 2D UI/UX for the Star Wars VR adventure game, shipped in 5 months.' },
       { href: 'projects/Amazon/amazon.html', img: 'images/thumbs/Amazon_c2.webp', meta: 'Amazon · 2019', title: 'Amazon Made For You', desc: 'Design custom-fit t-shirts in 3D. Consumer mobile app and the pattern generation engine.' },
       { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.webp', meta: 'Independent · 2020', title: 'VR Hand Gestures', desc: 'Exploration prototypes of hand-gesture-based UI on Quest.' },
+      { href: 'projects/shield/shield.html', img: 'images/thumbs/Shield_c.webp', meta: 'Shield AI · 2018', title: 'Shield.ai', desc: 'Mobile and desktop apps for piloting and managing autonomous drones.' },
+      { href: 'projects/hack/hack.html', img: 'images/thumbs/Hack_c2.webp', meta: 'Endless OS · 2019', title: 'Hack', desc: 'Linux platform and coding IDE for teaching kids ages 8–14 to code.' },
       { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.webp', meta: 'Oculus Story Studio · 2016', title: 'Oculus Quill', desc: 'VR-native illustration and animation tool. Foundational interaction patterns for long work sessions.' },
       { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.webp', meta: 'Continuum Fashion · 2014', title: 'ModaKit', desc: 'A modular toolkit for wearable computing.' },
       { href: 'projects/constrvct/constrvct.html', img: 'images/thumbs/Constrvct_c.webp', meta: 'Continuum Fashion · 2013', title: 'Constrvct', desc: 'Browser-based 3D design tool and commerce site for custom-printed dresses. Techstars 2013.' },
-      // { href: 'projects/hack/hack.html', img: 'images/thumbs/Hack_c2.webp', meta: 'Hack Computer · 2019', title: 'Hack', desc: 'Linux platform and coding IDE for teaching kids ages 8–14 to code.' },
-      // { href: 'projects/shield/shield.html', img: 'images/thumbs/Shield_c.webp', meta: 'Shield AI · 2018', title: 'Shield.ai', desc: 'Mobile and desktop apps for piloting and managing autonomous drones.' },
       // { href: 'projects/viralnet/viralnet.html', img: 'images/thumbs/Viralnet_c.webp', meta: 'UC Berkeley JGI · 2020', title: 'Viralnet', desc: 'Force-directed 3D visualization of virus genome relationships.' },
     ];
     const grid = document.getElementById('selectedGrid');
@@ -326,7 +313,8 @@
       const a = document.createElement('a');
       a.className = 'project-card';
       a.href = p.href;
-      a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy"><p class="meta">${p.meta}</p><h3 class="title">${p.title}</h3><p class="desc">${p.desc}</p>`;
+      if (p.external) { a.target = '_blank'; a.rel = 'noopener'; }
+      a.innerHTML = `<img src="${p.img}"${p.contain ? ' class="contain"' : ''} alt="${p.title}" loading="lazy"><p class="meta">${p.meta}</p><h3 class="title">${p.title}</h3><p class="desc">${p.desc}</p>`;
       grid.appendChild(a);
     });
 
