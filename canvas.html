@@ -1,0 +1,2096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mary Huang : Canvas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Mary Huang designs and builds 0 → 1 interfaces for new kinds of technology. An interactive canvas of the work.">
+  <script>
+    // Mobile visitors get the classic (scrolling) site; the canvas is a desktop experience.
+    // ?canvas=1 forces the canvas on any device.
+    (function () {
+      try {
+        if (location.search.indexOf('canvas=1') !== -1) return;
+        var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+        var narrow = Math.min(window.innerWidth, window.screen.width) < 700;
+        if (coarse && narrow) location.replace('classic.html' + location.hash);
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="https://use.typekit.net/mwr2qgm.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/fill/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/bold/style.css">
+  <style>
+    :root {
+      --paper: #f7f5f0;
+      --ink: #1a1917;
+      --ink-2: #57524a;
+      --ink-3: #736e65;
+      --line: #e4e0d8;
+      --dot: #cfcac1;
+      --accent: #e6407a;
+      --shadow: 0 1px 2px rgba(0,0,0,0.06), 0 12px 32px rgba(30,25,15,0.12);
+      --shadow-hi: 0 2px 4px rgba(0,0,0,0.08), 0 24px 56px rgba(30,25,15,0.2);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: "futura-pt", "Futura", "Avenir Next", system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      overflow: hidden;
+      -webkit-font-smoothing: antialiased;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    a { color: inherit; }
+    .ph, .ph-fill, .ph-bold { vertical-align: -0.1em; }
+    /* nothing drags a ghost image around while panning windows */
+    img, a { -webkit-user-drag: none; user-drag: none; }
+    input, textarea { user-select: text; -webkit-user-select: text; }
+
+    /* ── Desktop ── */
+    #desk {
+      position: fixed; inset: 0;
+      cursor: grab;
+      background-color: var(--paper);
+      background-image: radial-gradient(var(--dot) 0.9px, transparent 1.3px);
+      background-size: 24px 24px;
+      background-position: 0 0;
+    }
+    #desk.panning { cursor: grabbing; }
+    #desk.nodots { background-image: none; }
+    #world { position: absolute; left: 0; top: 0; will-change: transform; }
+
+    /* ── Top bar (menu bar) ── */
+    #bar {
+      position: fixed; top: 0; left: 0; right: 0; height: 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 18px; font-size: 13px; letter-spacing: 0.02em;
+      z-index: 10000; pointer-events: none;
+    }
+    #bar > * { pointer-events: auto; }
+    #bar .name { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; }
+    #bar .right { display: flex; gap: 18px; align-items: center; color: var(--ink-2); }
+    #bar .right a { text-decoration: none; }
+    #bar .right a:hover { color: var(--ink); }
+    #bar #clock { font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    #bar #battery { display: inline-flex; align-items: center; gap: 5px; font-variant-numeric: tabular-nums; }
+    #bar #battery i { font-size: 18px; line-height: 1; }
+    #bar #battery.low i { color: #c8442c; }
+    #bar #battery.charging i { color: #3d8f5a; }
+
+    /* ── Dock ── */
+    #dock {
+      position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 6px; padding: 6px;
+      background: rgba(255,255,255,0.7); backdrop-filter: blur(12px);
+      border: 1px solid var(--line); border-radius: 16px;
+      box-shadow: var(--shadow); z-index: 10000;
+    }
+    #dock button {
+      width: 44px; height: 44px; border: 0; border-radius: 11px; background: transparent;
+      cursor: pointer; position: relative; display: grid; place-items: center;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    #dock button:hover { transform: translateY(-4px); background: rgba(0,0,0,0.05); }
+    #dock button svg { width: 26px; height: 26px; }
+    #dock button .ic i { line-height: 1; }
+    #dock button .ic {
+      width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center;
+      font-size: 12px; font-weight: 700; color: #fff; position: relative; overflow: hidden;
+      box-shadow: 0 1px 1.5px rgba(40,25,10,0.18), 0 4px 10px -3px rgba(40,25,10,0.3);
+    }
+    #dock button .ic svg { width: 100%; height: 100%; display: block; }
+    /* a little glaze on every tile: soft top light + hairline edge */
+    #dock button .ic::after {
+      content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      background: linear-gradient(180deg, rgba(255,255,255,0.24), rgba(255,255,255,0) 46%);
+      box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.35);
+    }
+    #dock button::after {
+      content: ''; position: absolute; bottom: -2px; left: 50%; transform: translateX(-50%);
+      width: 4px; height: 4px; border-radius: 50%; background: var(--ink); opacity: 0;
+    }
+    #dock button.open::after { opacity: 0.5; }
+    #dock button[data-tip]:hover::before {
+      content: attr(data-tip); position: absolute; bottom: 54px; left: 50%; transform: translateX(-50%);
+      background: var(--ink); color: #fff; font-size: 12px; padding: 4px 8px; border-radius: 6px; white-space: nowrap;
+    }
+    #dock .sep { width: 1px; background: var(--line); margin: 6px 3px; }
+
+    /* ── Windows ── */
+    .win {
+      position: absolute;
+      background: #fbfaf7; border: 1px solid rgba(0,0,0,0.08); border-radius: 12px;
+      box-shadow: var(--shadow); overflow: hidden;
+      display: flex; flex-direction: column;
+      cursor: default; /* the desk's grab cursor is for panning the empty canvas, not windows */
+      transition: box-shadow 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    }
+    .win.active { box-shadow: var(--shadow-hi); }
+    .win.hidden { opacity: 0; transform: scale(0.96); pointer-events: none; }
+    .win .titlebar {
+      height: 34px; display: flex; align-items: center; gap: 8px; padding: 0 12px;
+      cursor: grab; flex: none; font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em;
+      position: relative;
+    }
+    /* windows that show their name print it centered, like a file title */
+    .win .titlebar .wt { position: absolute; left: 50%; transform: translateX(-50%); font-weight: 500; pointer-events: none; }
+    .win .titlebar:active { cursor: grabbing; }
+    /* Sidebar apps: chrome overlays the content so the sidebar reaches the top */
+    .win.fullside > .titlebar { position: absolute; top: 0; left: 0; right: 0; z-index: 3; background: none; }
+    .win.fullside > .body { height: 100%; }
+    .win.fullside .app .side { padding-top: 38px; }
+    .win .lights { display: flex; gap: 7px; }
+    .win .lights b { width: 11px; height: 11px; border-radius: 50%; display: block; background: #ddd7cd; cursor: pointer; }
+    .win.active .lights b.c { background: #ff5f57; }
+    .win.active .lights b.m { background: #febc2e; }
+    .win.active .lights b.z { background: #28c840; }
+    .win .body { flex: 1; min-height: 0; overflow: auto; zoom: var(--text-zoom, 1); }
+    .win .body.noscroll { overflow: hidden; }
+    .win .body::-webkit-scrollbar { width: 8px; }
+    .win .body::-webkit-scrollbar-thumb { background: #ddd7cd; border-radius: 4px; }
+    .win .resize {
+      position: absolute; right: 0; bottom: 0; width: 16px; height: 16px; cursor: nwse-resize;
+    }
+
+    /* ── Readme / About ── */
+    .about { padding: 20px 36px 34px; }
+    .about h1 { font-size: 30px; line-height: 1.18; margin: 0 0 24px; letter-spacing: -0.015em; font-weight: 700; }
+    .about p { font-size: 16px; line-height: 1.6; color: var(--ink-2); margin: 0 0 16px; }
+    .about .row { display: flex; gap: 18px; align-items: center; margin-bottom: 28px; }
+    .about .row img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+    .about .row small { display: block; font-size: 12px; color: var(--ink-2); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+    .about .links { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 30px; font-size: 16px; font-weight: 600; }
+    .about .links a { text-decoration: none; border-bottom: 1px solid rgba(0,0,0,0.3); padding-bottom: 2px; }
+
+    /* ── Daily Note ── */
+    .daily { padding: 20px 26px 0; display: flex; flex-direction: column; height: 100%; }
+    .daily h2 { font-size: 26px; margin: 0 0 12px; font-weight: 700; letter-spacing: -0.01em; }
+    .daily ul { list-style: none; margin: 0; padding: 12px 0; border-top: 1px solid var(--line); }
+    .daily li { display: flex; gap: 12px; align-items: flex-start; font-size: 18px; line-height: 1.35; padding: 8px 0; cursor: pointer; }
+    .daily li .box { width: 20px; height: 20px; border: 2px solid var(--ink-2); border-radius: 5px; flex: none; margin-top: 1px; display: grid; place-items: center; }
+    .daily li .box i { font-size: 12px; color: #fff; opacity: 0; line-height: 1; }
+    .daily li.done .box { background: var(--ink-2); border-color: var(--ink-2); }
+    .daily li.done .box i { opacity: 1; }
+    .daily li.done span { text-decoration: line-through; color: var(--ink-3); }
+    .daily .add { display: flex; gap: 12px; align-items: center; padding: 10px 0 18px; color: var(--ink-3); }
+    .daily .add input { flex: 1; border: 0; background: transparent; font: inherit; font-size: 18px; color: var(--ink); outline: 0; }
+    .daily .add input::placeholder { color: var(--ink-3); }
+    .cal { border-top: 1px solid var(--line); padding: 16px 0 18px; text-align: center; margin-top: auto; }
+    .cal h3 { font-size: 14px; margin: 0 0 8px; color: var(--ink-2); }
+    .cal .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px 0; font-size: 13px; color: var(--ink-2); }
+    .cal .grid .h { color: var(--ink-3); font-size: 12px; }
+    .cal .grid .d { padding: 4px 0; }
+    .cal .grid .o { color: #9a958c; }
+    .cal .grid .today { background: var(--ink-2); color: #fff; border-radius: 50%; width: 26px; height: 26px; line-height: 26px; padding: 0; margin: 0 auto; font-weight: 700; }
+
+    /* ── Git Pulse ── */
+    .pulse { padding: 14px 24px 22px; }
+    .pulse h2 { font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; font-weight: 700; }
+    .pulse .stats { display: flex; gap: 26px; padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .pulse .stats b { font-size: 26px; display: block; line-height: 1; }
+    .pulse .stats small { font-size: 12px; color: var(--ink-2); }
+    .pulse .rows { padding-top: 10px; }
+    .pulse .row { display: grid; grid-template-columns: 96px 1fr 28px; gap: 12px; align-items: start; padding: 5px 0; line-height: 15px; }
+    .pulse .row .c { font-size: 12px; color: var(--ink-3); text-align: right; font-variant-numeric: tabular-nums; }
+    .pulse .src { display: inline-block; margin-top: 12px; font-size: 12px; color: var(--ink-3); text-decoration: none; }
+    .pulse .src:hover { color: var(--ink); }
+    .pulse .row label { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); }
+    .pulse .dots { display: flex; flex-wrap: wrap; gap: 6px; padding: 3px 0; }
+    .pulse .dots i { width: 9px; height: 9px; border-radius: 50%; background: #6b625a; display: block; }
+    .pulse .dots i.n { animation: pop 0.3s ease backwards; }
+    @keyframes pop { from { transform: scale(0); } }
+
+    /* Weather — Bay Area microclimates */
+    .weather { padding: 14px 24px 12px; }
+    .weather .hd { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 12px; }
+    .weather h2 { font-size: 14px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0; font-weight: 700; }
+    .weather .hd small { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+    .weather .spread { border-top: 1px solid var(--line); padding: 14px 0 6px; display: flex; align-items: baseline; gap: 12px; }
+    .weather .spread b { font-size: 34px; line-height: 1; font-variant-numeric: tabular-nums; }
+    .weather .spread span { font-size: 14px; color: var(--ink-2); line-height: 1.35; }
+    .weather .scale { position: relative; height: 44px; margin: 8px 6px 14px; }
+    .weather .scale .track { position: absolute; left: 0; right: 0; top: 21px; height: 3px; border-radius: 2px; background: linear-gradient(90deg, #9fb7d6, #e7d9b5, #e8a268); }
+    .weather .scale .pin { position: absolute; top: 0; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; transition: left 0.6s cubic-bezier(.2,.7,.2,1); }
+    .weather .scale .pin small { font-size: 11px; color: var(--ink-2); white-space: nowrap; line-height: 1; margin-bottom: 5px; }
+    .weather .scale .pin i { width: 12px; height: 12px; border-radius: 50%; background: var(--ink); border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.25); }
+    .weather .scale .pin.low { top: 17px; flex-direction: column-reverse; }
+    .weather .scale .pin.low small { margin: 5px 0 0; }
+    .weather .place { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; align-items: center; padding: 11px 0; border-top: 1px solid var(--line); }
+    .weather .place b { font-size: 16px; }
+    .weather .place em { font-style: normal; font-size: 12px; color: var(--ink-3); margin-left: 6px; }
+    .weather .place .cond { grid-column: 1; font-size: 13px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+    .weather .place .cond i { font-size: 16px; }
+    .weather .place .t { grid-column: 2; grid-row: 1 / span 2; text-align: right; }
+    .weather .place .t b { font-size: 26px; font-weight: 500; display: block; line-height: 1; font-variant-numeric: tabular-nums; }
+    .weather .place .t small { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+    .weather .karl { grid-column: 1 / -1; font-size: 12px; color: var(--ink-2); font-style: italic; margin-top: 4px; }
+
+    /* ── Modes ── */
+    .modes { display: grid; place-items: center; height: 100%; padding: 22px; }
+    .modes .disc {
+      width: 230px; height: 230px; border-radius: 50%; background: #0b0b0b; color: #fff;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.25); cursor: pointer; position: relative;
+    }
+    .modes .disc small { position: absolute; top: 46px; font-size: 12px; font-weight: 700; color: #8a3252; }
+    .modes .disc span { font-size: 30px; font-weight: 700; line-height: 1.1; color: #2c2c2c; transition: color 0.3s ease, transform 0.3s ease; }
+    .modes .disc span.on { color: #fff; }
+    .modes .disc span.dim { color: #4a4a4a; }
+
+    /* ── Studio Notes ── */
+    .notes { padding: 0 20px 20px; }
+    .notes .tabs { display: flex; gap: 22px; font-size: 14px; color: var(--ink-2); padding: 4px 4px 10px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+    .notes .tabs b { color: var(--ink); border-bottom: 2px solid var(--ink); padding-bottom: 8px; margin-bottom: -11px; }
+    .notes .cards { columns: 2; column-gap: 14px; }
+    .notes .card { break-inside: avoid; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; margin-bottom: 14px; }
+    .notes .card h4 { margin: 0 0 8px; font-size: 18px; font-weight: 600; letter-spacing: -0.005em; }
+    .notes .card p { margin: 0 0 8px; font-size: 13px; line-height: 1.5; color: var(--ink-2); }
+    .notes .card .link { display: block; font-size: 12px; color: var(--ink-2); border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; text-decoration: none; margin-top: 8px; }
+    .notes .card .link:hover { color: var(--ink); }
+    .notes .card time { display: block; font-size: 12px; color: var(--ink-3); margin-top: 8px; }
+    .notes .card img { width: 100%; border-radius: 6px; display: block; margin-bottom: 8px; }
+
+    /* ── Project windows ── */
+    .proj { display: flex; flex-direction: column; height: 100%; }
+    .proj .media { flex: 1; min-height: 0; background: #ecebe6; display: grid; place-items: center; overflow: hidden; }
+    .proj .media img, .proj .media video { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .proj .media.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; background: var(--paper); }
+    .proj .media.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3px; background: var(--paper); place-items: stretch; }
+    .proj .media.grid3 img { object-position: top; }
+    .proj .cap { padding: 12px 16px 14px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex: none; }
+    .proj .cap small { display: block; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); margin-bottom: 2px; }
+    .proj .cap b { font-size: 14px; }
+    .proj .cap p { margin: 2px 0 0; font-size: 13px; color: var(--ink-2); line-height: 1.45; }
+    .proj .cap a.go { font-size: 13px; font-weight: 600; text-decoration: none; white-space: nowrap; border-bottom: 1px solid rgba(0,0,0,0.3); }
+
+    /* ── Gallery ── */
+    /* ── Gallery.app: sidebar + panes ── */
+    .app { display: flex; height: 100%; min-height: 0; }
+    .app .side { width: 148px; flex: none; border-right: 1px solid var(--line); padding: 10px 8px; display: flex; flex-direction: column; gap: 2px; background: rgba(0,0,0,0.015); }
+    .app .side button { display: flex; align-items: center; gap: 8px; width: 100%; border: 0; background: none; font: inherit; font-size: 13px; color: var(--ink-2); padding: 6px 9px; border-radius: 7px; cursor: pointer; text-align: left; }
+    .app .side button:hover { background: rgba(0,0,0,0.05); }
+    .app .side button.on { background: var(--ink); color: #fff; }
+    .app .side button i { font-size: 18px; flex: none; opacity: 0.75; line-height: 1; }
+    .app .side .cap { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); padding: 8px 9px 4px; }
+    .app .pane { flex: 1; min-width: 0; min-height: 0; overflow: auto; padding: 14px 18px 20px; }
+    /* Media pane: the scroller runs to the window edge, so padding moves inside it */
+    .app .pane.fixed { overflow: hidden; padding: 0; }
+    .app .pane.fixed .filters { padding: 14px 18px 12px; margin: 0; }
+    .app .pane.fixed .media-grid { padding: 0 18px 20px; }
+    .app .pane.fixed .viewer { padding: 0 18px 16px; }
+    .app .pane.fixed .viewer .bar { padding-top: 14px; }
+    .app .pane::-webkit-scrollbar, .app .scroller::-webkit-scrollbar { width: 8px; }
+    .app .pane::-webkit-scrollbar-thumb, .app .scroller::-webkit-scrollbar-thumb { background: #ddd7cd; border-radius: 4px; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; padding: 0 0 12px; }
+    .filters button { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 12px; cursor: pointer; color: var(--ink-2); }
+    .filters button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .filters button i { font-size: 13px; margin: 0 5px 0 -1px; }
+    .filters button i.ph-x { margin: 0 -2px 0 6px; opacity: 0.7; }
+
+    /* Media: a Lightroom-ish contact sheet, with a detail view in the same pane */
+    .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--media-cell, 124px), 1fr)); gap: 16px 12px; }
+    .media-grid button { border: 0; background: none; padding: 0; font: inherit; text-align: left; cursor: pointer; display: block; width: 100%; }
+    .media-grid .cell { background: #ecebe6; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+    .media-grid img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; transition: transform 0.25s ease; }
+    .media-grid button:hover .cell { border-color: var(--ink-3); }
+    .media-grid button:hover img { transform: scale(1.05); }
+    .media-grid .fn { display: block; font-size: 12px; margin-top: 5px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .media-grid .sz { display: block; font-size: 12px; color: var(--ink-3); letter-spacing: 0.04em; }
+
+    .viewer { display: flex; flex-direction: column; height: 100%; min-height: 0; gap: 10px; }
+    .viewer .bar { display: flex; align-items: center; gap: 10px; flex: none; }
+    .viewer .bar button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 4px 10px 4px 8px; font: inherit; font-size: 12px; cursor: pointer; color: var(--ink-2); }
+    .viewer .bar button i { font-size: 14px; }
+    .viewer .bar button:hover { color: var(--ink); }
+    .viewer .bar .count { font-size: 12px; color: var(--ink-3); margin-left: auto; }
+    /* image, flanked by its arrows, on the paper itself */
+    .viewer .frame { flex: 1; min-height: 0; display: flex; align-items: center; gap: 10px; }
+    .viewer .nav { flex: none; width: 34px; height: 34px; border: 1px solid var(--line); background: #fff; border-radius: 50%;
+      font-size: 18px; line-height: 1; color: var(--ink-2); cursor: pointer; display: grid; place-items: center; }
+    .viewer .nav:hover { color: var(--ink); border-color: var(--ink-3); }
+    .viewer .stage { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; justify-content: center; }
+    .viewer .stage img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block;
+      border-radius: 4px; box-shadow: 0 6px 22px rgba(0,0,0,0.14); }
+    .viewer .info { flex: none; display: flex; justify-content: space-between; align-items: baseline; gap: 16px; font-size: 12px; color: var(--ink-3); }
+    .viewer .info b { display: block; font-size: 13px; color: var(--ink); font-weight: 600; }
+    .viewer .info em { font-style: normal; color: var(--ink-2); }
+    .viewer .info .meta { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    .viewer .info a { color: var(--ink-2); }
+
+    /* Notes: a grid of project cards, each with the write-up from the homepage */
+    .workgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; align-items: stretch; }
+    .workgrid a { display: flex; flex-direction: column; min-width: 0; text-decoration: none;
+      background: #fff; border: 1px solid var(--line); border-radius: 11px; padding: 10px 10px 14px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
+    .workgrid a:hover { transform: translateY(-3px); border-color: #d9d2c6; box-shadow: 0 10px 24px rgba(0,0,0,0.10); }
+    .workgrid img { width: 100%; height: auto; border-radius: 6px; background: #eee; display: block; }
+    .workgrid .txt { min-width: 0; padding: 11px 3px 0; overflow-wrap: anywhere; flex: 1; display: flex; flex-direction: column; }
+    .workgrid .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: auto; padding-top: 11px; }
+    .workgrid .tags span { font-size: 12px; letter-spacing: 0.04em; color: var(--ink-2); background: rgba(0,0,0,0.045);
+      border-radius: 999px; padding: 3px 8px; line-height: 1.3; }
+    .workgrid small { display: block; margin-top: 7px; font-size: 11px; color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .workgrid b { display: block; font-size: 14px; margin: 0 0 4px; line-height: 1.25; }
+    .workgrid p { margin: 0; font-size: 12px; line-height: 1.45; color: var(--ink-2); }
+
+    /* File directory: a plain list view */
+    .files { font-size: 13px; }
+    .files .hd, .files a { display: grid; grid-template-columns: 1fr 92px 76px; gap: 10px; padding: 5px 8px; align-items: center; }
+    .files .hd { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--line); }
+    .files a { text-decoration: none; border-radius: 6px; }
+    .files > *:nth-child(odd) { background: rgba(0,0,0,0.022); }
+    .files a:hover { background: rgba(0,0,0,0.06); }
+    .files .nm { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .files .nm span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .files .ic-f { font-size: 14px; flex: none; color: #8e9bb3; line-height: 1; }
+    .files .ic-f.page { color: #b0a58d; }
+    .files .ic-f.folder { color: #7f9cc9; }
+    .files .k, .files .z { color: var(--ink-3); font-size: 12px; }
+    .files .z { text-align: right; }
+
+    /* Settings */
+    .settings { padding: 6px 24px 10px; font-size: 13px; }
+    .settings .row { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 18px 0; border-bottom: 1px solid var(--line); }
+    .settings .row:last-child { border-bottom: 0; }
+    .settings .row b { font-weight: 600; display: block; font-size: 18px; line-height: 1.25; margin-bottom: 4px; }
+    .settings .row em { display: block; font-style: normal; color: var(--ink-3); font-size: 14px; line-height: 1.4; }
+    .settings .seg { display: flex; gap: 4px; flex: none; }
+    .settings .seg button, .settings .row > button { border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 7px 14px; font: inherit; font-size: 12px; cursor: pointer; color: var(--ink-2); }
+    .settings .seg button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+    /* Pill switch — beats the generic .settings .row > button rule above it */
+    .settings .row > button.switch {
+      flex: none; width: 46px; height: 26px; padding: 0; border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.10); background: #e3ddd2; position: relative; cursor: pointer;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.07);
+      transition: background 0.2s ease, border-color 0.2s ease;
+      -webkit-appearance: none; appearance: none;
+    }
+    .settings .row > button.switch::after {
+      content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 999px;
+      background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.28);
+      transition: transform 0.2s cubic-bezier(.3,.8,.3,1);
+    }
+    .settings .row > button.switch:hover { border-color: rgba(0,0,0,0.22); }
+    .settings .row > button.switch.on { background: var(--ink); border-color: var(--ink); box-shadow: none; }
+    .settings .row > button.switch.on::after { transform: translateX(20px); }
+    .settings .row > button.switch:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+    /* ── Mail ── */
+    /* Mail: an airmail envelope edge and a stamp around an otherwise plain composer. */
+    /* The stripes wrap the whole window, so the traffic lights sit on the paper inside. */
+    #win-mail {
+      padding: 5px;
+      background: repeating-linear-gradient(-45deg, #e5443a 0 8px, #fffaf0 8px 12px, #2f5fd0 12px 20px, #fffaf0 20px 24px);
+    }
+    #win-mail > .titlebar { background: #fffcf6; border-radius: 7px 7px 0 0; }
+    #win-mail > .body { background: #fffcf6; border-radius: 0 0 7px 7px; }
+    .mail { height: 100%; overflow: hidden; }
+    .mail .paper { height: 100%; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .mail .tools { display: flex; align-items: center; gap: 8px; padding: 10px 14px 10px 16px; border-bottom: 1px solid var(--line); flex: none; }
+    .mail .tools h3 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin-right: auto; }
+    .mail .tools button { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line); background: #fff; border-radius: 7px; padding: 6px 12px; font: inherit; font-size: 12px; cursor: pointer; color: var(--ink-2); }
+    .mail .tools button:hover { color: var(--ink); border-color: var(--ink-3); }
+    .mail .tools button.send { background: #e5443a; border-color: #e5443a; color: #fff; }
+    .mail .tools button.send:hover { background: #cc372e; border-color: #cc372e; color: #fff; }
+    .mail .tools button i { font-size: 14px; }
+    .mail .field { display: flex; align-items: center; gap: 10px; padding: 0 92px 0 16px; min-height: 40px; border-bottom: 1px solid var(--line); font-size: 14px; flex: none; }
+    .mail .field label { color: var(--ink-3); width: 56px; flex: none; }
+    .mail .field input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; color: var(--ink); outline: 0; padding: 10px 0; }
+    .mail .field input::placeholder, .mail textarea::placeholder { color: var(--ink-3); }
+    .mail .chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.05); border-radius: 999px; padding: 3px 10px 3px 4px; font-size: 13px; }
+    .mail .chip img { width: 20px; height: 20px; border-radius: 50%; object-fit: cover; }
+    .mail textarea {
+      flex: 1; min-height: 120px; border: 0; background: transparent; resize: none; outline: 0; margin: 0;
+      font: inherit; font-size: 15px; line-height: 1.6; color: var(--ink); padding: 14px 16px;
+      overflow-x: hidden; overflow-y: auto; scrollbar-width: none;
+    }
+    .mail textarea::-webkit-scrollbar { display: none; }
+    .mail .foot { flex: none; padding: 8px 16px 10px; font-size: 12px; color: var(--ink-3); display: flex; justify-content: space-between; gap: 12px; }
+    .mail .foot.err { color: #c8442c; }
+    .mail .foot.ok { color: #3d8f5a; }
+    /* Stamp with punched edges; a postmark lands on it when the letter is sent */
+    .mail .stamp { position: absolute; right: 18px; top: 54px; transform: rotate(4deg); filter: drop-shadow(0 1px 1.5px rgba(60,40,0,0.22)); }
+    .mail .stamp div {
+      width: 56px; height: 64px; padding: 4px; background: #fff;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle, transparent 2px, #000 2.5px) -4px -4px / 8px 8px;
+              mask: linear-gradient(#000 0 0) content-box, radial-gradient(circle, transparent 2px, #000 2.5px) -4px -4px / 8px 8px;
+    }
+    .mail .stamp span { display: block; height: 100%; position: relative; background: #ffe391; overflow: hidden; }
+    .mail .stamp img { position: absolute; left: 50%; bottom: 0; width: 28px; height: 30px; border-radius: 50% 50% 0 0; object-fit: cover; transform: translateX(-50%); }
+    /* fill the stamp and crop in close; leaf tips and the stand can run off the edge */
+    .mail .stamp img.plant { left: 0; top: 0; width: 100%; height: 100%; border-radius: 0; object-fit: cover; transform: scale(1.12); transform-origin: 50% 30%; }
+    .mail .postmark { position: absolute; right: 34px; top: 60px; width: 88px; opacity: 0; transform: scale(1.4) rotate(-12deg); pointer-events: none; }
+    .mail.sent .postmark { animation: postmark 0.35s cubic-bezier(.3,1.6,.5,1) forwards; }
+    .mail.sent .stamp { animation: stampthunk 0.35s ease; }
+    @keyframes postmark { to { opacity: 0.75; transform: scale(1) rotate(-12deg); } }
+    @keyframes stampthunk { 40% { transform: rotate(4deg) scale(0.94); } }
+    .mail .shake { animation: shake 0.3s ease; }
+    @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+    /* ── Music ── */
+    .app .pane.music { overflow: hidden; padding: 0; display: flex; flex-direction: column; }
+    .music .np { flex: none; display: flex; gap: 16px; align-items: center; padding: 18px 20px 16px; border-bottom: 1px solid var(--line); }
+    .music .np img { width: 96px; height: 96px; border-radius: 8px; object-fit: cover; flex: none; background: #ecebe6; box-shadow: 0 6px 18px rgba(0,0,0,0.16); }
+    .music .np .meta { flex: 1; min-width: 0; }
+    .music .np small { display: block; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+    .music .np b { display: block; font-size: 18px; line-height: 1.25; margin: 3px 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .music .np .by { font-size: 13px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .music .np .by a { color: var(--ink-3); text-decoration: none; margin-left: 6px; }
+    .music .np .by a:hover { color: var(--ink); }
+    .music .ctl { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+    .music .ctl button { border: 0; background: none; padding: 0; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; color: var(--ink-2); font-size: 18px; }
+    .music .ctl button:hover { color: var(--ink); background: rgba(0,0,0,0.05); }
+    .music .ctl button.play { width: 36px; height: 36px; background: var(--ink); color: #fff; font-size: 16px; }
+    .music .ctl button.play:hover { background: #000; color: #fff; }
+    .music .ctl button i { line-height: 1; }
+    .music .ctl .t { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; width: 30px; text-align: center; flex: none; }
+    .music .scrub { flex: 1; height: 16px; display: flex; align-items: center; cursor: pointer; }
+    .music .scrub span { display: block; height: 4px; width: 100%; background: #e3ddd2; border-radius: 2px; overflow: hidden; }
+    .music .scrub span i { display: block; height: 100%; width: 0; background: var(--ink-2); }
+    .music .list { flex: 1; min-height: 0; overflow: auto; padding: 6px 10px 12px; }
+    .music .list::-webkit-scrollbar { width: 8px; }
+    .music .list::-webkit-scrollbar-thumb { background: #ddd7cd; border-radius: 4px; }
+    .music .list button { display: grid; grid-template-columns: 22px 36px 1fr auto; gap: 12px; align-items: center; width: 100%; border: 0; background: none; font: inherit; text-align: left; padding: 6px 10px; border-radius: 8px; cursor: pointer; color: var(--ink); }
+    .music .list button:nth-child(odd) { background: rgba(0,0,0,0.022); }
+    .music .list button:hover { background: rgba(0,0,0,0.06); }
+    .music .list button.on { background: rgba(0,0,0,0.08); }
+    .music .list .n { font-size: 12px; color: var(--ink-3); text-align: right; font-variant-numeric: tabular-nums; }
+    .music .list img { width: 36px; height: 36px; border-radius: 4px; object-fit: cover; display: block; background: #ecebe6; }
+    .music .list .tx { min-width: 0; }
+    .music .list .tx b, .music .list .tx em { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .music .list .tx b { font-size: 14px; font-weight: 600; }
+    .music .list .tx em { font-style: normal; font-size: 12px; color: var(--ink-2); }
+    .music .list .d { font-size: 12px; color: var(--ink-3); }
+    /* equalizer bars in place of the track number while it plays */
+    .music .eq { display: inline-flex; gap: 2px; align-items: flex-end; height: 12px; }
+    .music .eq i { width: 3px; background: var(--accent); border-radius: 1px; animation: eq 0.9s ease-in-out infinite; }
+    .music .eq i:nth-child(2) { animation-delay: -0.3s; }
+    .music .eq i:nth-child(3) { animation-delay: -0.6s; }
+    .music .eq.paused i { animation-play-state: paused; }
+    @keyframes eq { 0%, 100% { height: 3px; } 50% { height: 12px; } }
+    /* ── Loose items (polaroids, stickers, notes) ── */
+    .loose { position: absolute; cursor: grab; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .loose:active { cursor: grabbing; }
+    .loose.lift { box-shadow: var(--shadow-hi); z-index: 9999 !important; }
+    .polaroid { background: #fff; padding: 8px 8px 24px; box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 10px 24px rgba(0,0,0,0.12); }
+    .polaroid img { display: block; width: 100%; height: auto; pointer-events: none; }
+    .polaroid span { position: absolute; left: 10px; bottom: 6px; font-size: 12px; color: var(--ink-2); letter-spacing: 0.02em; }
+    .sticky { background: #fff4b8; padding: 16px 18px; width: 200px; font-size: 16px; line-height: 1.45; box-shadow: 0 8px 20px rgba(0,0,0,0.12); color: #4b4224; }
+    .sticky.blue { background: #dbe9ff; color: #223052; }
+    .sticky.postit { width: 260px; height: 260px; padding: 18px 24px 16px; display: flex; flex-direction: column; font-size: 16px; line-height: 1.45; }
+    /* notes keep their size and spot; only their writing scales */
+    .sticky.postit > * { zoom: var(--text-zoom, 1); }
+    .sticky.postit b { font-family: "Caveat", "Bradley Hand", cursive; font-size: 30px; font-weight: 600; line-height: 1; margin-bottom: 12px; }
+    .sticky.postit p { margin: 0; flex: 1; font-family: "Caveat", "Bradley Hand", cursive; font-size: 23px; font-weight: 600; line-height: 1.15; }
+    .sticky.postit a { font-weight: 600; text-decoration: none; margin-top: 10px; }
+    .sticky.pink { background: #ffd9e6; color: #4e2233; }
+    /* Post-its: a glued strip along the top, a bottom edge that lifts off the desk
+       (shadow pooled under it), a softly curled corner, and a little paper grain. */
+    .sticky.postit {
+      --note: #fdedb5; --note-edge: #efd894;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0) 18%),
+        radial-gradient(120% 60% at 100% 100%, rgba(0,0,0,0.05), rgba(0,0,0,0) 45%),
+        linear-gradient(175deg, rgba(255,255,255,0.25), rgba(255,255,255,0) 40%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.025)),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+        var(--note);
+      border-radius: 1px 1px 2px 30px / 1px 1px 2px 6px;
+      box-shadow:
+        inset 0 -1px 0 var(--note-edge),
+        0 1px 1px rgba(60,45,0,0.14),
+        0 4px 6px -3px rgba(40,30,0,0.16),
+        0 20px 18px -14px rgba(30,20,0,0.38);
+    }
+    .sticky.postit.pink { --note: #ffbad6; --note-edge: #f7a0c4; }
+    .sticky.postit.lavender { --note: #e8d3f6; --note-edge: #d7b9ec; color: #3e2650; }
+    .sticky.postit:not(.pink):not(.lavender) {
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0) 18%),
+        linear-gradient(175deg, rgba(255,255,255,0.25), rgba(255,255,255,0) 40%),
+        var(--note);
+    }
+    .sticky.postit.lift {
+      box-shadow:
+        inset 0 -1px 0 var(--note-edge),
+        0 2px 3px rgba(60,45,0,0.12),
+        0 14px 16px -8px rgba(40,30,0,0.2),
+        0 34px 30px -18px rgba(30,20,0,0.4);
+    }
+    .label { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
+    .arrow { color: var(--ink-3); }
+
+    /* ── Hint ── */
+
+    @media (max-width: 700px) {
+      #bar #battery .pct { display: none; }
+      .notes .cards { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="bar">
+  <a class="name" href="classic.html">Mary Huang</a>
+  <div class="right">
+    <span id="battery" title="Battery"><span class="pct">—</span><i class="ph ph-battery-high"></i></span>
+    <span id="clock">00:00</span>
+  </div>
+</div>
+
+<div id="desk"><div id="world"></div></div>
+
+
+<div id="dock"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   Data
+   ═══════════════════════════════════════════════════════════════ */
+const PROJECTS = [
+  // Mirrors the homepage (index.html): the two "Currently Building" features
+  // followed by Selected Work, in the same order.
+  { href: 'https://kodolab.org', img: 'images/thumbs/Kodolab_c.webp', meta: 'Now · 2026', title: 'Kodolab', tags: ['web', '3d'], desc: "An open-source web platform for learning biology in 3D, with an AI sandbox for generating lessons in seconds." },
+  { href: 'projects/stagecraft/ilm.html', img: 'images/thumbs/stagecraft_c2.webp', meta: 'Industrial Light & Magic · 2022', title: 'ILM Stagecraft', tags: ['mobile', '3d'], desc: "iPad app for controlling virtual production stages. Nominated for a Technical Emmy." },
+  { href: 'projects/impulse/impulse.html', img: 'images/thumbs/Impulse_c.webp', meta: 'Impulse Labs · 2024', title: 'Impulse Stove', tags: ['hardware'], desc: "A 15kW induction stove with a novel knob interface. Solo designer, launched at CES." },
+  { href: 'projects/biome/biome.html', img: 'images/thumbs/Biome_c2.webp', meta: 'Earthshot Labs · 2022', title: 'Biome', tags: ['mobile', '3d'], desc: "ML and AR mobile platform for measuring rainforests. 10x faster than traditional field surveys." },
+  { href: 'projects/tales/tales.html', img: 'images/thumbs/Tales_c.webp', meta: 'ILM Immersive · 2020', title: "Tales from the Galaxy's Edge", tags: ['3d'], desc: "Spatial and 2D UI/UX for the Star Wars VR adventure game, shipped in 5 months." },
+  { href: 'projects/Amazon/amazon.html', img: 'images/thumbs/Amazon_c2.webp', meta: 'Amazon · 2019', title: 'Amazon Made For You', tags: ['mobile', '3d'], desc: "Design custom-fit t-shirts in 3D. Consumer mobile app and the pattern generation engine." },
+  { href: 'projects/gestures/gestures.html', img: 'images/thumbs/Gestures_c.webp', meta: 'Independent · 2020', title: 'VR Hand Gestures', tags: ['3d'], desc: "Exploration prototypes of hand-gesture-based UI on Quest." },
+  { href: 'projects/viralnet/viralnet.html', img: 'images/thumbs/Viralnet_c.webp', meta: 'Joint Genome Institute · 2020', title: 'Viralnet', tags: ['web', '3d'], desc: "Data visualization of virus genomes for the Joint Genome Institute (JGI)." },
+  { href: 'projects/hack/hack.html', img: 'images/thumbs/Hack_c2.webp', meta: 'Endless · 2019', title: 'Hack Computer', tags: ['web'], desc: "A \"hackable\" OS and game series teaching kids code and computational thinking." },
+  { href: 'projects/quill/quill.html', img: 'images/thumbs/Quill_c.webp', meta: 'Oculus Story Studio · 2016', title: 'Oculus Quill', tags: ['3d'], desc: "VR-native illustration and animation tool. Foundational interaction patterns for long work sessions." },
+  { href: 'projects/rose/rose.html', img: 'images/thumbs/Rose_c.webp', meta: 'Google Mexico · 2014', title: 'Google Rose', tags: ['web', '3d'], desc: "A 3D fashion experience for Mexico Fashion Week: an algorithm generates a collection from your design and sends it down a virtual runway." },
+  { href: 'projects/modakit/modakit.html', img: 'images/thumbs/ModaKit_c.webp', meta: 'Continuum Fashion · 2014', title: 'ModaKit', tags: ['hardware'], desc: "A modular toolkit for wearable computing." },
+  { href: 'projects/constrvct/constrvct.html', img: 'images/thumbs/Constrvct_c.webp', meta: 'Continuum Fashion · 2013', title: 'Constrvct', tags: ['web', '3d'], desc: "Browser-based 3D design tool and commerce site for custom-printed dresses. Techstars 2013." },
+];
+const ART = [
+  // From images.html — the featured-project gallery.
+  { t: "images/thumbs/gallery/impulse-1.webp", s: "projects/impulse/stove1.png", f: "stove1.png", n: "Impulse Stove", y: 2024, c: "The Impulse induction stove with magnetic removable knobs and 12\" display.", l: "projects/impulse/impulse.html", w: 1026, h: 521, kb: 342, cats: ["hardware","tools"] },
+  { t: "images/thumbs/gallery/biome-1.webp", s: "projects/biome/Biome_main.jpg", f: "Biome_main.jpg", n: "Biome", y: 2022, c: "Mobile AR app for measuring tropical forests.", l: "projects/biome/biome.html", w: 1200, h: 800, kb: 837, cats: ["web/mobile","spatial","tools"] },
+  { t: "images/thumbs/gallery/quill-1.webp", s: "projects/quill/Quill_Beta.jpg", f: "Quill_Beta.jpg", n: "Oculus Quill", y: 2016, c: "Oculus Quill, a VR-native illustration and animation tool.", l: "projects/quill/quill.html", w: 1280, h: 720, kb: 64, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/tales-1.webp", s: "projects/tales/Gauntlet_hero.jpg", f: "Gauntlet_hero.jpg", n: "Tales from the Galaxy’s Edge", y: 2021, c: "Gauntlet menu — wrist-mounted UI for Tales from the Galaxy’s Edge.", l: "projects/tales/tales.html", w: 800, h: 545, kb: 261, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/shoes-1.webp", s: "projects/shoes/Daphne-Leaves-1.jpg", f: "Daphne-Leaves-1.jpg", n: "3D Printed Shoes", y: 2013, c: "Daphne — a 3D-printed shoe inspired by leaves.", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 37, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/n12-1.webp", s: "projects/n12/N12-bikini-set-top.jpg", f: "N12-bikini-set-top.jpg", n: "N12 Bikini", y: 2012, c: "The N12 — the world’s first ready-to-wear 3D-printed bikini.", l: "projects/n12/n12.html", w: 945, h: 628, kb: 100, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/rose-1.webp", s: "projects/rose/rose_runway_poster.png", f: "rose_runway_poster.png", n: "Google Rose", y: 2014, c: "Google Rose — generative fashion design tool.", l: "projects/rose/rose.html", w: 848, h: 541, kb: 235, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/constrvct-1.webp", s: "projects/constrvct/CONSTRVCT_composite1.jpg", f: "CONSTRVCT_composite1.jpg", n: "Constrvct", y: 2013, c: "Constrvct — browser tool for designing custom-printed dresses.", l: "projects/constrvct/constrvct.html", w: 1024, h: 768, kb: 672, cats: ["fashion","web/mobile","tools","3D"] },
+  { t: "images/thumbs/gallery/stagecraft-1.webp", s: "projects/stagecraft/ilm-volume.jpg", f: "ilm-volume.jpg", n: "ILM Stagecraft", y: 2021, c: "ILM Stagecraft — the LED Volume used for virtual production.", l: "projects/stagecraft/ilm.html", w: 960, h: 477, kb: 146, cats: ["tools","web/mobile"] },
+  { t: "images/thumbs/gallery/quill-gallery-1.webp", s: "projects/quill_gallery/Lean_In.gif", f: "Lean_In.gif", n: "Quill Gallery", y: 2017, c: "Quill Gallery — leaning in to inspect a 3D illustration.", l: "projects/quill_gallery/quill_gallery.html", w: 720, h: 405, kb: 3903, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/quill-2.webp", s: "projects/quill/angelica.gif", f: "angelica.gif", n: "Oculus Quill", y: 2016, c: "Angelica Sotiriou painting in Quill.", l: "projects/quill/quill.html", w: 480, h: 270, kb: 5113, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/tales-2.webp", s: "projects/tales/Inventory.jpg", f: "Inventory.jpg", n: "Tales from the Galaxy’s Edge", y: 2021, c: "Inventory UI in Tales from the Galaxy’s Edge.", l: "projects/tales/tales.html", w: 2000, h: 1000, kb: 308, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/gestures-1.webp", s: "projects/gestures/Gesture-Planets_small.gif", f: "Gesture-Planets_small.gif", n: "VR Hand Gestures", y: 2020, c: "Hand gesture controlling a planetary system in VR.", l: "projects/gestures/gestures.html", w: 500, h: 500, kb: 6181, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/viralnet-1.webp", s: "projects/viralnet/Nodes-All_small.gif", f: "Nodes-All_small.gif", n: "Viralnet", y: 2020, c: "Viralnet — force-directed graph of virus genome relationships.", l: "projects/viralnet/viralnet.html", w: 500, h: 500, kb: 4012, cats: ["tools","web/mobile","3D"] },
+  { t: "images/thumbs/gallery/impulse-2.webp", s: "projects/impulse/chocolate.png", f: "chocolate.png", n: "Impulse Stove", y: 2024, c: "Tempering chocolate using precise low-temperature control.", l: "projects/impulse/impulse.html", w: 1030, h: 521, kb: 452, cats: ["hardware","tools"] },
+  { t: "images/thumbs/gallery/constrvct-2.webp", s: "projects/constrvct/GeekChic.jpg", f: "GeekChic.jpg", n: "Constrvct", y: 2013, c: "Constrvct dress featuring a circuit-board print.", l: "projects/constrvct/constrvct.html", w: 800, h: 628, kb: 489, cats: ["fashion","web/mobile","tools","3D"] },
+  { t: "images/thumbs/gallery/shoes-2.webp", s: "projects/shoes/Laurel-shoe-on-model.jpg", f: "Laurel-shoe-on-model.jpg", n: "3D Printed Shoes", y: 2013, c: "Laurel pump worn on the runway.", l: "projects/shoes/shoes.html", w: 945, h: 630, kb: 52, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/turtlelink-1.webp", s: "projects/turtlelink/seaworld1.jpg", f: "seaworld1.jpg", n: "SeaWorld TurtleLink", y: 2011, c: "SeaWorld TurtleLink — interactive multi-touch wall exhibit.", l: "projects/turtlelink/turtlelink.html", w: 940, h: 528, kb: 296, cats: ["spatial","hardware","3D"] },
+  { t: "images/thumbs/gallery/quill-3.webp", s: "projects/quill/Animation_flip_poster.jpg", f: "Animation_flip_poster.jpg", n: "Oculus Quill", y: 2016, c: "Frame-by-frame VR animation in Quill.", l: "projects/quill/quill.html", w: 1280, h: 720, kb: 73, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/ddress-1.webp", s: "projects/ddress/Ddress-selected1.jpg", f: "Ddress-selected1.jpg", n: "D.dress", y: 2010, c: "D.dress — turning sketches into wearable patterns.", l: "projects/ddress/ddress.html", w: 945, h: 532, kb: 81, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/codeland-1.webp", s: "projects/codeland/Console.gif", f: "Console.gif", n: "Coding Land", y: 2020, c: "Coding Land — interactive console for kids learning to code.", l: "projects/codeland/codeland.html", w: 700, h: 498, kb: 135, cats: ["web/mobile","tools"] },
+  { t: "images/thumbs/gallery/rose-2.webp", s: "projects/rose/rose-main.png", f: "rose-main.png", n: "Google Rose", y: 2014, c: "Hero shot of the Rose generative design system.", l: "projects/rose/rose.html", w: 1321, h: 873, kb: 260, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/shapeways-1.webp", s: "projects/shapeways/sake1.jpg", f: "sake1.jpg", n: "Shapeways", y: 2012, c: "Custom 3D-printed sake set designed at Shapeways.", l: "projects/shapeways/shapeways.html", w: 600, h: 440, kb: 40, cats: ["3D","web/mobile","tools"] },
+  { t: "images/thumbs/gallery/quill-4.webp", s: "projects/quill/Menus_poster.jpg", f: "Menus_poster.jpg", n: "Oculus Quill", y: 2016, c: "Spatial menu system designed for ergonomic two-handed use.", l: "projects/quill/quill.html", w: 778, h: 486, kb: 76, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/modakit-1.webp", s: "projects/modakit/MODA_slides.jpg", f: "MODA_slides.jpg", n: "ModaKit", y: 2014, c: "ModaKit — a modular hardware toolkit for wearable computing.", l: "projects/modakit/modakit.html", w: 792, h: 612, kb: 84, cats: ["hardware","tools"] },
+  { t: "images/thumbs/gallery/tales-3.webp", s: "projects/tales/AllKit.jpg", f: "AllKit.jpg", n: "Tales from the Galaxy’s Edge", y: 2021, c: "The full UI kit for Tales — menus, HUD, tutorials.", l: "projects/tales/tales.html", w: 800, h: 400, kb: 360, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/n12-2.webp", s: "projects/n12/N12-detail.jpg", f: "N12-detail.jpg", n: "N12 Bikini", y: 2012, c: "Detail of the interlocking 3D-printed links.", l: "projects/n12/n12.html", w: 945, h: 630, kb: 113, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/stagecraft-2.webp", s: "projects/stagecraft/lightcard.png", f: "lightcard.png", n: "ILM Stagecraft", y: 2021, c: "Stagecraft iPad app — light card placement on the volume.", l: "projects/stagecraft/ilm.html", w: 1479, h: 1137, kb: 228, cats: ["tools","web/mobile"] },
+  { t: "images/thumbs/gallery/quill-gallery-2.webp", s: "projects/quill_gallery/shadowbox.gif", f: "shadowbox.gif", n: "Quill Gallery", y: 2017, c: "Shadowbox view in Quill Gallery.", l: "projects/quill_gallery/quill_gallery.html", w: 700, h: 394, kb: 1628, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/amazon-1.webp", s: "projects/Amazon/Amazon_tool.jpg", f: "Amazon_tool.jpg", n: "Amazon Made For You", y: 2019, c: "Amazon Made For You — custom t-shirt design tool.", l: "projects/Amazon/amazon.html", w: 1427, h: 645, kb: 268, cats: ["web/mobile","fashion","3D"] },
+  { t: "images/thumbs/gallery/shoes-3.webp", s: "projects/shoes/Laurel_timelapse2.gif", f: "Laurel_timelapse2.gif", n: "3D Printed Shoes", y: 2013, c: "Time-lapse of the Laurel shoe being 3D printed.", l: "projects/shoes/shoes.html", w: 640, h: 360, kb: 3040, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/typeface-1.webp", s: "projects/typeface/typeface-screencap-1.jpg", f: "typeface-screencap-1.jpg", n: "Typeface", y: 2010, c: "Typeface — generating a font from facial features.", l: "projects/typeface/typeface.html", w: 1440, h: 900, kb: 63, cats: ["tools"] },
+  { t: "images/thumbs/gallery/hack-1.webp", s: "projects/hack/Hack Characters.jpg", f: "Hack Characters.jpg", n: "Hack", y: 2019, c: "Hack — characters that guide kids through coding lessons.", l: "projects/hack/hack.html", w: 1024, h: 600, kb: 128, cats: ["web/mobile","tools"] },
+  { t: "images/thumbs/gallery/viralnet-2.webp", s: "projects/viralnet/render0.png", f: "render0.png", n: "Viralnet", y: 2020, c: "Static render from the Viralnet visualization.", l: "projects/viralnet/viralnet.html", w: 1800, h: 1200, kb: 472, cats: ["tools","web/mobile","3D"] },
+  { t: "images/thumbs/gallery/constrvct-3.webp", s: "projects/constrvct/art_story.jpg", f: "art_story.jpg", n: "Constrvct", y: 2013, c: "A community story of designing a Constrvct dress.", l: "projects/constrvct/constrvct.html", w: 4752, h: 3168, kb: 3678, cats: ["fashion","web/mobile","tools","3D"] },
+  { t: "images/thumbs/gallery/codeland-2.webp", s: "projects/codeland/Color Lesson.jpg", f: "Color Lesson.jpg", n: "Coding Land", y: 2020, c: "Coding Land color lesson screen.", l: "projects/codeland/codeland.html", w: 1440, h: 1024, kb: 165, cats: ["web/mobile","tools"] },
+  { t: "images/thumbs/gallery/turtlelink-2.webp", s: "projects/turtlelink/seaworld3.jpg", f: "seaworld3.jpg", n: "SeaWorld TurtleLink", y: 2011, c: "Visitors interacting with the TurtleLink wall.", l: "projects/turtlelink/turtlelink.html", w: 940, h: 528, kb: 320, cats: ["spatial","hardware","3D"] },
+  { t: "images/thumbs/gallery/ddress-2.webp", s: "projects/ddress/dress1.jpg", f: "dress1.jpg", n: "D.dress", y: 2010, c: "A finished D.dress garment.", l: "projects/ddress/ddress.html", w: 945, h: 630, kb: 103, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/quill-5.webp", s: "projects/quill/Transform_poster.jpg", f: "Transform_poster.jpg", n: "Oculus Quill", y: 2016, c: "Transform tool for moving and scaling 3D drawings.", l: "projects/quill/quill.html", w: 733, h: 458, kb: 59, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/impulse-3.webp", s: "projects/impulse/powerboil.png", f: "powerboil.png", n: "Impulse Stove", y: 2024, c: "PowerBoil mode — boils water in under a minute via the 3kW battery.", l: "projects/impulse/impulse.html", w: 1026, h: 520, kb: 357, cats: ["hardware","tools"] },
+  { t: "images/thumbs/gallery/tales-4.webp", s: "projects/tales/compass.jpg", f: "compass.jpg", n: "Tales from the Galaxy’s Edge", y: 2021, c: "In-game compass for navigation in Tales.", l: "projects/tales/tales.html", w: 1440, h: 1440, kb: 308, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/tales-5.webp", s: "projects/tales/inventory_poster.jpg", f: "inventory_poster.jpg", n: "Tales from the Galaxy’s Edge", y: 2021, c: "Tales inventory grid layout.", l: "projects/tales/tales.html", w: 512, h: 512, kb: 233, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/quill-6.webp", s: "projects/quill/wesley.jpg", f: "wesley.jpg", n: "Oculus Quill", y: 2016, c: "Wesley Allsbrook drawing in Quill.", l: "projects/quill/quill.html", w: 950, h: 530, kb: 52, cats: ["spatial","tools","3D"] },
+  { t: "images/thumbs/gallery/biome-2.webp", s: "projects/biome/field_work.jpg", f: "field_work.jpg", n: "Biome", y: 2022, c: "Field testing Biome with foresters in Panama.", l: "projects/biome/biome.html", w: 450, h: 338, kb: 304, cats: ["web/mobile","spatial","tools"] },
+  { t: "images/thumbs/gallery/shoes-4.webp", s: "projects/shoes/shoe_butterfly.jpg", f: "shoe_butterfly.jpg", n: "3D Printed Shoes", y: 2013, c: "Butterfly-inspired generative shoe pattern.", l: "projects/shoes/shoes.html", w: 945, h: 630, kb: 57, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/n12-3.webp", s: "projects/n12/N12-bikini-seamless-detail1.jpg", f: "N12-bikini-seamless-detail1.jpg", n: "N12 Bikini", y: 2012, c: "Macro view of the printed link structure.", l: "projects/n12/n12.html", w: 945, h: 631, kb: 72, cats: ["fashion","3D"] },
+  { t: "images/thumbs/gallery/rose-3.webp", s: "projects/rose/generate-2.jpg", f: "generate-2.jpg", n: "Google Rose", y: 2014, c: "Generated dress variation from the Rose system.", l: "projects/rose/rose.html", w: 1381, h: 668, kb: 340, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/rose-4.webp", s: "projects/rose/rose_step2_poster.png", f: "rose_step2_poster.png", n: "Google Rose", y: 2014, c: "Step 2 of the Rose generation flow.", l: "projects/rose/rose.html", w: 848, h: 541, kb: 198, cats: ["fashion","tools","3D"] },
+  { t: "images/thumbs/gallery/constrvct-4.webp", s: "projects/constrvct/smithsonian.jpg", f: "smithsonian.jpg", n: "Constrvct", y: 2013, c: "Constrvct dress on display at the Cooper-Hewitt Smithsonian.", l: "projects/constrvct/constrvct.html", w: 2062, h: 1527, kb: 977, cats: ["fashion","web/mobile","tools","3D"] },
+  { t: "images/thumbs/gallery/constrvct-5.webp", s: "projects/constrvct/constrvct_community_designs1.jpg", f: "constrvct_community_designs1.jpg", n: "Constrvct", y: 2013, c: "A grid of dresses designed by the Constrvct community.", l: "projects/constrvct/constrvct.html", w: 1300, h: 804, kb: 716, cats: ["fashion","web/mobile","tools","3D"] },
+  { t: "images/thumbs/gallery/shapeways-2.webp", s: "projects/shapeways/vibe_white.jpg", f: "vibe_white.jpg", n: "Shapeways", y: 2012, c: "Vibe — a custom generated Soundcloud phone case.", l: "projects/shapeways/shapeways.html", w: 818, h: 545, kb: 57, cats: ["3D","web/mobile","tools"] },
+  { t: "images/thumbs/gallery/turtlelink-3.webp", s: "projects/turtlelink/seaworld5.jpg", f: "seaworld5.jpg", n: "SeaWorld TurtleLink", y: 2011, c: "TurtleLink wall featuring real sea turtle migration paths.", l: "projects/turtlelink/turtlelink.html", w: 940, h: 528, kb: 262, cats: ["spatial","hardware","3D"] },
+  { t: "images/thumbs/gallery/typeface-2.webp", s: "projects/typeface/typeface_poster.jpg", f: "typeface_poster.jpg", n: "Typeface", y: 2010, c: "Typeface project poster.", l: "projects/typeface/typeface.html", w: 800, h: 451, kb: 46, cats: ["tools"] },
+  { t: "images/thumbs/gallery/gestures-2.webp", s: "projects/gestures/Steering_Wheel_small.gif", f: "Steering_Wheel_small.gif", n: "VR Hand Gestures", y: 2020, c: "Two-handed steering wheel gesture.", l: "projects/gestures/gestures.html", w: 400, h: 400, kb: 2723, cats: ["spatial","3D"] },
+  { t: "images/thumbs/gallery/hack-2.webp", s: "projects/hack/hack_anim.gif", f: "hack_anim.gif", n: "Hack", y: 2019, c: "Animated character intro from the Hack educational platform.", l: "projects/hack/hack.html", w: 900, h: 601, kb: 3194, cats: ["web/mobile","tools"] },
+  { t: "images/thumbs/gallery/stagecraft-3.webp", s: "projects/stagecraft/components.jpg", f: "components.jpg", n: "ILM Stagecraft", y: 2021, c: "Stagecraft iPad app — virtual production component palette.", l: "projects/stagecraft/ilm.html", w: 2206, h: 1277, kb: 307, cats: ["tools","web/mobile"] },
+
+  // From art.html — the art & research pieces.
+  { t: "images/thumbs/art/colorandcraft-1.webp", s: "images/thumbs/Colorandcraft_c.webp", f: "Colorandcraft_c.webp", n: "Color & Craft", y: 2026, c: "Vibrant DIY plant kits with video tutorials", l: "https://colorandcraft.co", w: 900, h: 506, kb: 40, cats: ["craft"] },
+  { t: "images/thumbs/art/colorandcraft-2.webp", s: "projects/colorandcraft/maranta hero.jpg", f: "maranta hero.jpg", n: "Color & Craft", y: 2026, c: "Vibrant DIY plant kits with video tutorials", l: "https://colorandcraft.co", w: 3002, h: 2250, kb: 5655, cats: ["craft"] },
+  { t: "images/thumbs/art/colorandcraft-3.webp", s: "projects/colorandcraft/brevirimosa close up.jpg", f: "brevirimosa close up.jpg", n: "Color & Craft", y: 2026, c: "Vibrant DIY plant kits with video tutorials", l: "https://colorandcraft.co", w: 4284, h: 4284, kb: 2961, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-1.webp", s: "projects/art/seed.jpg", f: "seed.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 802, kb: 246, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-2.webp", s: "projects/art/spikey.jpg", f: "spikey.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 802, kb: 211, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-3.webp", s: "projects/art/lichen.jpg", f: "lichen.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 801, kb: 216, cats: ["craft"] },
+  { t: "images/thumbs/art/seeds-4.webp", s: "projects/art/holding-spikey-cup.jpg", f: "holding-spikey-cup.jpg", n: "Seed & lichen", y: 2026, c: "semi-functional ceramics in organic forms", l: null, w: 1200, h: 802, kb: 245, cats: ["craft"] },
+  { t: "images/thumbs/art/data-collection-1.webp", s: "projects/data_collection/gallery.jpg", f: "gallery.jpg", n: "Data Collection", y: 2014, c: "Exploring the ubiquity of personal data logging and privacy", l: null, w: 4032, h: 3024, kb: 1018, cats: ["fashion"] },
+  { t: "images/thumbs/art/data-collection-2.webp", s: "projects/data_collection/data-knitting.jpg", f: "data-knitting.jpg", n: "Data Collection", y: 2014, c: "Exploring the ubiquity of personal data logging and privacy", l: null, w: 1000, h: 750, kb: 134, cats: ["fashion"] },
+  { t: "images/thumbs/art/data-collection-3.webp", s: "projects/data_collection/gina-shirt.jpg", f: "gina-shirt.jpg", n: "Data Collection", y: 2014, c: "Exploring the ubiquity of personal data logging and privacy", l: null, w: 1440, h: 1920, kb: 284, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-1.webp", s: "projects/illuminate/illuminate-1.jpg", f: "illuminate-1.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 1200, h: 800, kb: 91, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-2.webp", s: "projects/illuminate/illuminate-2.jpg", f: "illuminate-2.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 783, h: 1200, kb: 160, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-3.webp", s: "projects/illuminate/RR1.022c.jpg", f: "RR1.022c.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 2532, h: 3444, kb: 3086, cats: ["fashion"] },
+  { t: "images/thumbs/art/illuminate-4.webp", s: "projects/illuminate/RR1031.jpg", f: "RR1031.jpg", n: "Illuminate", y: 2017, c: "Modern dance performance about the Big Bang, collab with Indelible Dance", l: null, w: 787, h: 1200, kb: 174, cats: ["fashion"] },
+  { t: "images/thumbs/art/runes-1.webp", s: "projects/art/RunesOS.png", f: "RunesOS.png", n: "RUNES", y: 2026, c: "a tangible interface for an agentic OS, work in progress concept", l: null, w: 768, h: 1376, kb: 953, cats: ["interactive","craft","hardware"] },
+  { t: "images/thumbs/art/devices-1.webp", s: "projects/art/devices/nokia-porcelain.jpg", f: "nokia-porcelain.jpg", n: "Porcelain Devices", y: 2026, c: "concept sketches of devices made to last a lifetime", l: null, w: 1200, h: 857, kb: 158, cats: ["hardware","craft"] },
+  { t: "images/thumbs/art/devices-2.webp", s: "projects/art/devices/ipod-porcelain.jpg", f: "ipod-porcelain.jpg", n: "Porcelain Devices", y: 2026, c: "concept sketches of devices made to last a lifetime", l: null, w: 1200, h: 857, kb: 178, cats: ["hardware","craft"] },
+  { t: "images/thumbs/art/devices-3.webp", s: "projects/art/devices/gameboy-porcelain.jpg", f: "gameboy-porcelain.jpg", n: "Porcelain Devices", y: 2026, c: "concept sketches of devices made to last a lifetime", l: null, w: 1200, h: 857, kb: 134, cats: ["hardware","craft"] },
+  { t: "images/thumbs/art/vr-gestures-1.webp", s: "projects/gestures/hands_sketch.png", f: "hands_sketch.png", n: "VR Hand Gestures", y: 2020, c: "Exploration prototypes using hand tracking on a Quest", l: "projects/gestures/gestures.html", w: 1500, h: 985, kb: 323, cats: ["interactive"] },
+  { t: "images/thumbs/art/vr-gestures-2.webp", s: "projects/gestures/Picture_zoom_small.gif", f: "Picture_zoom_small.gif", n: "VR Hand Gestures", y: 2020, c: "Exploration prototypes using hand tracking on a Quest", l: "projects/gestures/gestures.html", w: 500, h: 500, kb: 2674, cats: ["interactive"] },
+  { t: "images/thumbs/art/lore-1.webp", s: "projects/lore/SF map.jpg", f: "SF map.jpg", n: "Local Lore", y: 2019, c: "A location-based scavenger hunt game set in San Francisco and Oakland.", l: "projects/lore/lore.html", w: 961, h: 720, kb: 240, cats: ["interactive"] },
+  { t: "images/thumbs/art/lore-2.webp", s: "projects/lore/Lore_main.jpg", f: "Lore_main.jpg", n: "Local Lore", y: 2019, c: "A location-based scavenger hunt game set in San Francisco and Oakland.", l: "projects/lore/lore.html", w: 1660, h: 882, kb: 194, cats: ["interactive"] },
+  { t: "images/thumbs/art/lore-3.webp", s: "projects/lore/mobile sketch 2.jpg", f: "mobile sketch 2.jpg", n: "Local Lore", y: 2019, c: "A location-based scavenger hunt game set in San Francisco and Oakland.", l: "projects/lore/lore.html", w: 1053, h: 984, kb: 292, cats: ["interactive"] },
+  { t: "images/thumbs/art/typeface-1.webp", s: "projects/typeface/typeface-screencap-3.jpg", f: "typeface-screencap-3.jpg", n: "Typeface", y: 2011, c: "Type + Facial Recognition", l: "projects/typeface/typeface.html", w: 1440, h: 900, kb: 63, cats: ["interactive"] },
+  { t: "images/thumbs/art/n12-1.webp", s: "projects/n12/N12-hallway1.jpg", f: "N12-hallway1.jpg", n: "N12 Bikini", y: 2013, c: "3D printed textile", l: "projects/n12/n12.html", w: 945, h: 630, kb: 66, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/n12-2.webp", s: "projects/n12/N12-white_detail.jpg", f: "N12-white_detail.jpg", n: "N12 Bikini", y: 2013, c: "3D printed textile", l: "projects/n12/n12.html", w: 945, h: 630, kb: 57, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/daphne-1.webp", s: "projects/art/daphne-bracelet.jpg", f: "daphne-bracelet.jpg", n: "Daphne wearable tech jewelry", y: 2014, c: "concept sketches", l: null, w: 1600, h: 1019, kb: 220, cats: ["fashion","hardware"] },
+  { t: "images/thumbs/art/daphne-2.webp", s: "projects/art/daphne-earbuds1.jpg", f: "daphne-earbuds1.jpg", n: "Daphne wearable tech jewelry", y: 2014, c: "concept sketches", l: null, w: 1200, h: 675, kb: 122, cats: ["fashion","hardware"] },
+  { t: "images/thumbs/art/shoes-1.webp", s: "projects/shoes/Laurel-pump.jpg", f: "Laurel-pump.jpg", n: "3D Printed Shoes", y: 2014, c: "Laurel pump", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 28, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-2.webp", s: "projects/shoes/Strvct-wedge-black.jpg", f: "Strvct-wedge-black.jpg", n: "3D Printed Shoes", y: 2014, c: "Strvct wedge", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 23, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-3.webp", s: "projects/shoes/shoe_black_main.jpg", f: "shoe_black_main.jpg", n: "3D Printed Shoes", y: 2014, c: "Black shoe", l: "projects/shoes/shoes.html", w: 945, h: 630, kb: 73, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/shoes-4.webp", s: "projects/shoes/Laurel-Tree-sandal.jpg", f: "Laurel-Tree-sandal.jpg", n: "3D Printed Shoes", y: 2014, c: "Laurel tree sandal", l: "projects/shoes/shoes.html", w: 600, h: 400, kb: 29, cats: ["fashion","digital-fabrication"] },
+  { t: "images/thumbs/art/constrvct-1.webp", s: "projects/constrvct/smithsonian_edit.jpg", f: "smithsonian_edit.jpg", n: "CONSTRVCT", y: 2014, c: "Beautiful Users show at Smithsonian Cooper-Hewitt", l: "projects/constrvct/constrvct.html", w: 1189, h: 880, kb: 276, cats: ["fashion"] },
+  { t: "images/thumbs/art/constrvct-2.webp", s: "projects/constrvct/felicia-constrvct-dress.png", f: "felicia-constrvct-dress.png", n: "CONSTRVCT", y: 2014, c: "Felicia Day Constrvct dress", l: "projects/constrvct/constrvct.html", w: 800, h: 800, kb: 831, cats: ["fashion"] },
+  { t: "images/thumbs/art/constrvct-3.webp", s: "projects/constrvct/nervous-print-pattern.jpg", f: "nervous-print-pattern.jpg", n: "CONSTRVCT", y: 2014, c: "Nervous System print pattern", l: "projects/constrvct/constrvct.html", w: 1440, h: 1100, kb: 434, cats: ["fashion"] },
+  { t: "images/thumbs/art/ddress-1.webp", s: "projects/ddress/Ddress-selected2.jpg", f: "Ddress-selected2.jpg", n: "D.dress", y: 2011, c: "Computational couture", l: "projects/ddress/ddress.html", w: 945, h: 532, kb: 83, cats: ["fashion"] },
+  { t: "images/thumbs/art/ddress-2.webp", s: "projects/ddress/Ddress-selected3.jpg", f: "Ddress-selected3.jpg", n: "D.dress", y: 2011, c: "Computational couture", l: "projects/ddress/ddress.html", w: 945, h: 532, kb: 80, cats: ["fashion"] },
+  { t: "images/thumbs/art/modakit-1.webp", s: "projects/modakit/MODA_slides2.jpg", f: "MODA_slides2.jpg", n: "ModaKit", y: 2014, c: "Modular prototyping system for wearable tech", l: "projects/modakit/modakit.html", w: 792, h: 612, kb: 78, cats: ["fashion","interactive","hardware"] },
+  { t: "images/thumbs/art/modakit-2.webp", s: "projects/modakit/ModaKit.png", f: "ModaKit.png", n: "ModaKit", y: 2014, c: "Modular prototyping system for wearable tech", l: "projects/modakit/modakit.html", w: 600, h: 400, kb: 130, cats: ["fashion","interactive","hardware"] },
+  { t: "images/thumbs/art/dandelion-1.webp", s: "projects/dandelion/dandelion1.jpg", f: "dandelion1.jpg", n: "Dandelion", y: 2011, c: "Wind power generating wearable sculpture", l: null, w: 500, h: 333, kb: 34, cats: ["fashion","hardware","craft"] },
+  { t: "images/thumbs/art/dandelion-2.webp", s: "projects/dandelion/dandelion2a.jpg", f: "dandelion2a.jpg", n: "Dandelion", y: 2011, c: "Wind power generating wearable sculpture", l: null, w: 499, h: 571, kb: 75, cats: ["fashion","hardware","craft"] },
+  { t: "images/thumbs/art/dandelion-3.webp", s: "projects/dandelion/dandelion4.jpg", f: "dandelion4.jpg", n: "Dandelion", y: 2011, c: "Wind power generating wearable sculpture", l: null, w: 500, h: 333, kb: 47, cats: ["fashion","hardware","craft"] },
+  { t: "images/thumbs/art/viralnet-1.webp", s: "projects/viralnet/Nodes_Gradual_small.gif", f: "Nodes_Gradual_small.gif", n: "Viralnet", y: 2020, c: "3D visualization of virus genomes", l: "projects/viralnet/viralnet.html", w: 500, h: 500, kb: 13373, cats: ["data","interactive"] },
+  { t: "images/thumbs/art/viralnet-2.webp", s: "projects/viralnet/render10.png", f: "render10.png", n: "Viralnet", y: 2020, c: "3D visualization of virus genomes", l: "projects/viralnet/viralnet.html", w: 1800, h: 1200, kb: 804, cats: ["data","interactive"] },
+  { t: "images/thumbs/art/viralnet-3.webp", s: "projects/viralnet/render11.png", f: "render11.png", n: "Viralnet", y: 2020, c: "3D visualization of virus genomes", l: "projects/viralnet/viralnet.html", w: 1800, h: 1200, kb: 1349, cats: ["data","interactive"] },
+  { t: "images/thumbs/art/westfield-1.webp", s: "projects/westfield/sculpture_front.jpg", f: "sculpture_front.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 608, kb: 171, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-2.webp", s: "projects/westfield/sculpture_2.jpg", f: "sculpture_2.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 622, kb: 187, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-3.webp", s: "projects/westfield/sculpture_3.jpg", f: "sculpture_3.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 611, kb: 215, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-4.webp", s: "projects/westfield/sculpture_night1.jpg", f: "sculpture_night1.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 950, h: 655, kb: 804, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-5.webp", s: "projects/westfield/fabrication1.jpg", f: "fabrication1.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 2880, h: 2160, kb: 1053, cats: ["sculpture","digital-fabrication"] },
+  { t: "images/thumbs/art/westfield-6.webp", s: "projects/westfield/fabrication3.jpg", f: "fabrication3.jpg", n: "Westfield", y: 2015, c: "Concept for large scale outdoor sculpture", l: "projects/westfield/westfield.html", w: 2880, h: 2160, kb: 1065, cats: ["sculpture","digital-fabrication"] },
+];
+
+
+
+
+const FILES = [
+  { p: "classic.html", n: "Portfolio", k: "Page", s: 14489 },
+  { p: "timeline.html", n: "Timeline", k: "Page", s: 23085 },
+  { p: "images.html", n: "Images", k: "Page", s: 29211 },
+  { p: "index.html", n: "Canvas", k: "Page", s: 48294 },
+  { p: "projects/Amazon/amazon.html", n: "Amazon Made For You", k: "Project", s: 6149 },
+  { p: "projects/PoeMobile", n: "PoeMobile", k: "Folder", s: 5 },
+  { p: "projects/ar_ideas/ar_ideas.html", n: "AR Tests", k: "Project", s: 2642 },
+  { p: "projects/art", n: "art", k: "Folder", s: 15 },
+  { p: "projects/biome/biome.html", n: "Biome", k: "Project", s: 13297 },
+  { p: "projects/codeland/codeland.html", n: "Portfolio", k: "Project", s: 8033 },
+  { p: "projects/colorandcraft", n: "colorandcraft", k: "Folder", s: 7 },
+  { p: "projects/constrvct/constrvct.html", n: "CONSTRVCT", k: "Project", s: 8838 },
+  { p: "projects/dandelion", n: "dandelion", k: "Folder", s: 14 },
+  { p: "projects/data_collection", n: "data_collection", k: "Folder", s: 14 },
+  { p: "projects/ddress/ddress.html", n: "Portfolio", k: "Project", s: 5116 },
+  { p: "projects/gestures/gestures.html", n: "VR Hand Gestures", k: "Project", s: 7539 },
+  { p: "projects/hack/hack.html", n: "Portfolio : Hack", k: "Project", s: 9883 },
+  { p: "projects/hack/hack_presentation.html", n: "Hack Presentation", k: "Project", s: 4775 },
+  { p: "projects/ig88/ig88.html", n: "Portfolio", k: "Project", s: 6847 },
+  { p: "projects/illuminate", n: "illuminate", k: "Folder", s: 7 },
+  { p: "projects/impulse/impulse.html", n: "Impulse Stove", k: "Project", s: 7644 },
+  { p: "projects/kodolab", n: "kodolab", k: "Folder", s: 6 },
+  { p: "projects/lore/lore.html", n: "Portfolio", k: "Project", s: 2683 },
+  { p: "projects/modakit/modakit.html", n: "ModaKit", k: "Project", s: 3072 },
+  { p: "projects/n12/n12.html", n: "Portfolio", k: "Project", s: 4835 },
+  { p: "projects/ppc", n: "ppc", k: "Folder", s: 8 },
+  { p: "projects/quill/quill.html", n: "Quill", k: "Project", s: 8549 },
+  { p: "projects/quill_gallery/quill_gallery.html", n: "Portfolio", k: "Project", s: 5021 },
+  { p: "projects/rose/rose.html", n: "Portfolio", k: "Project", s: 6864 },
+  { p: "projects/runes", n: "runes", k: "Folder", s: 2 },
+  { p: "projects/shapeways/shapeways.html", n: "Portfolio", k: "Project", s: 6884 },
+  { p: "projects/shield/shield.html", n: "Portfolio", k: "Project", s: 8857 },
+  { p: "projects/shoes/shoes.html", n: "3D Printed Shoes", k: "Project", s: 8618 },
+  { p: "projects/sols/sols.html", n: "Portfolio", k: "Project", s: 3831 },
+  { p: "projects/stagecraft/ilm.html", n: "ILM Stagecraft", k: "Project", s: 3952 },
+  { p: "projects/storyboard/storyboard.html", n: "Portfolio", k: "Project", s: 3484 },
+  { p: "projects/tales/tales.html", n: "Star Wars: Tales From the Galaxy's Edge", k: "Project", s: 10625 },
+  { p: "projects/test/index.html", n: "Color & Craft Tutorial", k: "Project", s: 6185 },
+  { p: "projects/turtlelink/turtlelink.html", n: "Portfolio", k: "Project", s: 5482 },
+  { p: "projects/typeface/typeface.html", n: "Portfolio", k: "Project", s: 3744 },
+  { p: "projects/viralnet/viralnet.html", n: "Portfolio", k: "Project", s: 4481 },
+  { p: "projects/westfield/westfield.html", n: "Portfolio", k: "Project", s: 4836 },
+  { p: "projects/yuniku", n: "yuniku", k: "Folder", s: 3 },
+  { p: "projects/zines", n: "zines", k: "Folder", s: 1 },
+];
+
+const CATS = { all: 'All', '3d': '3D', mobile: 'Mobile', web: 'Web', hardware: 'Hardware' };
+
+/* ═══════════════════════════════════════════════════════════════
+   Canvas: pan + zoom-free infinite world
+   ═══════════════════════════════════════════════════════════════ */
+const desk = document.getElementById('desk');
+const world = document.getElementById('world');
+let pan = { x: 0, y: 0 };
+let zoom = 1;
+let touched = false; // set once the user pans or zooms by hand
+let pinchZoom = true; // Mac trackpad: pinch zooms (on by default)
+let trackpad = false; // Mac trackpad: two-finger scroll pans instead of zooming
+const ZMIN = 0.3, ZMAX = 2.5;
+let zTop = 10;
+const isSmall = () => window.innerWidth < 700;
+
+function applyPan() {
+  world.style.transform = `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`;
+  drawDots();
+  desk.style.backgroundPosition = `${pan.x}px ${pan.y}px`;
+}
+/* The dot grid is part of the paper, so spacing tracks the zoom continuously and
+   the dots scale with it — no jumps, and they never bulk up as you zoom out. */
+function drawDots() {
+  const step = 24 * zoom;
+  const r = Math.min(1.5, Math.max(0.35, 0.9 * zoom));
+  desk.style.backgroundImage = `radial-gradient(var(--dot) ${r.toFixed(2)}px, transparent ${(r + 0.4).toFixed(2)}px)`;
+  desk.style.backgroundSize = `${step}px ${step}px`;
+}
+/* Zoom about a point in screen coordinates. */
+function zoomAt(cx, cy, factor) {
+  touched = true;
+  const next = Math.min(ZMAX, Math.max(ZMIN, zoom * factor));
+  if (next === zoom) return;
+  // keep the world point under the cursor fixed
+  pan.x = cx - (cx - pan.x) * (next / zoom);
+  pan.y = cy - (cy - pan.y) * (next / zoom);
+  zoom = next;
+  applyPan();
+  const z = document.getElementById('zoomPill');
+  if (z) z.textContent = Math.round(zoom * 100) + '%';
+}
+/* The scrollable element under the pointer, if it can actually scroll that way. */
+function scrollableUnder(e) {
+  let n = e.target;
+  while (n && n !== world && n !== desk && n.nodeType === 1) {
+    const st = getComputedStyle(n);
+    const canY = /auto|scroll/.test(st.overflowY) && n.scrollHeight > n.clientHeight + 1;
+    const canX = /auto|scroll/.test(st.overflowX) && n.scrollWidth > n.clientWidth + 1;
+    if (canY || canX) return n;
+    n = n.parentNode;
+  }
+  return null;
+}
+(function initPan() {
+  let start = null;
+  desk.addEventListener('pointerdown', e => {
+    if (e.target !== desk && e.target !== world) return;
+    touched = true;
+    start = { x: e.clientX - pan.x, y: e.clientY - pan.y };
+    desk.classList.add('panning');
+    desk.setPointerCapture(e.pointerId);
+  });
+  desk.addEventListener('pointermove', e => {
+    if (!start) return;
+    pan.x = e.clientX - start.x; pan.y = e.clientY - start.y; applyPan();
+  });
+  const end = () => { start = null; desk.classList.remove('panning'); };
+  desk.addEventListener('pointerup', end);
+  desk.addEventListener('pointercancel', end);
+  desk.addEventListener('wheel', e => {
+    // Hovering a scrollable window body? Scroll that instead of zooming.
+    const sc = scrollableUnder(e);
+    if (sc) {
+      e.preventDefault();
+      sc.scrollTop += e.deltaY / zoom;
+      sc.scrollLeft += e.deltaX / zoom;
+      return;
+    }
+    e.preventDefault();
+    // A Mac trackpad pinch arrives as a wheel event with ctrlKey set.
+    const pinch = e.ctrlKey || e.metaKey;
+    if (pinch && !pinchZoom) return;
+    if (trackpad && !pinch) { touched = true; pan.x -= e.deltaX; pan.y -= e.deltaY; applyPan(); return; }
+    const d = (e.deltaMode === 1 ? e.deltaY * 16 : e.deltaY) * (pinch ? 3 : 1);
+    zoomAt(e.clientX, e.clientY, Math.exp(-d * 0.0015));
+  }, { passive: false });
+})();
+
+document.addEventListener('dragstart', e => e.preventDefault());
+
+/* ═══════════════════════════════════════════════════════════════
+   Sounds — tiny synthesized cues, no audio files. Quiet by design;
+   the audio context wakes on the first click, as browsers require.
+   ═══════════════════════════════════════════════════════════════ */
+let soundOn = true;
+try { soundOn = localStorage.getItem('sound') !== 'off'; } catch {}
+let actx = null, amaster = null;
+function wakeAudio() {
+  if (actx) { if (actx.state === 'suspended') actx.resume(); return; }
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return;
+  actx = new AC();
+  amaster = actx.createGain(); amaster.gain.value = 0.16; amaster.connect(actx.destination);
+}
+document.addEventListener('pointerdown', wakeAudio, { capture: true, passive: true });
+function tone(f0, f1, dur, type = 'sine', vol = 1, delay = 0) {
+  const t = actx.currentTime + delay;
+  const o = actx.createOscillator(), g = actx.createGain();
+  o.type = type;
+  o.frequency.setValueAtTime(f0, t);
+  o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol, t + 0.008);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(amaster);
+  o.start(t); o.stop(t + dur + 0.02);
+}
+const SFX = {
+  open:  () => { tone(440, 660, 0.12, 'sine', 0.5); tone(660, 880, 0.1, 'sine', 0.25, 0.04); },
+  close: () => tone(620, 360, 0.12, 'sine', 0.4),
+  tick:  () => tone(1900, 1500, 0.025, 'triangle', 0.25),
+  check: () => { tone(880, 880, 0.05, 'triangle', 0.3); tone(1320, 1320, 0.08, 'triangle', 0.25, 0.05); },
+};
+function sfx(name) {
+  if (!soundOn || !actx || actx.state !== 'running') return;
+  try { SFX[name](); } catch {}
+}
+// Small UI controls get a soft tick.
+document.addEventListener('click', e => {
+  if (e.target.closest('.switch, .seg button, .filters button, .app .side button')) sfx('tick');
+}, true);
+
+/* Generic drag for anything with a handle */
+function makeDraggable(el, handle, onStart) {
+  let start = null;
+  handle.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    if (e.target.closest('a, button, input, .lights, .resize')) return;
+    start = { x: e.clientX, y: e.clientY, l: el.offsetLeft, t: el.offsetTop };
+    handle.setPointerCapture(e.pointerId);
+    onStart && onStart();
+    e.stopPropagation();
+  });
+  handle.addEventListener('pointermove', e => {
+    if (!start) return;
+    el.style.left = (start.l + (e.clientX - start.x) / zoom) + 'px';
+    el.style.top = (start.t + (e.clientY - start.y) / zoom) + 'px';
+  });
+  const end = () => { start = null; el.classList.remove('lift'); };
+  handle.addEventListener('pointerup', end);
+  handle.addEventListener('pointercancel', end);
+  handle.addEventListener('dblclick', e => {
+    if (e.target.closest('a, button, input, .lights, .resize')) return;
+    frameItem(el);
+  });
+}
+
+/* Double-click a window's title bar or a loose item to frame it; do it again
+   (without moving anything in between) to go back to the whole desk. */
+let framed = null;
+function frameItem(el) {
+  if (framed && framed.el === el && framed.x === pan.x && framed.y === pan.y && framed.z === zoom
+      && framed.l === el.offsetLeft && framed.t === el.offsetTop) {
+    framed = null; touched = false; fitContent(true); return;
+  }
+  const top = 56 + 24, bottom = 88 + 24, padX = 48; // menu bar + dock, plus air
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const w = el.offsetWidth, h = el.offsetHeight;
+  zoom = Math.min(1.25, Math.max(ZMIN, Math.min((vw - padX * 2) / w, (vh - top - bottom) / h)));
+  pan.x = Math.round(vw / 2 - (el.offsetLeft + w / 2) * zoom);
+  pan.y = Math.round(top + (vh - top - bottom) / 2 - (el.offsetTop + h / 2) * zoom);
+  touched = true;
+  world.style.transition = 'transform 0.4s cubic-bezier(.2,.7,.2,1)';
+  applyPan();
+  setTimeout(() => world.style.transition = '', 450);
+  framed = { el, x: pan.x, y: pan.y, z: zoom, l: el.offsetLeft, t: el.offsetTop };
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Windows
+   ═══════════════════════════════════════════════════════════════ */
+const wins = {};
+function focusWin(w) {
+  document.querySelectorAll('.win.active').forEach(x => x.classList.remove('active'));
+  w.classList.add('active');
+  w.style.zIndex = ++zTop;
+}
+function createWindow({ id, title, showTitle, x, y, w, h, content, noscroll, fullside, onOpen }) {
+  const el = document.createElement('div');
+  el.className = 'win' + (fullside ? ' fullside' : '');
+  el.id = 'win-' + id;
+  el.style.cssText = `left:${x}px; top:${y}px; width:${w}px; height:${h === 'auto' ? 'auto' : h + 'px'}; z-index:${++zTop}`;
+  el.innerHTML = `
+    <div class="titlebar" title="${title}">
+      <div class="lights"><b class="c" title="Close"></b><b class="m" title="Minimize"></b><b class="z" title="Zoom"></b></div>
+      ${showTitle ? `<span class="wt">${title}</span>` : ''}
+    </div>
+    <div class="body ${noscroll ? 'noscroll' : ''}"></div>
+    <div class="resize"></div>`;
+  const body = el.querySelector('.body');
+  if (typeof content === 'string') body.innerHTML = content; else body.appendChild(content);
+  world.appendChild(el);
+
+  makeDraggable(el, el.querySelector('.titlebar'), () => focusWin(el));
+  el.addEventListener('pointerdown', () => focusWin(el), true);
+  el.querySelector('.lights .c').addEventListener('click', () => hideWin(id));
+  el.querySelector('.lights .m').addEventListener('click', () => hideWin(id));
+  el.querySelector('.lights .z').addEventListener('click', () => {
+    const big = el.dataset.big === '1';
+    if (big) { el.style.width = el.dataset.w; el.style.height = el.dataset.h; el.dataset.big = '0'; }
+    else { el.dataset.w = el.style.width; el.dataset.h = el.style.height; el.style.width = Math.min(w * 1.5, window.innerWidth - 40) + 'px'; if (h !== 'auto') el.style.height = Math.min(h * 1.5, window.innerHeight - 100) + 'px'; el.dataset.big = '1'; }
+  });
+  // resize
+  const rz = el.querySelector('.resize');
+  let rs = null;
+  rz.addEventListener('pointerdown', e => { rs = { x: e.clientX, y: e.clientY, w: el.offsetWidth, h: el.offsetHeight }; rz.setPointerCapture(e.pointerId); e.stopPropagation(); });
+  rz.addEventListener('pointermove', e => { if (!rs) return; el.style.width = Math.max(240, rs.w + (e.clientX - rs.x) / zoom) + 'px'; el.style.height = Math.max(160, rs.h + (e.clientY - rs.y) / zoom) + 'px'; });
+  rz.addEventListener('pointerup', () => rs = null);
+
+  wins[id] = { el, onOpen, home: { x, y } };
+  onOpen && onOpen(el);
+  return el;
+}
+function hideWin(id) { wins[id].el.classList.add('hidden'); sfx('close'); syncDock(); }
+function showWin(id) {
+  const w = wins[id];
+  const el = w.el;
+  if (!el.classList.contains('hidden')) { focusWin(el); centerOn(el); return; }
+  el.classList.remove('hidden');
+  sfx('open');
+  w.place && w.place(el); // some windows open where the visitor is looking
+  focusWin(el);
+  centerOn(el);
+  w.onShow && w.onShow(el);
+  syncDock();
+}
+function toggleWin(id) { wins[id].el.classList.contains('hidden') ? showWin(id) : hideWin(id); }
+function centerOn(el) {
+  // Pan so the window is visible on screen (only if off-screen).
+  const r = el.getBoundingClientRect();
+  const vw = window.innerWidth, vh = window.innerHeight;
+  if (r.left > 40 && r.top > 50 && r.right < vw - 40 && r.bottom < vh - 80) return;
+  pan.x = Math.round((vw - el.offsetWidth * zoom) / 2 - el.offsetLeft * zoom);
+  pan.y = Math.round((vh - el.offsetHeight * zoom) / 2 - el.offsetTop * zoom);
+  world.style.transition = 'transform 0.4s cubic-bezier(.2,.7,.2,1)';
+  applyPan();
+  setTimeout(() => world.style.transition = '', 450);
+}
+
+/* Bounding box of everything on the board, in world coordinates. */
+function contentBounds() {
+  const items = world.querySelectorAll('.win:not(.hidden), .loose');
+  let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  items.forEach(el => {
+    const l = el.offsetLeft, t = el.offsetTop;
+    x0 = Math.min(x0, l); y0 = Math.min(y0, t);
+    x1 = Math.max(x1, l + el.offsetWidth); y1 = Math.max(y1, t + el.offsetHeight);
+  });
+  if (!isFinite(x0)) return null;
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}
+/* Pick a zoom + pan that frames the board's width in the current window. */
+function fitContent(animate) {
+  const b = contentBounds();
+  if (!b) return;
+  const padX = 32, top = 56, bottom = 88; // menu bar + dock
+  const vw = window.innerWidth, vh = window.innerHeight;
+  // On phones, framing the whole board would make it unreadable — frame the
+  // widest window instead and let the rest be reached by panning.
+  const wide = isSmall() ? Math.max(...[...world.querySelectorAll('.win:not(.hidden)')].map(el => el.offsetWidth)) : b.w;
+  // On desktop, fill the width and anchor to the top; the lower windows can
+  // run off the bottom edge and be reached by panning.
+  const fit = isSmall() ? (vw - padX) / wide : (vw * 0.9) / b.w;
+  zoom = Math.min(ZMAX, Math.max(ZMIN, Math.min(fit, 1)));
+  if (isSmall()) {
+    const el = wins.about.el;
+    pan.x = Math.round((vw - el.offsetWidth * zoom) / 2 - el.offsetLeft * zoom);
+    pan.y = Math.round(top - el.offsetTop * zoom);
+    if (animate) world.style.transition = 'transform 0.4s cubic-bezier(.2,.7,.2,1)';
+    applyPan();
+    if (animate) setTimeout(() => world.style.transition = '', 450);
+    return;
+  }
+  pan.x = Math.round((vw - b.w * zoom) / 2 - b.x * zoom);
+  pan.y = Math.round(top + 20 - b.y * zoom);
+  if (animate) world.style.transition = 'transform 0.4s cubic-bezier(.2,.7,.2,1)';
+  applyPan();
+  if (animate) setTimeout(() => world.style.transition = '', 450);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: About (Readme)
+   ═══════════════════════════════════════════════════════════════ */
+function aboutContent() {
+  return `<div class="about">
+    <div class="row">
+      <img src="images/2025_mary.jpg" alt="Mary Huang">
+      <div><b style="font-size:18px">Mary Huang</b><small>San Francisco Bay Area</small></div>
+    </div>
+    <h1>I design and build 0&#8239;→&#8239;1 interfaces for new kinds of technology.</h1>
+    <p>I've worked on frontier technology experiences for 10+ years, across over a dozen new launches at startups, big companies, and studios.</p>
+    <p>I architect core interaction principles, distill complexity into elegant systems, and figure out all the messy connecting bits to ship. I've always been a designer who can code, and now agentic coding has become core to my practice.</p>
+    <p>Let's seek the bold visions of what technology can be.</p>
+    <div class="links">
+      <a href="mailto:hello@mary-huang.com">Email</a>
+      <a href="https://www.linkedin.com/in/maryhuang1/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/rhymeandreason" target="_blank" rel="noopener">GitHub</a>
+      <a href="classic.html">Classic site</a>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Daily Note (a working recreation)
+   ═══════════════════════════════════════════════════════════════ */
+function dailyContent() {
+  const root = document.createElement('div');
+  root.className = 'daily';
+  const now = new Date();
+  const weekday = now.toLocaleDateString('en-US', { weekday: 'long' });
+  const dateStr = now.toLocaleDateString('en-US', { month: 'long', day: 'numeric' });
+  let tasks = [
+    { t: 'Water plants', d: false },
+    { t: 'Brainstorm how AI can be about human interaction instead of automation', d: false },
+    { t: 'Update website', d: true },
+    { t: 'Ship a biology lab for the browser', d: true },
+    { t: 'Say hi → hello@mary-huang.com', d: false },
+  ];
+
+  const check = '<i class="ph-bold ph-check"></i>';
+  const list = document.createElement('ul');
+  const render = () => {
+    list.innerHTML = '';
+    tasks.forEach((task, i) => {
+      const li = document.createElement('li');
+      li.className = task.d ? 'done' : '';
+      li.innerHTML = `<div class="box">${check}</div><span></span>`;
+      li.querySelector('span').textContent = task.t;
+      li.addEventListener('click', () => { task.d = !task.d; sfx(task.d ? 'check' : 'tick'); render(); });
+      list.appendChild(li);
+    });
+  };
+  render();
+
+  // calendar
+  const y = now.getFullYear(), m = now.getMonth();
+  const first = new Date(y, m, 1).getDay();
+  const dim = new Date(y, m + 1, 0).getDate();
+  const prevDim = new Date(y, m, 0).getDate();
+  let cells = '';
+  'SMTWTFS'.split('').forEach(d => cells += `<div class="h">${d}</div>`);
+  for (let i = first - 1; i >= 0; i--) cells += `<div class="d o">${prevDim - i}</div>`;
+  for (let d = 1; d <= dim; d++) cells += `<div class="d ${d === now.getDate() ? 'today' : ''}">${d}</div>`;
+  const rem = (7 - ((first + dim) % 7)) % 7;
+  for (let d = 1; d <= rem; d++) cells += `<div class="d o">${d}</div>`;
+
+  root.innerHTML = `<h2>${weekday},<br>${dateStr}</h2>`;
+  root.appendChild(list);
+  const add = document.createElement('div');
+  add.className = 'add';
+  add.innerHTML = `<span style="font-size:18px">+</span><input placeholder="Add a task and press Enter…">`;
+  add.querySelector('input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.target.value.trim()) { tasks.push({ t: e.target.value.trim(), d: false }); e.target.value = ''; render(); }
+  });
+  root.appendChild(add);
+  const cal = document.createElement('div');
+  cal.className = 'cal';
+  cal.innerHTML = `<h3>${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</h3><div class="grid">${cells}</div>`;
+  root.appendChild(cal);
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Git Pulse (punchcard of commits; dots keep arriving)
+   ═══════════════════════════════════════════════════════════════ */
+/* Real contribution counts from my GitHub profile graph, via a public mirror
+   of it (GitHub's own API needs a token for this). One dot per contribution,
+   stacking into more lines on busy days, up to a cap so one wild day can't
+   swallow the window; the number always tells the truth. */
+const GH_USER = 'rhymeandreason';
+const PULSE_SNAPSHOT = { // last known, in case the mirror is down
+  days: [['2026-09-17', 85], ['2026-09-18', 37], ['2026-09-19', 6], ['2026-09-20', 8], ['2026-09-21', 16], ['2026-09-22', 13], ['2026-09-23', 14]],
+  year: 3526, streak: 59,
+};
+const PULSE_MAX_DOTS = 120;
+function pulseContent() {
+  const root = document.createElement('div');
+  root.className = 'pulse';
+  root.innerHTML = `<h2>Git Pulse</h2>
+    <div class="stats">
+      <div><b class="wk">—</b><small>this week</small></div>
+      <div><b class="st">—</b><small>day streak</small></div>
+      <div><b class="yr">—</b><small>past year</small></div>
+    </div>
+    <div class="rows"></div>
+    <a class="src" href="https://github.com/${GH_USER}" target="_blank" rel="noopener">github.com/${GH_USER} <i class="ph ph-arrow-up-right"></i></a>`;
+  const rows = root.querySelector('.rows');
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const label = iso => {
+    const [y, m, d] = iso.split('-').map(Number);
+    const ago = Math.round((today - new Date(y, m - 1, d)) / 864e5);
+    if (ago === 0) return 'Today';
+    if (ago === 1) return 'Yesterday';
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  };
+  let shown = {}; // date -> dots drawn, so a refresh only pops in what's new
+  const render = ({ days, year, streak }) => {
+    root.querySelector('.wk').textContent = days.reduce((a, [, c]) => a + c, 0).toLocaleString();
+    root.querySelector('.st').textContent = streak;
+    root.querySelector('.yr').textContent = year.toLocaleString();
+    rows.innerHTML = '';
+    [...days].reverse().forEach(([date, c]) => {
+      const n = Math.min(c, PULSE_MAX_DOTS), had = shown[date] ?? n;
+      const r = document.createElement('div'); r.className = 'row';
+      r.innerHTML = `<label>${label(date)}</label><div class="dots">${Array.from({ length: n }, (_, i) => `<i${i >= had ? ' class="n"' : ''}></i>`).join('')}</div><span class="c">${c}</span>`;
+      rows.appendChild(r);
+      shown[date] = n;
+    });
+  };
+  const load = async () => {
+    try {
+      const r = await fetch(`https://github-contributions-api.jogruber.de/v4/${GH_USER}?y=last`);
+      const all = (await r.json()).contributions.filter(d => d.date <= today.toLocaleDateString('en-CA'));
+      let streak = 0;
+      // today can still be 0 without breaking the streak
+      for (let i = all.length - 1; i >= 0; i--) {
+        if (all[i].count > 0) streak++;
+        else if (i !== all.length - 1) break;
+      }
+      render({
+        days: all.slice(-7).map(d => [d.date, d.count]),
+        year: all.slice(-365).reduce((a, d) => a + d.count, 0),
+        streak,
+      });
+    } catch { if (!rows.children.length) render(PULSE_SNAPSHOT); }
+  };
+  render(PULSE_SNAPSHOT);
+  shown = {};
+  load();
+  setInterval(() => { if (!document.hidden) load(); }, 10 * 60 * 1000);
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Modes (click to cycle; recolors the canvas a touch)
+   ═══════════════════════════════════════════════════════════════ */
+const MODES = ['Code', 'Design', 'Brainstorm'];
+const MODE_TINT = { Code: '#f2f4f7', Design: '#f7f5f0', Brainstorm: '#fbf4ea' };
+let modeIdx = 1;
+function setMode(i) {
+  modeIdx = (i + MODES.length) % MODES.length;
+  const name = MODES[modeIdx];
+  document.querySelectorAll('.modes .disc span').forEach((s, j) => {
+    s.className = j === modeIdx ? 'on' : (Math.abs(j - modeIdx) === 1 ? 'dim' : '');
+  });
+  document.documentElement.style.setProperty('--paper', MODE_TINT[name]);
+}
+function modesContent() {
+  const root = document.createElement('div');
+  root.className = 'modes';
+  root.innerHTML = `<div class="disc" title="Click to switch mode"><small>Studio</small>${MODES.map(m => `<span>${m}</span>`).join('')}</div>`;
+  root.querySelector('.disc').addEventListener('click', () => setMode(modeIdx + 1));
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Studio Notes
+   ═══════════════════════════════════════════════════════════════ */
+function notesContent() {
+  return `<div class="notes">
+    <div class="tabs"><span>Media</span><b>Notes</b><span>Artifacts</span></div>
+    <div class="cards">
+      <div class="card">
+        <h4>Personal Personal Computing</h4>
+        <img src="projects/ppc/media-gallery-2.webp" alt="Studio media gallery">
+        <p>I'm replacing my daily consumer apps with self-built, minimal versions and living in them for months. 30 apps so far, built in Tauri on Mac. This canvas borrows a few of them.</p>
+        <a class="link" href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio</a>
+        <a class="link" href="https://rhymeandreason.studio/journal/personal-personal-computing.html" target="_blank" rel="noopener">the essay</a>
+        <time>Jun 2026</time>
+      </div>
+      <div class="card">
+        <h4>How I work</h4>
+        <p>Architect the core interaction principle first. Then distill the complexity into a system. Then do all the messy connecting bits so it actually ships.</p>
+        <time>a note to self</time>
+      </div>
+      <div class="card">
+        <h4>Kodolab</h4>
+        <img src="projects/kodolab/kodo-membrane.webp" alt="Kodolab membrane lesson">
+        <p>An open-source web platform for learning biology in 3D. An AI sandbox lets students and teachers generate lessons of their own, with seconds between iterations.</p>
+        <a class="link" href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org</a>
+        <time>2026</time>
+      </div>
+      <div class="card">
+        <h4>Teaching at USF</h4>
+        <p>UI/UX for a mix of designers and engineers. Three pillars: design fundamentals for native mobile, prototyping with AI, and responsible accessibility and ethics.</p>
+        <time>Jan 2026 – now</time>
+      </div>
+      <div class="card">
+        <h4>The need to stop working</h4>
+        <p>It's diminishing returns after 9pm. I gotta remember this. The work is going at such a satisfying pace that I keep going…oh just one more feature.</p>
+        <time>Jun 2026</time>
+      </div>
+      <div class="card">
+        <h4>Where I've been</h4>
+        <p>Impulse Labs · Earthshot Labs · ILM · Amazon · Shield AI · Oculus Story Studio · Google · Shapeways · Continuum Fashion · CIID</p>
+        <a class="link" href="timeline.html">full timeline</a>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Project windows
+   ═══════════════════════════════════════════════════════════════ */
+function projContent({ meta, title, desc, href, media, external }) {
+  const target = external ? ' target="_blank" rel="noopener"' : '';
+  return `<div class="proj">
+    <div class="media ${media.cls || ''}">${media.html}</div>
+    <div class="cap">
+      <div><small>${meta}</small><b>${title}</b><p>${desc}</p></div>
+      <a class="go" href="${href}"${target}>Open <i class="ph ph-arrow-up-right"></i></a>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Gallery
+   ═══════════════════════════════════════════════════════════════ */
+function galleryContent() {
+  const root = document.createElement('div');
+  root.className = 'app';
+  const side = document.createElement('div'); side.className = 'side';
+  const pane = document.createElement('div'); pane.className = 'pane';
+  const SECTIONS = [
+    { id: 'media', name: 'Media', icon: 'ph-images-square', build: mediaPane },
+    { id: 'notes', name: 'Projects', icon: 'ph-note', build: notesPane },
+    { id: 'files', name: 'File Directory', icon: 'ph-folder-open', build: filesPane },
+  ];
+  const open = (id, arg) => {
+    pane.innerHTML = '';
+    pane.scrollTop = 0;
+    pane.classList.toggle('fixed', id === 'media'); // the media pane scrolls its own sheet
+    pane.appendChild(SECTIONS.find(x => x.id === id).build(arg));
+    side.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.s === id));
+  };
+  openSection = open;
+  SECTIONS.forEach(sec => {
+    const b = document.createElement('button');
+    b.dataset.s = sec.id;
+    b.innerHTML = `<i class="ph ${sec.icon}"></i>${sec.name}`;
+    b.addEventListener('click', () => open(sec.id));
+    side.appendChild(b);
+  });
+  root.appendChild(side); root.appendChild(pane);
+  open('notes');
+  return root;
+}
+
+/* Set by the app so one pane can hand off to another. */
+let openSection = null;
+
+/* Filter pills shared by the Media and Notes panes. */
+function filterBar(cats, cur, onPick) {
+  const el = document.createElement('div'); el.className = 'filters';
+  Object.entries(cats).forEach(([c, n]) => {
+    const b = document.createElement('button'); b.dataset.c = c; b.textContent = n;
+    b.classList.toggle('on', c === cur());
+    b.addEventListener('click', () => {
+      onPick(c);
+      el.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.dataset.c === cur()));
+    });
+    el.appendChild(b);
+  });
+  return el;
+}
+
+/* Media — stills from the image gallery (images.html) plus the art & research pieces,
+   browsed like a light table. Edit the ART list above to change what shows up. */
+const ART_CATS = { all: 'All', 'web/mobile': 'Web + Mobile', spatial: 'Spatial', '3D': '3D', hardware: 'Hardware', fashion: 'Fashion', tools: 'Tools', craft: 'Craft', interactive: 'Interactive', 'digital-fabrication': 'Fabrication', sculpture: 'Sculpture', data: 'Data' };
+const fileSize = kb => kb >= 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
+function mediaPane(folder) {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex; flex-direction:column; height:100%; min-height:0';
+  const body = document.createElement('div');
+  body.className = 'scroller';
+  body.style.cssText = 'flex:1; min-height:0';
+  let cur = 'all';
+  const inFolder = m => !folder || m.s.startsWith(folder + '/');
+  const shown = () => ART.filter(m => inFolder(m) && (cur === 'all' || m.cats.includes(cur)));
+
+  /* Contact sheet: thumbnail, filename, dimensions and weight. */
+  const sheet = () => {
+    body.style.overflow = 'auto';
+    bar.style.display = '';
+    const grid = document.createElement('div'); grid.className = 'media-grid';
+    shown().forEach((m, i) => {
+      const b = document.createElement('button');
+      b.title = `${m.n} · ${m.y}${m.c ? ' — ' + m.c : ''}`;
+      b.innerHTML = `<div class="cell"><img src="${m.t}" alt="${m.c || m.n}" loading="lazy"></div>
+        <span class="fn">${m.f}</span><span class="sz">${m.w}×${m.h} · ${fileSize(m.kb)}</span>`;
+      b.addEventListener('click', () => show(i));
+      grid.appendChild(b);
+    });
+    body.innerHTML = ''; body.appendChild(grid);
+  };
+
+  /* Detail: the full image, larger, without leaving the window. */
+  const show = i => {
+    const list = shown();
+    const m = list[i];
+    body.style.overflow = 'hidden';
+    bar.style.display = 'none';
+    const v = document.createElement('div'); v.className = 'viewer';
+    v.innerHTML = `
+      <div class="bar">
+        <button class="back"><i class="ph ph-arrow-left"></i>All media</button>
+        <span class="count">${i + 1} of ${list.length}</span>
+      </div>
+      <div class="frame">
+        <button class="nav prev" title="Previous"><i class="ph ph-caret-left"></i></button>
+        <div class="stage"><img src="${m.s}" alt="${m.c || m.n}"></div>
+        <button class="nav next" title="Next"><i class="ph ph-caret-right"></i></button>
+      </div>
+      <div class="info">
+        <div><b>${m.n} · ${m.y}</b><em>${m.c || ''}</em></div>
+        <div class="meta">${m.f}<br>${m.w} × ${m.h} · ${fileSize(m.kb)}${m.l ? ` · <a href="${m.l}"${/^https?:/.test(m.l) ? ' target="_blank" rel="noopener"' : ''}>open project <i class="ph ph-arrow-up-right"></i></a>` : ''}</div>
+      </div>`;
+    v.querySelector('.back').addEventListener('click', sheet);
+    v.querySelector('.prev').addEventListener('click', () => show((i - 1 + list.length) % list.length));
+    v.querySelector('.next').addEventListener('click', () => show((i + 1) % list.length));
+    body.innerHTML = ''; body.appendChild(v);
+  };
+
+  const bar = filterBar(ART_CATS, () => cur, c => { cur = c; sheet(); });
+  bar.style.flex = 'none';
+  if (folder) {
+    // Arrived from a folder in File Directory: show what that folder holds.
+    const scope = document.createElement('button');
+    scope.className = 'on';
+    scope.innerHTML = `<i class="ph ph-folder"></i>${folder}<i class="ph ph-x"></i>`;
+    scope.addEventListener('click', () => openSection('media'));
+    bar.insertBefore(scope, bar.firstChild);
+  }
+  wrap.appendChild(bar); wrap.appendChild(body);
+  sheet();
+  return wrap;
+}
+
+/* Notes — the portfolio grid, with the write-ups from the homepage. */
+function notesPane() {
+  const wrap = document.createElement('div');
+  const list = document.createElement('div'); list.className = 'workgrid';
+  let cur = 'all';
+  const render = () => {
+    list.innerHTML = '';
+    PROJECTS.filter(p => cur === 'all' || p.tags.includes(cur)).forEach(p => {
+      const a = document.createElement('a');
+      a.href = p.href;
+      if (p.href.startsWith('http')) { a.target = '_blank'; a.rel = 'noopener'; }
+      a.innerHTML = `<img src="${p.img}" alt="${p.title}" loading="lazy">
+        <div class="txt">
+          <b>${p.title}</b><p>${p.desc || ''}</p>
+          <div class="tags">${p.tags.map(t => `<span>${CATS[t]}</span>`).join('')}</div>
+          <small>${p.meta}</small>
+        </div>`;
+      list.appendChild(a);
+    });
+  };
+  wrap.appendChild(filterBar(CATS, () => cur, c => { cur = c; render(); }));
+  wrap.appendChild(list);
+  render();
+  return wrap;
+}
+
+/* File Directory — the pages this site is actually made of. */
+/* Folders have no page of their own, so send them to the page that features them:
+   the project card in Notes first, then the Media library, then an explicit home.
+   Nothing here links to archive.html. */
+const FOLDER_FALLBACK = { 'projects/ppc': 'https://rhymeandreason.studio' };
+function folderTarget(dir) {
+  const inside = path => path && path.startsWith(dir + '/');
+  const proj = PROJECTS.find(p => inside(p.href) || inside(p.img));
+  if (proj) return { href: proj.href };
+  if (ART.some(m => inside(m.s))) return { media: dir }; // its pictures live in the Media tab
+  return FOLDER_FALLBACK[dir] ? { href: FOLDER_FALLBACK[dir] } : null;
+}
+function filesPane() {
+  const wrap = document.createElement('div'); wrap.className = 'files';
+  const hd = document.createElement('div'); hd.className = 'hd';
+  hd.innerHTML = '<span>Name</span><span>Kind</span><span class="z">Size</span>';
+  wrap.appendChild(hd);
+  FILES.forEach(f => {
+    const folder = f.k === 'Folder';
+    const target = folder ? folderTarget(f.p) : { href: f.p };
+    if (!target) return; // nothing to open — don't list a dead row
+    const el = document.createElement('a');
+    if (target.href) {
+      el.href = target.href;
+      if (/^https?:/.test(target.href)) { el.target = '_blank'; el.rel = 'noopener'; }
+    } else {
+      el.href = '#';
+      el.addEventListener('click', e => { e.preventDefault(); openSection('media', target.media); });
+    }
+    const size = folder ? f.s + ' items' : (f.s / 1024).toFixed(0) + ' KB';
+    const glyph = folder ? 'ph-fill ph-folder' : f.k === 'Page' ? 'ph ph-browser' : 'ph ph-file-html';
+    el.innerHTML = `<span class="nm"><i class="ic-f ${glyph} ${folder ? 'folder' : f.k === 'Page' ? 'page' : ''}"></i><span>${f.n}</span></span>
+      <span class="k">${f.k}</span><span class="z">${size}</span>`;
+    el.title = target.href ? `${f.p} → ${target.href}` : `${f.p} → Media`;
+    wrap.appendChild(el);
+  });
+  return wrap;
+}
+
+/* A little on/off switch, the way a settings panel wants one. */
+function toggle(on, onChange) {
+  const b = document.createElement('button');
+  b.className = 'switch';
+  b.setAttribute('role', 'switch');
+  const sync = () => { b.classList.toggle('on', on); b.setAttribute('aria-checked', on); };
+  b.addEventListener('click', () => { on = !on; sync(); onChange(on); });
+  sync();
+  return b;
+}
+
+/* Media thumbnail size, shared by the settings panel and the grid. */
+// Text size scales what's inside windows and notes; the window chrome stays put.
+let textZoom = 1;
+function setTextZoom(z) {
+  textZoom = z;
+  document.documentElement.style.setProperty('--text-zoom', z);
+  try { localStorage.setItem('textZoom', z); } catch {}
+  applyMinFont();
+}
+
+// Minimum text size, like the browser setting: any text that would render
+// smaller than this (after Text size scaling) is bumped up to it.
+let minFont = 0;
+const fsOrig = new Map(); // element → its own inline font-size before we bumped it
+function bumpText(els) {
+  if (!minFont) return;
+  const hasText = el => [...el.childNodes].some(n => n.nodeType === 3 && n.nodeValue.trim());
+  const bump = [];
+  els.forEach(el => {
+    if (fsOrig.has(el) || !hasText(el)) return;
+    const z = el.closest('.win .body, .sticky.postit') ? textZoom : 1;
+    const fs = parseFloat(getComputedStyle(el).fontSize);
+    if (fs * z < minFont) bump.push([el, minFont / z]);
+  });
+  bump.forEach(([el, px]) => { fsOrig.set(el, el.style.fontSize); el.style.fontSize = px + 'px'; });
+}
+function applyMinFont() {
+  if (typeof world === 'undefined') return;
+  fsOrig.forEach((v, el) => { el.style.fontSize = v; });
+  fsOrig.clear();
+  bumpText([...world.querySelectorAll('*')]);
+}
+function setMinFont(px) {
+  minFont = px;
+  try { localStorage.setItem('minFont', px); } catch {}
+  applyMinFont();
+}
+try { minFont = parseFloat(localStorage.getItem('minFont')) || 0; } catch {}
+// Apps rebuild their lists as they go (music, weather, files); check only what's new.
+const minFontPending = new Set();
+new MutationObserver(muts => {
+  if (!minFont) return;
+  const first = !minFontPending.size;
+  muts.forEach(m => m.addedNodes.forEach(n => {
+    const el = n.nodeType === 1 ? n : n.parentElement;
+    if (el) minFontPending.add(el);
+  }));
+  if (first && minFontPending.size) requestAnimationFrame(() => {
+    const els = [];
+    minFontPending.forEach(el => { if (el.isConnected) els.push(el, ...el.querySelectorAll('*')); });
+    minFontPending.clear();
+    bumpText(els);
+  });
+}).observe(document.getElementById('world'), { childList: true, subtree: true });
+try { const z = parseFloat(localStorage.getItem('textZoom')); if (z) setTextZoom(z); } catch {}
+
+let mediaCell = 124;
+function setMediaCell(px) {
+  mediaCell = px;
+  document.documentElement.style.setProperty('--media-cell', px + 'px');
+}
+
+/* Settings — the knobs this canvas actually has. */
+function settingsPane() {
+  const wrap = document.createElement('div'); wrap.className = 'settings';
+  const row = (label, hint, control) => {
+    const r = document.createElement('div'); r.className = 'row';
+    const t = document.createElement('div');
+    t.innerHTML = `<b>${label}</b><em>${hint}</em>`;
+    r.appendChild(t); r.appendChild(control);
+    wrap.appendChild(r);
+    return r;
+  };
+
+  const snd = toggle(soundOn, on => {
+    soundOn = on;
+    try { localStorage.setItem('sound', on ? 'on' : 'off'); } catch {}
+    if (on) { wakeAudio(); setTimeout(() => sfx('check'), 30); }
+  });
+  row('Sounds', 'Soft clicks when you open, close, and check things', snd);
+
+  const SIZES = [[96, 'Small'], [124, 'Medium'], [168, 'Large']];
+  const gridSeg = document.createElement('div'); gridSeg.className = 'seg';
+  SIZES.forEach(([px, name]) => {
+    const b = document.createElement('button'); b.textContent = name;
+    b.classList.toggle('on', px === mediaCell);
+    b.addEventListener('click', () => {
+      setMediaCell(px);
+      gridSeg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x.textContent === name));
+    });
+    gridSeg.appendChild(b);
+  });
+  row('Media grid', 'Thumbnail size in the Media library', gridSeg);
+
+  const TEXT = [[0.9, 'Small'], [1, 'Medium'], [1.15, 'Large']];
+  const textSeg = document.createElement('div'); textSeg.className = 'seg';
+  TEXT.forEach(([z, name]) => {
+    const b = document.createElement('button'); b.textContent = name;
+    b.classList.toggle('on', z === textZoom);
+    b.addEventListener('click', () => {
+      setTextZoom(z);
+      textSeg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    });
+    textSeg.appendChild(b);
+  });
+  row('Text size', 'Text in every window and note', textSeg);
+
+  const MIN = [[0, 'Off'], [13, '13'], [14, '14'], [16, '16']];
+  const minSeg = document.createElement('div'); minSeg.className = 'seg';
+  MIN.forEach(([px, name]) => {
+    const b = document.createElement('button'); b.textContent = name;
+    b.classList.toggle('on', px === minFont);
+    b.addEventListener('click', () => {
+      setMinFont(px);
+      minSeg.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    });
+    minSeg.appendChild(b);
+  });
+  row('Minimum text size', 'Never show text smaller than this', minSeg);
+
+  const pz = toggle(pinchZoom, on => { pinchZoom = on; });
+  row('Pinch to zoom', 'Pinch on a trackpad to zoom the desktop', pz);
+
+  const tp = toggle(trackpad, on => { trackpad = on; });
+  row('Trackpad controls', 'Two-finger scroll pans instead of zooming', tp);
+
+  const fit = document.createElement('button');
+  fit.textContent = 'Fit to window';
+  fit.addEventListener('click', () => { touched = false; fitContent(true); });
+  row('Framing', 'Re-frame every window and note', fit);
+
+  return wrap;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Weather — three towns, three climates. Live from Open-Meteo
+   (free, no key); falls back to a typical late-September afternoon.
+   ═══════════════════════════════════════════════════════════════ */
+const WX_PLACES = [
+  { name: 'Woodacre', note: 'home', lat: 38.0127, lon: -122.6436 },
+  { name: 'San Francisco', short: 'SF', note: 'the city', lat: 37.7749, lon: -122.4194 },
+  { name: 'Berkeley', note: 'east bay', lat: 37.8716, lon: -122.2727 },
+];
+const WX_SNAPSHOT = [
+  { t: 78, hi: 82, lo: 49, code: 1, rh: 40, day: 1 },
+  { t: 61, hi: 64, lo: 55, code: 45, rh: 90, day: 1 },
+  { t: 69, hi: 72, lo: 54, code: 2, rh: 60, day: 1 },
+];
+function wxLook(code, rh, day) {
+  // Overcast and saturated reads as fog here, even when the model calls it cloud.
+  if (code === 45 || code === 48 || (code === 3 && rh >= 85)) return ['Fog', 'ph-cloud-fog'];
+  if (code === 0) return day ? ['Clear', 'ph-sun'] : ['Clear', 'ph-moon'];
+  if (code <= 2) return [code === 1 ? 'Mostly clear' : 'Partly cloudy', day ? 'ph-cloud-sun' : 'ph-cloud-moon'];
+  if (code === 3) return ['Overcast', 'ph-cloud'];
+  if (code <= 57) return ['Drizzle', 'ph-cloud-rain'];
+  if (code <= 67 || (code >= 80 && code <= 82)) return ['Rain', 'ph-cloud-rain'];
+  if (code <= 77 || code === 85 || code === 86) return ['Snow', 'ph-snowflake'];
+  return ['Thunderstorms', 'ph-cloud-lightning'];
+}
+function weatherContent() {
+  const root = document.createElement('div');
+  root.className = 'weather';
+  root.innerHTML = `<div class="hd"><h2>Microclimates</h2><small class="upd"></small></div>
+    <div class="spread"><b>—</b><span></span></div>
+    <div class="scale"><div class="track"></div></div>
+    <div class="places"></div>`;
+  const scale = root.querySelector('.scale');
+  const pins = WX_PLACES.map(p => {
+    const el = document.createElement('div'); el.className = 'pin';
+    el.innerHTML = `<small>${p.short || p.name}</small><i></i>`;
+    scale.appendChild(el);
+    return el;
+  });
+  const render = (data, when) => {
+    const now = data.map((d, i) => ({ ...WX_PLACES[i], ...d }));
+    const hot = now.reduce((a, b) => (b.t > a.t ? b : a));
+    const cold = now.reduce((a, b) => (b.t < a.t ? b : a));
+    const d = Math.round(hot.t - cold.t);
+    root.querySelector('.spread b').textContent = d + '°';
+    root.querySelector('.spread span').textContent = d < 3
+      ? 'Rare day: all three towns within a few degrees.'
+      : `warmer in ${hot.name} than ${cold.name}, right now.`;
+    root.querySelector('.upd').textContent = when;
+    // One shared scale from the day's coolest low to its warmest high.
+    const lo = Math.min(...now.map(p => p.lo)), hi = Math.max(...now.map(p => p.hi));
+    const order = [...now].sort((a, b) => a.t - b.t);
+    now.forEach((p, i) => {
+      pins[i].style.left = ((p.t - lo) / Math.max(1, hi - lo) * 100).toFixed(1) + '%';
+      pins[i].classList.toggle('low', order.indexOf(p) === 1); // middle label drops below so labels don't collide
+    });
+    root.querySelector('.places').innerHTML = now.map(p => {
+      const [word, icon] = wxLook(p.code, p.rh, p.day);
+      const karl = p.name === 'San Francisco' && word === 'Fog' ? '<span class="karl">Karl the Fog is in.</span>' : '';
+      return `<div class="place">
+        <div><b>${p.name}</b><em>${p.note}</em></div>
+        <div class="t"><b>${Math.round(p.t)}°</b><small>H ${Math.round(p.hi)}° · L ${Math.round(p.lo)}°</small></div>
+        <div class="cond"><i class="ph ${icon}"></i>${word}</div>${karl}
+      </div>`;
+    }).join('');
+  };
+  const load = async () => {
+    try {
+      const q = new URLSearchParams({
+        latitude: WX_PLACES.map(p => p.lat).join(','), longitude: WX_PLACES.map(p => p.lon).join(','),
+        current: 'temperature_2m,weather_code,relative_humidity_2m,is_day',
+        daily: 'temperature_2m_max,temperature_2m_min', temperature_unit: 'fahrenheit',
+        timezone: 'America/Los_Angeles', forecast_days: 1,
+      });
+      const res = await (await fetch('https://api.open-meteo.com/v1/forecast?' + q)).json();
+      render(res.map(r => ({
+        t: r.current.temperature_2m, code: r.current.weather_code, rh: r.current.relative_humidity_2m, day: r.current.is_day,
+        hi: r.daily.temperature_2m_max[0], lo: r.daily.temperature_2m_min[0],
+      })), new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' }));
+    } catch { /* keep whatever is showing */ }
+  };
+  render(WX_SNAPSHOT, 'typical afternoon');
+  load();
+  setInterval(load, 15 * 60 * 1000);
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Mail — a compose window. No backend on a static site, so Send
+   hands the draft to the visitor's own mail app via mailto:.
+   ═══════════════════════════════════════════════════════════════ */
+const EMAIL = 'hello@mary-huang.com';
+function mailContent() {
+  const root = document.createElement('div');
+  root.className = 'mail';
+  root.innerHTML = `
+    <div class="paper">
+    <div class="tools">
+      <h3>New Message</h3>
+      <button class="copy" title="Copy my address"><i class="ph ph-copy"></i>Copy address</button>
+      <button class="send" title="Send (⌘↩)"><i class="ph-fill ph-paper-plane-tilt"></i>Send</button>
+    </div>
+    <div class="field"><label>To</label><span class="chip"><img src="images/2025_mary.jpg" alt="">Mary Huang</span></div>
+    <div class="field"><label for="mail-subj">Subject</label><input id="mail-subj" placeholder="Hello!" autocomplete="off"></div>
+    <textarea placeholder="Write a note…"></textarea>
+    <div class="stamp"><div><span><img src="images/2025_mary.jpg" alt=""></span></div></div>
+    <svg class="postmark" viewBox="0 0 92 44" fill="none" stroke="#2b3a67" stroke-width="1.4">
+      <circle cx="22" cy="22" r="19"/><circle cx="22" cy="22" r="15" stroke-width=".8"/>
+      <text x="22" y="20" text-anchor="middle" font-size="7" font-weight="700" fill="#2b3a67" stroke="none" letter-spacing=".5">SF BAY</text>
+      <text x="22" y="29" text-anchor="middle" font-size="6.5" fill="#2b3a67" stroke="none">${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }).toUpperCase()}</text>
+      <path d="M44 12q6-4 12 0t12 0 12 0 12 0M44 22q6-4 12 0t12 0 12 0 12 0M44 32q6-4 12 0t12 0 12 0 12 0"/>
+    </svg>
+    <div class="foot"><span class="status">Opens in your mail app to send.</span><span>${EMAIL}</span></div>
+    </div>`;
+  const subj = root.querySelector('input');
+  const msg = root.querySelector('textarea');
+  const foot = root.querySelector('.foot');
+  const status = root.querySelector('.status');
+  const say = (text, cls) => { status.textContent = text; foot.className = 'foot ' + (cls || ''); };
+
+  const send = () => {
+    if (!msg.value.trim()) {
+      say('Add a message first.', 'err');
+      msg.classList.remove('shake'); void msg.offsetWidth; msg.classList.add('shake');
+      msg.focus();
+      return;
+    }
+    const q = new URLSearchParams({ subject: subj.value.trim() || 'Hello from your portfolio', body: msg.value });
+    // URLSearchParams encodes spaces as '+', which mail clients show literally.
+    location.href = `mailto:${EMAIL}?${q.toString().replace(/\+/g, '%20')}`;
+    say('Handed off to your mail app. Thanks for writing!', 'ok');
+    root.classList.remove('sent'); void root.offsetWidth; root.classList.add('sent');
+  };
+  root.querySelector('.send').addEventListener('click', send);
+  [subj, msg].forEach(el => el.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) { e.preventDefault(); send(); }
+  }));
+  subj.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); msg.focus(); } });
+  msg.addEventListener('input', () => { if (foot.classList.contains('err')) say('Opens in your mail app to send.'); });
+
+  root.querySelector('.copy').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(EMAIL); say('Address copied.', 'ok'); }
+    catch { say(EMAIL); }
+  });
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   App: Music — a few favorites from my Apple Music library, played as
+   the free 30-second iTunes previews. Picked by hand, so the list lives here.
+   ═══════════════════════════════════════════════════════════════ */
+const TRACKS = [
+  { g: 'repeat', id: 1820264150, t: "Golden", a: "HUNTR/X", al: "KPop Demon Hunters (Soundtrack from the Netflix Film)", art: "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/e1/15/42/e1154273-8ecd-5702-e6e6-597f28001681/25UMGIM82363.rgb.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/4a/9d/a1/4a9da1c4-096f-8f45-4a3b-c883c45ca451/mzaf_3059921854949935161.plus.aac.p.m4a" },
+  { g: 'repeat', id: 1445949267, t: "Sunflower", a: "Post Malone & Swae Lee", al: "Spider-Man: Into the Spider-Verse (Soundtrack From & Inspired by the Motion Picture)", art: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/4b/30/2c/4b302cb6-7a14-5464-4e97-0577e9d0be49/18UMGIM82277.rgb.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/98/f0/d6/98f0d67e-f8bf-762d-cac7-1c6b3b6b35dd/mzaf_4543283896248560946.plus.aac.p.m4a" },
+  { g: 'repeat', id: 1533984565, t: "Day One (Interstellar Theme)", a: "Hans Zimmer", al: "Interstellar (Original Motion Picture Soundtrack) [Expanded Edition]", art: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/f4/5b/73/f45b735a-8d7a-9713-b217-0f8e1593c28b/794043201943.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/0e/76/d3/0e76d3f4-0071-b9ef-81d4-76c445ebc69d/mzaf_17653548405030492062.plus.aac.p.m4a" },
+  { g: 'repeat', id: 1533984559, t: "Dust", a: "Hans Zimmer", al: "Interstellar (Original Motion Picture Soundtrack) [Expanded Edition]", art: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/f4/5b/73/f45b735a-8d7a-9713-b217-0f8e1593c28b/794043201943.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/47/76/35/477635f6-0f1d-42bf-e8ff-166bb971f580/mzaf_16709445292561395831.plus.aac.p.m4a" },
+  { g: 'repeat', id: 323714096, t: "Concerning Hobbits", a: "Howard Shore", al: "The Lord of the Rings: The Fellowship of the Ring (Original Motion Picture Soundtrack)", art: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/cd/de/f5/cddef582-a63b-1119-8983-53105a8f494d/mzi.bwecfgra.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/cd/1e/2c/cd1e2c74-a074-aa60-ec24-8abee7dcec43/mzaf_12399500222028997548.plus.aac.p.m4a" },
+  { g: 'fav', id: 196426738, t: "Mr. Blue Sky", a: "Electric Light Orchestra", al: "All Over the World: The Very Best of Electric Light Orchestra", art: "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/a3/6e/74/a36e7450-3818-f2c1-a137-d4ef5934c119/827969448922.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/0e/a6/2b/0ea62b1a-a7b6-fc36-fddd-5da9ed19fdd6/mzaf_13125678449795276861.plus.aac.p.m4a" },
+  { g: 'fav', id: 1675560578, t: "Running Up That Hill", a: "Kate Bush", al: "Hounds of Love (2018 Remaster)", art: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/62/97/32/62973286-5bb3-0de7-c051-8b2de8d95472/cover.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/21/c0/a8/21c0a8a9-dadf-55e5-aeba-50dcc704a736/mzaf_5583157979505295580.plus.aac.p.m4a" },
+  { g: 'fav', id: 1377118186, t: "Sky Full of Song", a: "Florence + the Machine", al: "High As Hope", art: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/76/96/d1/7696d110-c929-4908-8fa1-30aad2511c55/00602567485872.rgb.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/05/b3/c4/05b3c44f-9fec-cd87-6090-2198b5aea048/mzaf_7525266731355815717.plus.aac.p.m4a" },
+  { g: 'fav', id: 1440714989, t: "Time Machine", a: "Robyn", al: "Body Talk", art: "https://is1-ssl.mzstatic.com/image/thumb/Music118/v4/9e/66/3a/9e663ae4-4a96-31b4-147c-5ce1d555ff32/00602527569970.rgb.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/15/f6/db/15f6dbe6-89ba-f318-c22b-08894442db1b/mzaf_6046578977759125469.plus.aac.p.m4a" },
+  { g: 'fav', id: 1690608481, t: "Lovesick", a: "Laufey", al: "Bewitched", art: "https://is1-ssl.mzstatic.com/image/thumb/Music126/v4/1f/de/6c/1fde6cb4-9703-c214-cdc6-8ecf7d0f0aa0/197189040030.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/8c/b3/9e/8cb39e4b-73bf-2c00-22a3-713ae48f3750/mzaf_15489247557846337215.plus.aac.p.m4a" },
+  { g: 'fav', id: 1454281117, t: "Adventure Music for Migrating Birds", a: "Lullatone", al: "Music for Museum Gift Shops", art: "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/9b/ad/f7/9badf725-d1f0-cd65-d5ac-fb109cc4c9a2/859731173374_cover.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/b6/69/96/b66996ac-9edc-f8ce-92d3-6c52591cd8a3/mzaf_11340580938237868928.plus.aac.p.m4a" },
+  { g: 'scores', id: 1533984393, t: "Cornfield Chase", a: "Hans Zimmer", al: "Interstellar (Original Motion Picture Soundtrack) [Expanded Edition]", art: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/f4/5b/73/f45b735a-8d7a-9713-b217-0f8e1593c28b/794043201943.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/3a/ee/23/3aee2300-f6f7-a006-e20f-28092e814cbe/mzaf_1624587954644600228.plus.aac.p.m4a" },
+  { g: 'scores', id: 1583651628, t: "Herald of the Change", a: "Hans Zimmer", al: "Dune (Original Motion Picture Soundtrack)", art: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/6a/c4/e6/6ac4e60d-5e29-da16-d312-d4cb486e68f3/794043205743.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ad/95/05/ad9505a4-49d2-9516-47b5-09db7c224877/mzaf_11749006298655766908.plus.aac.p.m4a" },
+  { g: 'scores', id: 1454398449, t: "Misty Mountains", a: "Richard Armitage & The Dwarf Cast", al: "The Hobbit: An Unexpected Journey (Original Motion Picture Soundtrack) [Special Edition]", art: "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/8d/d6/4e/8dd64eeb-b328-f559-cf7a-5cdb2201663d/794043164743.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/ef/41/6c/ef416cb4-bcab-cdeb-8f2d-3b9815ad5b01/mzaf_18419785642060178055.plus.aac.p.m4a" },
+  { g: 'scores', id: 323714093, t: "The Prophecy", a: "Howard Shore", al: "The Lord of the Rings: The Fellowship of the Ring (Original Motion Picture Soundtrack)", art: "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/cd/de/f5/cddef582-a63b-1119-8983-53105a8f494d/mzi.bwecfgra.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/f4/b5/2d/f4b52d4b-ea9d-8516-ce34-2798111b9a0e/mzaf_3658763553114234979.plus.aac.p.m4a" },
+  { g: 'scores', id: 1550585990, t: "Ahsoka's Theme ~ Star Wars Lofi", a: "Closed on Sunday", al: "Ahsoka's Theme ~ Star Wars Lofi - Single", art: "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/bf/0d/a8/bf0da80e-46ae-8f47-162c-54bbcd61eba8/artwork.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview125/v4/ea/0e/51/ea0e519a-d313-bef0-9075-74800f7bd953/mzaf_13241915778234989764.plus.aac.p.m4a" },
+  { g: 'quiet', id: 1500818257, t: "Germination", a: "Ryuichi Sakamoto", al: "Merry Christmas, Mr. Lawrence", art: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/62/d7/35/62d735b2-a993-a2ad-e08c-5edd9be06202/886448177739.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/f4/ba/8b/f4ba8bae-5b9e-a5aa-6b98-1e2d666707b1/mzaf_4451228298322938106.plus.aac.p.m4a" },
+  { g: 'quiet', id: 381515553, t: "Cello Suite No. 1: Prélude", a: "Yo-Yo Ma", al: "Bach: Cello Suites Nos. 1-6, BWV 1007-1012 (2009 Remaster)", art: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/0c/f5/ed/0cf5ed24-02ba-03f4-8c83-ff41dcba5be3/884977621860.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/92/5e/0a/925e0a0d-f33d-a493-f50a-2fa9bcbdd746/mzaf_352011344661116690.plus.aac.p.m4a" },
+  { g: 'quiet', id: 1447499968, t: "Gobbledigook", a: "Sigur Rós", al: "Með Suð Í Eyrum Við Spilum Endalaust", art: "https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/4d/47/e9/4d47e9c1-09bd-7187-25cf-eee8e43f5e58/190296919732.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/34/15/9f/34159fcc-8b39-67e0-c9db-0cd029935b20/mzaf_707447473117577667.plus.aac.p.m4a" },
+  { g: 'quiet', id: 1450884697, t: "Walking in a spiral towards the house: Side C", a: "Nivhek", al: "After its own death / Walking in a spiral towards the house", art: "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/23/70/94/23709459-cf52-de66-c4ad-c4b4916cf96d/193483400402.jpg/300x300bb.jpg", src: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview116/v4/c1/47/d5/c147d53d-93db-cea6-03bf-50668e8192e4/mzaf_15854378245432954987.plus.aac.p.m4a" },
+];
+const PLAYLISTS = [
+  { id: 'all', name: 'All Songs', icon: 'ph-music-notes' },
+  { cap: 'Playlists' },
+  { id: 'repeat', name: 'On Repeat', icon: 'ph-repeat' },
+  { id: 'fav', name: 'Favorites', icon: 'ph-heart' },
+  { id: 'scores', name: 'Scores', icon: 'ph-film-strip' },
+  { id: 'quiet', name: 'Quiet', icon: 'ph-moon-stars' },
+];
+const music = { audio: new Audio(), queue: TRACKS, i: -1, stop: null };
+function musicContent() {
+  const { audio } = music;
+  audio.preload = 'none';
+  const root = document.createElement('div');
+  root.className = 'app';
+  const side = document.createElement('div'); side.className = 'side';
+  const pane = document.createElement('div'); pane.className = 'pane music';
+  pane.innerHTML = `
+    <div class="np">
+      <img alt="">
+      <div class="meta">
+        <small>Preview</small>
+        <b></b>
+        <div class="by"></div>
+        <div class="ctl">
+          <button class="prev" title="Previous"><i class="ph-fill ph-skip-back"></i></button>
+          <button class="play" title="Play"><i class="ph-fill ph-play"></i></button>
+          <button class="next" title="Next"><i class="ph-fill ph-skip-forward"></i></button>
+          <span class="t cur">0:00</span>
+          <div class="scrub"><span><i></i></span></div>
+          <span class="t">0:30</span>
+        </div>
+      </div>
+    </div>
+    <div class="list"></div>`;
+  const $ = s => pane.querySelector(s);
+  const list = $('.list'), playBtn = $('.play'), bar = $('.scrub i'), cur = $('.cur');
+  const fmt = s => `0:${String(Math.floor(s || 0)).padStart(2, '0')}`;
+  let view = 'all';
+
+  const current = () => music.queue[music.i];
+  const paint = () => {
+    const t = current() || TRACKS[0];
+    $('.np img').src = t.art;
+    $('.np b').textContent = t.t;
+    $('.np .by').innerHTML = '';
+    $('.np .by').append(t.a);
+    const link = document.createElement('a');
+    link.href = `https://music.apple.com/us/song/${t.id}`; link.target = '_blank'; link.rel = 'noopener';
+    link.innerHTML = 'Apple Music <i class="ph ph-arrow-up-right"></i>';
+    $('.np .by').appendChild(link);
+    playBtn.innerHTML = `<i class="ph-fill ph-${audio.paused ? 'play' : 'pause'}"></i>`;
+    playBtn.title = audio.paused ? 'Play' : 'Pause';
+    list.querySelectorAll('button').forEach(b => {
+      const on = current() && +b.dataset.id === current().id;
+      b.classList.toggle('on', !!on);
+      b.querySelector('.n').innerHTML = on
+        ? `<span class="eq${audio.paused ? ' paused' : ''}"><i></i><i></i><i></i></span>`
+        : b.dataset.n;
+    });
+  };
+
+  const play = (queue, i) => {
+    music.queue = queue; music.i = (i + queue.length) % queue.length;
+    audio.src = current().src;
+    audio.dataset.retried = '';
+    audio.play().catch(() => {});
+    paint();
+  };
+  const toggle = () => {
+    if (music.i < 0) return play(tracksIn(view), 0);
+    audio.paused ? audio.play().catch(() => {}) : audio.pause();
+  };
+  music.stop = () => { audio.pause(); };
+
+  const tracksIn = id => id === 'all' ? TRACKS : TRACKS.filter(t => t.g === id);
+  const show = id => {
+    view = id;
+    side.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.s === id));
+    const tracks = tracksIn(id);
+    list.innerHTML = '';
+    list.scrollTop = 0;
+    tracks.forEach((t, i) => {
+      const b = document.createElement('button');
+      b.dataset.id = t.id; b.dataset.n = i + 1;
+      b.innerHTML = `<span class="n"></span><img src="${t.art}" alt="" loading="lazy"><span class="tx"><b></b><em></em></span><span class="d">0:30</span>`;
+      b.querySelector('b').textContent = t.t;
+      b.querySelector('em').textContent = t.a;
+      b.title = `${t.t} — ${t.a}\n${t.al}`;
+      b.addEventListener('click', () => {
+        current() && current().id === t.id ? toggle() : play(tracks, i);
+      });
+      list.appendChild(b);
+    });
+    paint();
+  };
+
+  PLAYLISTS.forEach(p => {
+    if (p.cap) { const c = document.createElement('div'); c.className = 'cap'; c.textContent = p.cap; side.appendChild(c); return; }
+    const b = document.createElement('button');
+    b.dataset.s = p.id;
+    b.innerHTML = `<i class="ph ${p.icon}"></i>${p.name}`;
+    b.addEventListener('click', () => show(p.id));
+    side.appendChild(b);
+  });
+
+  playBtn.addEventListener('click', toggle);
+  $('.prev').addEventListener('click', () => {
+    if (music.i < 0) return;
+    audio.currentTime > 3 ? (audio.currentTime = 0) : play(music.queue, music.i - 1);
+  });
+  $('.next').addEventListener('click', () => music.i < 0 ? play(tracksIn(view), 0) : play(music.queue, music.i + 1));
+  $('.scrub').addEventListener('click', e => {
+    if (music.i < 0 || !audio.duration) return;
+    const r = e.currentTarget.getBoundingClientRect();
+    audio.currentTime = audio.duration * Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+  });
+  audio.addEventListener('timeupdate', () => {
+    bar.style.width = (audio.duration ? audio.currentTime / audio.duration * 100 : 0) + '%';
+    cur.textContent = fmt(audio.currentTime);
+  });
+  audio.addEventListener('play', paint);
+  audio.addEventListener('pause', paint);
+  audio.addEventListener('ended', () => play(music.queue, music.i + 1));
+  // Preview links can go stale; ask iTunes for a fresh one, once.
+  audio.addEventListener('error', async () => {
+    const t = current();
+    if (!t || audio.dataset.retried) return;
+    audio.dataset.retried = '1';
+    try {
+      const r = await fetch(`https://itunes.apple.com/lookup?id=${t.id}`).then(r => r.json());
+      const src = r.results && r.results[0] && r.results[0].previewUrl;
+      if (src) { t.src = src; audio.src = src; audio.play().catch(() => {}); }
+    } catch {}
+  });
+
+  root.appendChild(side); root.appendChild(pane);
+  show('all');
+  return root;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Loose items on the board
+   ═══════════════════════════════════════════════════════════════ */
+function addLoose(html, x, y, rot, cls, w) {
+  const el = document.createElement('div');
+  el.className = 'loose ' + (cls || '');
+  el.style.cssText = `left:${x}px; top:${y}px; transform: rotate(${rot || 0}deg); z-index: 5;${w ? ' width:' + w + 'px;' : ''}`;
+  el.innerHTML = html;
+  world.appendChild(el);
+  makeDraggable(el, el, () => { el.classList.add('lift'); el.style.zIndex = ++zTop; });
+  return el;
+}
+const polaroid = (src, cap) => `<img src="${src}" alt="${cap}" loading="lazy"><span>${cap}</span>`;
+
+/* ═══════════════════════════════════════════════════════════════
+   Layout
+   ═══════════════════════════════════════════════════════════════ */
+const APPS = [
+  { id: 'about', name: 'Readme', icon: 'readme' },
+  { id: 'daily', name: 'Daily Note', icon: 'daily' },
+  { id: 'pulse', name: 'Git Pulse', icon: 'pulse' },
+  { id: 'weather', name: 'Weather', icon: 'weather' },
+  { id: 'mail', name: 'Mail', icon: 'mail' },
+  { id: 'music', name: 'Music', icon: 'music' },
+  { sep: true },
+  { id: 'gallery', name: 'Gallery', icon: 'gallery' },
+  { id: 'settings', name: 'Settings', icon: 'settings' },
+];
+// Dock tiles are little 32×32 illustrations; the .ic class adds the glaze and edge.
+const tile = body => `<span class="ic"><svg viewBox="0 0 32 32">${body}</svg></span>`;
+const ICONS = {
+  readme: tile(`<defs><linearGradient id="g-readme" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3d2a36"/><stop offset="1" stop-color="#15110f"/></linearGradient></defs>
+    <rect width="32" height="32" fill="url(#g-readme)"/>
+    <g fill="#fbf1e1"><rect x="7.8" y="9" width="3" height="14" rx=".6"/><rect x="15" y="9" width="3" height="14" rx=".6"/><rect x="7.8" y="14.6" width="10" height="2.8"/><rect x="21.2" y="14" width="3" height="9" rx=".6"/></g>
+    <circle cx="22.7" cy="10.2" r="2.1" fill="#ff5a8f"/>`),
+  files: '<span class="ic" style="background:#7f9cc9"><i class="ph-fill ph-folder" style="font-size:19px;color:#fff"></i></span>',
+  daily: tile(`<defs><linearGradient id="g-daily" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7d5c"/><stop offset="1" stop-color="#e5443a"/></linearGradient></defs>
+    <rect width="32" height="32" fill="#fffaf1"/><rect width="32" height="10.5" fill="url(#g-daily)"/><rect y="10.5" width="32" height=".6" fill="rgba(0,0,0,.08)"/>
+    <text x="16" y="8" text-anchor="middle" font-size="5.6" font-weight="700" letter-spacing=".5" fill="#fff">${new Date().toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase()}</text>
+    <text x="16" y="26.4" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1a1917">${new Date().getDate()}</text>`),
+  weather: tile(`<defs><linearGradient id="g-weather" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffac78"/><stop offset=".55" stop-color="#ff96b2"/><stop offset="1" stop-color="#b59bf2"/></linearGradient></defs>
+    <rect width="32" height="32" fill="url(#g-weather)"/>
+    <circle cx="20.5" cy="11.5" r="8.5" fill="#fff3b0" opacity=".3"/><circle cx="20.5" cy="11.5" r="5.4" fill="#ffe066"/>
+    <g fill="#fff"><circle cx="11" cy="20.5" r="4.3"/><circle cx="16.2" cy="18.2" r="5.3"/><circle cx="21.4" cy="21.4" r="3.6"/><rect x="6.7" y="20.5" width="18.3" height="5" rx="2.5"/></g>`),
+  pulse: tile(`<rect width="32" height="32" fill="#f6ead0"/>
+    <g fill="#1d3a33"><rect x="6.1" y="7.4" width="1.8" height="3" rx="-0.1"/><rect x="6.1" y="17.0" width="1.8" height="3" rx="-0.1"/><rect x="9.7" y="12.2" width="1.8" height="3" rx="-0.1"/><rect x="9.7" y="17.0" width="1.8" height="3" rx="-0.1"/><rect x="13.3" y="7.4" width="1.8" height="3" rx="-0.1"/><rect x="13.3" y="12.2" width="1.8" height="3" rx="-0.1"/><rect x="13.3" y="21.8" width="1.8" height="3" rx="-0.1"/><rect x="16.9" y="17.0" width="1.8" height="3" rx="-0.1"/><rect x="16.9" y="21.8" width="1.8" height="3" rx="-0.1"/><rect x="20.5" y="7.4" width="1.8" height="3" rx="-0.1"/><rect x="20.5" y="12.2" width="1.8" height="3" rx="-0.1"/><rect x="20.5" y="17.0" width="1.8" height="3" rx="-0.1"/><rect x="24.1" y="12.2" width="1.8" height="3" rx="-0.1"/><rect x="24.1" y="21.8" width="1.8" height="3" rx="-0.1"/></g>`),
+  modes: '<span class="ic" style="background:#0b0b0b;border-radius:50%"><i style="width:9px;height:9px;border-radius:50%;background:#e6407a;display:block"></i></span>',
+  studio: '<span class="ic" style="background:#e6407a">S</span>',
+  ppc: '<span class="ic" style="background:#1a1917;font-size:9px;letter-spacing:.05em">PPC</span>',
+  kodo: '<span class="ic" style="background:#2b4fd8"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="15" r="3"/><path d="M10.5 10.5l3 3"/></svg></span>',
+  impulse: '<span class="ic" style="background:#d1440f"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="7"/><path d="M12 7v5"/></svg></span>',
+  tales: '<span class="ic" style="background:#3a2f5c"><svg viewBox="0 0 24 24" width="18" height="18" fill="#fff"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg></span>',
+  quill: '<span class="ic" style="background:#3d8f8f"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M4 20c4-8 10-14 16-16-1 6-6 13-14 15"/><path d="M4 20l6-6"/></svg></span>',
+  music: tile(`<defs><linearGradient id="g-music" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6d95"/><stop offset="1" stop-color="#7a3ff0"/></linearGradient></defs>
+    <rect width="32" height="32" fill="url(#g-music)"/>
+    <circle cx="16" cy="16" r="11.2" fill="#17121b"/>
+    <g fill="none" stroke="rgba(255,255,255,.1)" stroke-width=".5"><circle cx="16" cy="16" r="9.6"/><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="6.4"/></g>
+    <path d="M16 16L7.5 8.6A11.2 11.2 0 0 1 13 5.2Z" fill="#fff" opacity=".13"/><path d="M16 16L24.5 23.4A11.2 11.2 0 0 1 19 26.8Z" fill="#fff" opacity=".07"/>
+    <circle cx="16" cy="16" r="4" fill="#ffd36e"/><circle cx="16" cy="16" r=".95" fill="#17121b"/>`),
+  mail: tile(`<defs><linearGradient id="g-mail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd46f"/><stop offset="1" stop-color="#f39c22"/></linearGradient>
+    <pattern id="p-mail" width="4.4" height="4.4" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="4.4" height="4.4" fill="#fffaf0"/><rect width="1.1" height="4.4" fill="#e5443a"/><rect x="2.2" width="1.1" height="4.4" fill="#2f5fd0"/></pattern></defs>
+    <rect width="32" height="32" fill="url(#g-mail)"/>
+    <rect x="4.5" y="8.5" width="23" height="15.5" rx="2" fill="url(#p-mail)"/><rect x="6.1" y="10.1" width="19.8" height="12.3" rx=".8" fill="#fffaf0"/>
+    <path d="M6.3 10.5L16 17.3L25.7 10.5" fill="none" stroke="#dccfb9" stroke-width="1.1" stroke-linejoin="round"/>
+    <circle cx="16" cy="17.3" r="2.2" fill="#e6407a"/>`),
+  settings: tile(`<defs><linearGradient id="g-settings" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fe3cf"/><stop offset="1" stop-color="#1f8a86"/></linearGradient>
+    <linearGradient id="g-gear" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf1"/><stop offset="1" stop-color="#ffe1a8"/></linearGradient></defs>
+    <rect width="32" height="32" fill="url(#g-settings)"/>
+    <path d="M24.61 14.17 L27.11 14.60 L27.11 17.40 L24.61 17.83 L23.77 20.13 L25.41 22.07 L23.61 24.22 L21.42 22.93 L19.30 24.16 L19.31 26.70 L16.55 27.19 L15.69 24.79 L13.28 24.37 L11.66 26.32 L9.23 24.92 L10.11 22.54 L8.54 20.66 L6.04 21.12 L5.08 18.48 L7.29 17.22 L7.29 14.78 L5.08 13.52 L6.04 10.88 L8.54 11.34 L10.11 9.46 L9.23 7.08 L11.66 5.68 L13.28 7.63 L15.69 7.21 L16.55 4.81 L19.31 5.30 L19.30 7.84 L21.42 9.07 L23.61 7.78 L25.41 9.93 L23.77 11.87ZM19.6 16A3.6 3.6 0 1 0 12.4 16A3.6 3.6 0 1 0 19.6 16Z" fill="#0c4a47" opacity=".4" fill-rule="evenodd" transform="translate(0 .8)"/>
+    <path d="M24.61 14.17 L27.11 14.60 L27.11 17.40 L24.61 17.83 L23.77 20.13 L25.41 22.07 L23.61 24.22 L21.42 22.93 L19.30 24.16 L19.31 26.70 L16.55 27.19 L15.69 24.79 L13.28 24.37 L11.66 26.32 L9.23 24.92 L10.11 22.54 L8.54 20.66 L6.04 21.12 L5.08 18.48 L7.29 17.22 L7.29 14.78 L5.08 13.52 L6.04 10.88 L8.54 11.34 L10.11 9.46 L9.23 7.08 L11.66 5.68 L13.28 7.63 L15.69 7.21 L16.55 4.81 L19.31 5.30 L19.30 7.84 L21.42 9.07 L23.61 7.78 L25.41 9.93 L23.77 11.87ZM19.6 16A3.6 3.6 0 1 0 12.4 16A3.6 3.6 0 1 0 19.6 16Z" fill="url(#g-gear)" fill-rule="evenodd"/>
+    <circle cx="16" cy="16" r="6.2" fill="none" stroke="#e8a94a" stroke-width=".7" opacity=".6"/>`),
+  gallery: tile(`<defs><linearGradient id="g-gallery" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b1c2ff"/><stop offset="1" stop-color="#6576ea"/></linearGradient>
+    <linearGradient id="g-photo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff96b2"/><stop offset="1" stop-color="#ffd3a1"/></linearGradient></defs>
+    <rect width="32" height="32" fill="url(#g-gallery)"/>
+    <g transform="rotate(-13 16 16)"><rect x="7" y="6.5" width="15" height="18" rx="1" fill="#fff" opacity=".8"/><rect x="8.5" y="8" width="12" height="11" fill="#ffd36e" opacity=".85"/></g>
+    <g transform="rotate(8 16 16)"><rect x="10" y="9.4" width="15" height="18" rx="1" fill="#1d2466" opacity=".18"/><rect x="10" y="8.5" width="15" height="18" rx="1" fill="#fff"/><rect x="11.5" y="10" width="12" height="11" fill="url(#g-photo)"/>
+    <circle cx="20.5" cy="13.3" r="1.6" fill="#fff6d0"/><path d="M11.5 21L11.5 18.2Q14.5 14.8 17.6 17.6T23.5 16.6V21Z" fill="#3c9f7a"/></g>`),
+};
+
+function buildDock() {
+  const dock = document.getElementById('dock');
+  APPS.forEach(a => {
+    if (a.sep) { const s = document.createElement('div'); s.className = 'sep'; dock.appendChild(s); return; }
+    const b = document.createElement('button');
+    b.dataset.tip = a.name; b.dataset.id = a.id; b.innerHTML = ICONS[a.icon];
+    b.addEventListener('click', () => toggleWin(a.id));
+    dock.appendChild(b);
+  });
+}
+function syncDock() {
+  document.querySelectorAll('#dock button').forEach(b => {
+    const w = wins[b.dataset.id];
+    b.classList.toggle('open', !!w && !w.el.classList.contains('hidden'));
+  });
+}
+
+function layout() {
+  const small = isSmall();
+  // World coordinates, laid out to match the reference composition:
+  // readme far left, gallery tall in the middle, daily note top right,
+  // git pulse under it, the two stickies tucked under the readme.
+  const W = window.innerWidth;
+
+  createWindow({ id: 'about', title: 'README.txt', showTitle: true, x: 40, y: 100, w: 420, h: 'auto', content: aboutContent() });
+  createWindow({ id: 'daily', title: 'Daily Note', x: 1490, y: 100, w: 360, h: 700, content: dailyContent() });
+  createWindow({ id: 'gallery', title: 'Gallery', x: 500, y: 60, w: 950, h: 700, noscroll: true, fullside: true, content: galleryContent() });
+  createWindow({ id: 'weather', title: 'Weather', x: 620, y: 830, w: 440, h: 'auto', content: weatherContent() });
+  createWindow({ id: 'pulse', title: 'Git Pulse', x: 1120, y: 900, w: 500, h: 'auto', content: pulseContent() });
+  // Mail waits in the dock rather than joining the opening composition.
+  createWindow({ id: 'mail', title: 'New Message', x: 590, y: 900, w: 500, h: 410, noscroll: true, content: mailContent() });
+  wins.mail.el.classList.add('hidden');
+  createWindow({ id: 'music', title: 'Music', x: 1660, y: 860, w: 620, h: 460, noscroll: true, fullside: true, content: musicContent() });
+  wins.music.el.classList.add('hidden');
+  // Settings are global to the desktop, so they get their own window, waiting in the dock.
+  createWindow({ id: 'settings', title: 'Settings', x: 620, y: 160, w: 520, h: 'auto', content: settingsPane() });
+  wins.settings.el.classList.add('hidden');
+  // Settings and Mail open in the middle of the screen, wherever the board has been panned to.
+  const centerOnScreen = el => {
+    el.style.left = Math.round((window.innerWidth / 2 - pan.x) / zoom - el.offsetWidth / 2) + 'px';
+    el.style.top = Math.round((window.innerHeight / 2 - pan.y) / zoom - el.offsetHeight / 2) + 'px';
+  };
+  wins.settings.place = centerOnScreen;
+  wins.mail.place = centerOnScreen;
+  // Closing the player stops the music; minimizing lets it keep playing.
+  wins.music.el.querySelector('.lights .c').addEventListener('click', () => music.stop());
+  wins.mail.onShow = el => {
+    // The stamp shows the desk plant as it is right now (it's different every visit).
+    const snap = window.deskPlantSnapshot && window.deskPlantSnapshot();
+    if (snap) { const img = el.querySelector('.stamp img'); img.src = snap; img.classList.add('plant'); }
+    el.querySelector('input').focus({ preventScroll: true });
+  };
+
+  addLoose(`<b>Personal Personal Computing</b><p>30 self-built apps I live in every day. The windows here are a few of them.</p><a href="https://rhymeandreason.studio" target="_blank" rel="noopener">rhymeandreason.studio <i class="ph ph-arrow-up-right"></i></a>`, 40, 900, -2, 'sticky postit');
+  addLoose(`<b>Kodolab</b><p>Learn biology with 3D simulations. AI sandbox, ideas → lessons in seconds. Open-source</p><a href="https://kodolab.org" target="_blank" rel="noopener">kodolab.org <i class="ph ph-arrow-up-right"></i></a>`, 300, 780, 3, 'sticky postit lavender');
+
+  // Frame the whole composition in whatever window we were given.
+  if (small) {
+    Object.values(wins).forEach(w => { w.el.style.width = Math.min(parseInt(w.el.style.width), W - 24) + 'px'; });
+  }
+  fitContent(false);
+  focusWin(wins.about.el);
+  syncDock();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Boot
+   ═══════════════════════════════════════════════════════════════ */
+buildDock();
+layout();
+applyMinFont();
+setMode(1);
+/* Battery, the way a menu bar shows it. Needs the Battery Status API;
+   where the browser doesn't expose it (Safari, Firefox), show nothing. */
+function initBattery() {
+  const el = document.getElementById('battery');
+  if (!navigator.getBattery) { el.style.display = 'none'; return; }
+  navigator.getBattery().then(b => {
+    const paint = () => {
+      const pct = Math.round(b.level * 100);
+      el.querySelector('.pct').textContent = pct + '%';
+      const icon = b.charging ? 'ph-battery-charging'
+        : pct > 75 ? 'ph-battery-full'
+        : pct > 45 ? 'ph-battery-high'
+        : pct > 20 ? 'ph-battery-medium'
+        : pct > 8 ? 'ph-battery-low'
+        : 'ph-battery-empty';
+      el.querySelector('i').className = 'ph ' + icon;
+      el.classList.toggle('low', pct <= 20 && !b.charging);
+      el.classList.toggle('charging', b.charging);
+      el.title = `Battery ${pct}%${b.charging ? ' · charging' : ''}`;
+    };
+    paint();
+    ['levelchange', 'chargingchange'].forEach(e => b.addEventListener(e, paint));
+  }).catch(() => el.style.display = 'none');
+}
+initBattery();
+
+const tick = () => { document.getElementById('clock').textContent = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); };
+tick(); setInterval(tick, 15000);
+let refitT;
+// images settle after boot and change auto heights
+window.addEventListener('load', () => { if (!touched) fitContent(false); });
+window.addEventListener('resize', () => {
+  if (touched) return; // the view is theirs once they've panned or zoomed
+  clearTimeout(refitT);
+  refitT = setTimeout(() => fitContent(true), 150);
+});
+</script>
+<script type="module" src="js/desk-plant.js"></script>
+</body>
+</html>
